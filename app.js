@@ -6,6 +6,7 @@ const port = process.env.PORT || 8080; // Set by Docker Entrypoint or use 8080
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
+app.set("views", "./public/views");
 
 // process.env.DEPLOYMENT is set by Docker Entrypoint
 if (!process.env.DEPLOYMENT) {
@@ -29,7 +30,7 @@ app.use((request, response, next) => {
 });
 
 app.get("/", (request, response) => {
-  response.send("Hello World!");
+  response.render("index");
 });
 
 // Your routes here ...
@@ -47,7 +48,7 @@ app.use((error, request, response, next) => {
 });
 
 // App starts here
-// InitializeDatabase();
+InitializeDatabase();
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
