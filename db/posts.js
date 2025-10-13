@@ -16,19 +16,17 @@ export function InitializePostsDatabase() {
       image_path TEXT NOT NULL,
       title TEXT NOT NULL,
       ingredients TEXT NOT NULL,
-      steps TEXT NOT NULL,
-      user_id INTEGER NOT NULL,
-      FOREIGN KEY(user_id) REFERENCES users(id)
+      steps TEXT NOT NULL
     ) STRICT
   `).run();
 }
 
-export function createPost({ imagePath, title, ingredients, steps, userId }) {
+export function createPost({ imagePath, title, ingredients, steps }) {
   const stmt = db.prepare(`
-    INSERT INTO posts (image_path, title, ingredients, steps, user_id)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO posts (image_path, title, ingredients, steps)
+    VALUES (?, ?, ?, ?)
   `);
-  return stmt.run(imagePath, title, ingredients, steps, userId);
+  return stmt.run(imagePath, title, ingredients, steps);
 }
 
 export function getAllPosts() {
