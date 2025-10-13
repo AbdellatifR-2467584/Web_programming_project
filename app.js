@@ -33,6 +33,10 @@ app.get("/", (request, response) => {
   response.render("index");
 });
 
+app.get("/v1", (request, response) => {
+  response.redirect("/");
+});
+
 // Your routes here ...
 
 // Middleware for unknown routes
