@@ -10,8 +10,8 @@ body {
     width: 100vw;
 }
 
+
 .sidebar {
-    width: 4rem;
     background-color: #fff;
     border-right: 1px solid #e0e0e0;
     display: flex;
@@ -49,6 +49,7 @@ body {
 }
 
 .searchbar {
+    width: 100%;
     background-color: #fff;
     padding: 0.75rem;
     border-bottom: 1px solid #e0e0e0;
