@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload your recipe/</title>
+    
+</head>
+<body>
+    <div class="upload-recipe">
+        <form action="/upload" method="POST">
+        <label for="image">Upload een afbeelding:</label>
+        <input type="file" id="image" name="image" accept="image/*" required>
+        <label for="title">Recipe naam:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="body">Ingredienten lijst:</label>
+        <input type="body" id="body" name="body" required>
+        <label for="body">Instructies:</label>
+        <textarea id="body" name="body" required></textarea>
+        <button>Upload</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -37,6 +37,14 @@ app.get("/v1", (request, response) => {
   response.redirect("/");
 });
 
+app.get("/upload", (request, response) => {
+  response.render("upload");
+});
+
+app.get("/uploadlink", (request, response) => {
+  response.render("uploadlink");
+});
+
 // Your routes here ...
 
 // Middleware for unknown routes
