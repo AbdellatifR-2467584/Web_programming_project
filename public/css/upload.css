@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fafafa;
+}
+
+.upload-recipe {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "upload"
+        "footer";
+    grid-template-columns: 1fr;
+    gap: 5px;
+
+
+}
+
+.upload-recipe h2 {
+    grid-area: header;
+    text-align: left center;
+    border-bottom: 1px solid #e0e0e0;
+    color: #000000;
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+}
+
+.recipe-form {
+    display: grid;
+    grid-template-areas:
+        "upload text post";
+    grid-template-columns: 2fr 2fr 2fr;
+    gap: 2rem;
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.form-image-upload {
+    grid-area: upload;
+}
+
+.form-recept-naam {
+    grid-area: text;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-ingredienten-lijst {
+    grid-area: text;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-instructies {
+    grid-area: text;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-post-knop {
+    grid-area: post;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recipe-form label {
+    font-weight: 600;
+}
+
+
+.recipe-form input,
+.recipe-form textarea {
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    width: 100%;
+}
