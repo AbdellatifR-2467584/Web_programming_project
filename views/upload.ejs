@@ -18,8 +18,11 @@
                         <h2>Upload je Recept</h2>
                         <form action="/upload" method="POST" class="recipe-form">
                             <div class="form-image-upload">
-                                <label for="image">Upload een afbeelding:</label>
-                                <input type="file" id="image" name="image" accept="image/*" required>
+                                <input type="file" id="image" name="image" accept="image/*" hidden>
+                                <label for="image" class="custom-file-button">
+                                    <i class="bi bi-upload"></i>
+                                    Kies een afbeelding
+                                </label>
                             </div>
                             <div class="form-recept-naam">
                                 <label for="title">Recipe naam:</label>
@@ -34,7 +37,10 @@
                                 <textarea id="body" name="body" required></textarea>
                             </div>
                             <div class="form-post-knop">
-                                <button type="submit">Upload</button>
+                                <label for="body">Post</label>
+                                <button type="submit" class="submit-button">
+                                    <i class="bi bi-plus"></i><br>
+                                </button>
                             </div>
                         </form>
                     </div>
