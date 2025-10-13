@@ -6,13 +6,13 @@ const port = process.env.PORT || 8080; // Set by Docker Entrypoint or use 8080
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
-app.set("views", "./public/views");
+app.set("views", "./views");
 
 // process.env.DEPLOYMENT is set by Docker Entrypoint
 if (!process.env.DEPLOYMENT) {
   console.info("Development mode");
   // Serve static files from the "views" directory
-  app.use(express.static("./public/views"));
+  app.use(express.static("./views"));
 }
 
 // Middleware for serving static files
