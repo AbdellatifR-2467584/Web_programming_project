@@ -1,5 +1,8 @@
 import express from "express";
-import { InitializeDatabase } from "./db.js";
+import { InitializePostsDatabase, createPost, getAllPosts } from "./db/posts.js";
+
+import path from "path";
+import multer from "multer";
 
 const app = express();
 const port = process.env.PORT || 8080; // Set by Docker Entrypoint or use 8080
@@ -29,8 +32,16 @@ app.use((request, response, next) => {
   next();
 });
 
+const storage = multer.diskStorage({
+  destination: (request, file, cb) => cb(null, "uploads/"),
+  filename: (request, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+});
+const upload = multer({ storage });
+
+// Your routes here ...
 app.get("/", (request, response) => {
-  response.render("index");
+  const posts = getAllPosts();
+  response.render("index", { posts });
 });
 
 app.get("/v1", (request, response) => {
@@ -45,7 +56,13 @@ app.get("/uploadlink", (request, response) => {
   response.render("uploadlink");
 });
 
-// Your routes here ...
+app.post("/upload", upload.single("image"), (req, res) => {
+  const { title, ingredients, steps } = req.body;
+  const imagePath = req.file.path;
+
+  createPost({ imagePath, title, ingredients, steps });
+  res.redirect("/");
+});
 
 // Middleware for unknown routes
 // Must be last in pipeline
@@ -60,7 +77,8 @@ app.use((error, request, response, next) => {
 });
 
 // App starts here
-InitializeDatabase();
+InitializePostsDatabase();
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
