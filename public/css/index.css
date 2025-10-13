@@ -2,15 +2,78 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color: #fafafa;
-  }
+}
+
+.layout {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 4rem;
+    background-color: #fff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar button {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    font-size: 2rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background-color: #6f6f6f4b;
+}
+
+.meanarea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
 .searchbar {
     background-color: #fff;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem;
     border-bottom: 1px solid #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.searchform {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.searchinput {
+    padding: 8px 12px;
+    width: 500px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    outline: none;
+    transition: border 0.2s;
+    padding-left: 8px;
+    padding-right: 10px;
+}
+
+.searchinput:focus {
+    border-color: #4cb0e2;
 }
 
 .topbar input {
@@ -22,41 +85,6 @@ body {
     font-size: 1rem;
 }
 
-.sidebar {
-    width: 220px;
-    background-color: #fff;
-    border-right: 1px solid #e0e0e0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-}
-  
-.sidebar h2 {
-    margin-bottom: 1.5rem;
-}
-  
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-}
-  
-.sidebar button {
-    padding: 0.75rem;
-    border: none;
-    background: none;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 1rem;
-}
-  
-  .sidebar button:hover {
-    background-color: #f3f3f3;
-}
 
 .grid {
     flex: 1;
@@ -65,4 +93,10 @@ body {
     gap: 1rem;
     padding: 1rem;
     overflow-y: auto;
+}
+
+.logo {
+    display: flex;
+    width: 50px;
+
 }
