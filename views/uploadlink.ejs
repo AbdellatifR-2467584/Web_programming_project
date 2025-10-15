@@ -4,15 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload a link to your recipe</title>
-    
+    <link rel="stylesheet" href="/css/uploadlink.css">
+    <script src="/js/uploadlink.js" defer></script>
+
 </head>
 <body>
-    <div class="upload-recipe">
-        <form action="/upload" method="POST">
-        <label for="url">Recept URL:</label>
-        <input type="url" id="url" name="url" required>
-        <button>Upload</button>
-        </form>
+    <div class="layout">
+        <%- include('partials/sidebar') %>
+            <div class="mainarea">
+                <%- include('partials/searchbar') %>
+                    <div class="upload-recipe-link">
+                        <h2>Upload de link naar je recept</h2>
+                        <form class="recipe-form">
+                            <div class="linkuploader"> 
+                                <label for="url">Recept URL:</label>
+                                <input type="url" id="url" name="url" required>
+                            </div>
+                            <div class="form-post-knop">
+                                <label for="body">Post</label>
+                                <button type="submit" class="submit-button">
+                                    <i class="bi bi-plus"></i><br>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+            </div>
     </div>
 </body>
 </html>
