@@ -17,7 +17,7 @@
                 <%- include('partials/searchbar') %>
                     <div class="upload-recipe">
                         <h2>Upload je Recept</h2>
-                        <form action="/upload" method="POST" class="recipe-form">
+                        <form action="/upload" method="POST" class="recipe-form" enctype="multipart/form-data">
                             <div class="form-image-upload">
                                 <input type="file" id="image" name="image" accept="image/*" hidden>
                                 <label for="image" class="custom-file-button">
@@ -37,19 +37,19 @@
                                 <input type="text" id="title" name="title" required>
                             </div>
                             <div class="form-ingredienten-lijst">
-                                <label for="body">Ingredienten lijst:</label>
-                                <input type="body" id="body" name="body" required>
+                                <label for="ingredients">Ingrediënten lijst:</label>
+                                <input type="text" id="ingredients" name="ingredients" required>
                             </div>
                             <div class="form-instructies">
-                                <label for="body">Instructies:</label>
-                                <textarea id="body" name="body" required></textarea>
+                                <label for="steps">Instructies:</label>
+                                <textarea id="steps" name="steps" required></textarea>
                             </div>
                             <div class="form-post-knop">
                                 <label for="body">Post</label>
                                 <button type="submit" class="submit-button">
                                     <i class="bi bi-plus"></i><br>
                                 </button>
-                            </div>
+                            </div> 
                         </form>
                     </div>
             </div>

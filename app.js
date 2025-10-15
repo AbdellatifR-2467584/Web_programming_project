@@ -56,12 +56,12 @@ app.get("/uploadlink", (request, response) => {
   response.render("uploadlink");
 });
 
-app.post("/upload", upload.single("image"), (req, res) => {
-  const { title, ingredients, steps } = req.body;
-  const imagePath = req.file.path;
+app.post("/upload", upload.single("image"), (request, response) => {
+  const { title, ingredients, steps } = request.body;
+  const imagePath = request.file.path;
 
   createPost({ imagePath, title, ingredients, steps });
-  res.redirect("/");
+  response.redirect("/");
 });
 
 // Middleware for unknown routes
