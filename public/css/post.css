@@ -2,10 +2,28 @@ body {
     margin: 0;
     font-family: 'Poppins', 'Segoe UI', sans-serif;
     background-color: #fafafa;
+    overflow-x: hidden;
+}
+
+
+.page {
+    display: grid;
+    grid-template-areas:
+        "recipe grid"
+        "footer grid";
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+}
+
+.grid {
+    grid-area: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    align-self: start;
 }
 
 .post {
     display: grid;
+    grid-area: recipe;
     grid-template-areas:
         "header"
         "upload"
@@ -70,6 +88,7 @@ body {
 
 .ingredienten {
     grid-area: ingr;
+    padding-left: 1rem;
 }
 
 .ingredienten p {
