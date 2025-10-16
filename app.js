@@ -1,5 +1,5 @@
 import express from "express";
-import { InitializePostsDatabase, createPost, getAllPosts } from "./db/posts.js";
+import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID } from "./db/posts.js";
 
 import path from "path";
 import multer from "multer";
@@ -17,6 +17,34 @@ if (!process.env.DEPLOYMENT) {
   // Serve static files from the "views" directory
   app.use(express.static("./views"));
 }
+
+
+// get uploaded images
+
+app.get("/api/posts", (req, res) => {
+  try {
+    const posts = getAllPosts();
+    res.json(posts);
+  } catch (err) {
+    console.error("Fout bij fetchen van posts: ", err);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+
+});
+
+app.get("/post/:id", (req, res) => {
+  try {
+    const post = getPostInfoByID(req.params.id);
+    if (!post) return res.status(404).send("Post not found");
+
+    res.render("post", { post }); // Render post.ejs with the post data
+  } catch (err) {
+    console.error("Error fetching post: ", err)
+    res.status(500).send("Failed to load post");
+  }
+});
+
+app.use("/uploads", express.static("uploads"));
 
 // Middleware for serving static files
 app.use(express.static("public"));
@@ -58,7 +86,7 @@ app.get("/uploadlink", (request, response) => {
 
 app.post("/upload", upload.single("image"), (request, response) => {
   const { title, ingredients, steps } = request.body;
-  const imagePath = request.file.path;
+  const imagePath = "\\" + request.file.path;
 
   createPost({ imagePath, title, ingredients, steps });
   response.redirect("/");
@@ -78,6 +106,8 @@ app.use((error, request, response, next) => {
 
 // App starts here
 InitializePostsDatabase();
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

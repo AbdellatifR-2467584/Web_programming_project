@@ -31,10 +31,18 @@ export function createPost({ imagePath, title, ingredients, steps }) {
 
 export function getAllPosts() {
   return db.prepare(`
-    SELECT *
+    SELECT id, image_path
     FROM posts
     ORDER BY id DESC
   `).all();
+}
+
+export function getPostInfoByID(id) {
+  return db.prepare(`
+    SELECT *
+    FROM posts
+    WHERE id = ?
+  `).get(id);
 }
 
 export function getPostBySearch(searchTerm) {
@@ -45,4 +53,5 @@ export function getPostBySearch(searchTerm) {
     WHERE posts.title LIKE ?
     ORDER BY posts.id DESC
   `);
-  return stmt.all(`%${searchTerm}%`);}
+  return stmt.all(`%${searchTerm}%`);
+}
