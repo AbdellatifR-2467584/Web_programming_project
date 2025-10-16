@@ -37,6 +37,27 @@ export function getAllPosts() {
   `).all();
 }
 
+export function getAllPostsLike(like) {
+  const pattern = `%${like}%`;
+  return db.prepare(`
+    SELECT 
+      id, 
+      image_path,
+      title,
+      CASE
+        WHEN title LIKE ? THEN 1
+        ELSE 0
+      END AS is_match,
+      INSTR(LOWER(title), LOWER(?)) AS position
+    FROM posts
+    ORDER BY 
+      is_match DESC,
+      position ASC,
+      id DESC
+  `).all(pattern, like);
+}
+
+
 export function getPostInfoByID(id) {
   return db.prepare(`
     SELECT *

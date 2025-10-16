@@ -88,13 +88,31 @@ body {
 
 
 .grid {
-    flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-auto-rows: 10px;
     gap: 1rem;
     padding: 1rem;
-    overflow-y: auto;
 }
+
+.card {
+    overflow: hidden;
+}
+
+
+.card img {
+    width: 100%;
+    display: block;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.card img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+    }
 
 .logo {
     display: flex;

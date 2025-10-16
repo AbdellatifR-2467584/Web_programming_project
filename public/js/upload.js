@@ -6,7 +6,7 @@ const previewImg = document.getElementById("preview-img");
 const removeBtn = document.getElementById("remove-image");
 const label = document.querySelector("body > div > div > div > form > div.form-image-upload > label");
 
-input.addEventListener("change", () => {
+input.addEventListener("change", (event) => {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader()
@@ -35,4 +35,17 @@ removeBtn.addEventListener("click", () => {
     previewContainer.style.display = "none";
     postknop.style.backgroundColor = "gray";
     status.textContent = "Geen bestand geselecteerd";
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const parsed = localStorage.getItem('parsedRecipe');
+    if (parsed) {
+        const recept = JSON.parse(parsed);
+        document.getElementById('title').value = recept.title || '';
+        document.getElementById('ingredients').value = recept.ingredients?.join(', ') || '';
+        document.getElementById('steps').value = recept.steps?.join('\n') || '';
+
+        // optioneel verwijderen van localStorage zodat het niet dubbel wordt geladen
+        localStorage.removeItem('parsedRecipe');
+    }
 });
