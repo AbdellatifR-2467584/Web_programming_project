@@ -37,6 +37,18 @@ app.get("/api/posts", (req, res) => {
 
 });
 
+app.get("/api/postsLike", (req, res) => {
+  try {
+    const like = req.query.q || "";
+    const excludeId = parseInt(req.query.excludeId) || null;
+    const posts = getAllPostsLike(like, excludeId);
+    res.json(posts);
+  } catch (err) {
+    console.error("Fout bij fetchen van posts:", err);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+});
+
 app.get("/post/:id", (req, res) => {
   try {
     const post = getPostInfoByID(req.params.id);

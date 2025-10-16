@@ -37,9 +37,11 @@ export function getAllPosts() {
   `).all();
 }
 
-export function getAllPostsLike(like) {
-  const pattern = `%${like}%`;
-  return db.prepare(`
+export function getAllPostsLike(like, excludeId = null) {
+  const likeTerm = like?.trim() || "";
+  const pattern = `%${likeTerm}%`;
+
+  let query = `
     SELECT 
       id, 
       image_path,
@@ -50,12 +52,26 @@ export function getAllPostsLike(like) {
       END AS is_match,
       INSTR(LOWER(title), LOWER(?)) AS position
     FROM posts
+  `;
+
+  const params = [pattern, likeTerm];
+
+  // ✅ Als er een excludeId is, sluit die dan uit
+  if (excludeId) {
+    query += ` WHERE id != ?`;
+    params.push(excludeId);
+  }
+
+  query += `
     ORDER BY 
       is_match DESC,
       position ASC,
       id DESC
-  `).all(pattern, like);
+  `;
+
+  return db.prepare(query).all(...params);
 }
+
 
 
 export function getPostInfoByID(id) {
