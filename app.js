@@ -3,12 +3,14 @@ import fetch from "node-fetch";
 import OpenAI from "openai";
 import path from "path";
 import multer from "multer";
+import 'dotenv/config';
 import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID } from "./db/posts.js";
 
 
 const app = express();
 const port = process.env.PORT || 8080; // Set by Docker Entrypoint or use 8080
 
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 // set the view engine to ejs
 app.set("view engine", "ejs");
 app.set("views", "./views");
@@ -95,22 +97,14 @@ app.post("/upload", upload.single("image"), (request, response) => {
   response.redirect("/");
 });
 
-app.post("/api/fetchrecipe", async (request, response) => {
-  const { url } = request.body;
-  if (!url) return response.status(400).json({ error: "URL is required" });
+app.post("/api/fetchrecipe", async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: "URL is required" });
 
   try {
-    console.log("in app.js voor fetch----------------");
     const htmlresponse = await fetch(url);
     const html = await htmlresponse.text();
     console.log(html);
-
-
-
-
-
-
-
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4.1",
@@ -134,8 +128,9 @@ app.post("/api/fetchrecipe", async (request, response) => {
           ${html}`
         },
       ],
-      response_format: { type: "json_object"}
+      response_format: { type: "json_object" }
     });
+
     let recept;
     if (typeof completion.choices[0].message.content === 'string') {
       try {
@@ -151,16 +146,11 @@ app.post("/api/fetchrecipe", async (request, response) => {
       console.log("recept is al JSON----------------");
     }
 
-
-
-    console.log(recept);
-    console.log("Type recept:", typeof recept);
-    console.log("Recept inhoud:", JSON.stringify(recept, null, 2));
-    response.status(200).json({ recept });  // <-- als dit hangt, weet je het zeker
-    response.end();
+    return res.status(200).json({ recept });
+    console.log("Na return statement"); // This will never be executed
   } catch (error) {
     console.error("Fout bij ophalen recept: ", error);
-    response.status(500).json({ error: "Fout bij ophalen recept" });
+    return res.status(500).json({ error: "Fout bij ophalen recept ooooooooooo" });
   }
 });
 // Middleware for unknown routes
