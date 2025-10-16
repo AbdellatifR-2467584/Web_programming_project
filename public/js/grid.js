@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (pathParts[0] === "post" && !isNaN(pathParts[1])) {
         currentPostId = parseInt(pathParts[1]);
     }
+
+
     for (const grid of grids) {
         grid.innerHTML = posts
             .filter(post => post.id !== currentPostId)
