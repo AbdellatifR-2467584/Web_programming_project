@@ -37,40 +37,18 @@ export function getAllPosts() {
   `).all();
 }
 
-export function getAllPostsLike(like, excludeId = null) {
+export function getAllPostsLike(like) {
   const likeTerm = like?.trim() || "";
   const pattern = `%${likeTerm}%`;
 
-  let query = `
-    SELECT 
-      id, 
-      image_path,
-      title,
-      CASE
-        WHEN title LIKE ? THEN 1
-        ELSE 0
-      END AS is_match,
-      INSTR(LOWER(title), LOWER(?)) AS position
+  return db.prepare(`
+    SELECT id, image_path
     FROM posts
-  `;
-
-  const params = [pattern, likeTerm];
-
-  // ✅ Als er een excludeId is, sluit die dan uit
-  if (excludeId) {
-    query += ` WHERE id != ?`;
-    params.push(excludeId);
-  }
-
-  query += `
-    ORDER BY 
-      is_match DESC,
-      position ASC,
-      id DESC
-  `;
-
-  return db.prepare(query).all(...params);
+    WHERE title LIKE ?
+    ORDER BY id DESC
+  `).all(pattern);
 }
+
 
 
 

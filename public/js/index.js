@@ -18,16 +18,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchForm = document.querySelector(".searchform");
     const searchInput = document.querySelector(".searchinput");
 
-    searchForm.addEventListener("submit", (event) => {
-        event.preventDefault(); // voorkomt herladen van de pagina
+    searchForm.addEventListener("submit", async (event) => {
+    event.preventDefault(); // voorkomt herladen van de pagina
 
-        const query = searchInput.value.trim();
+    const query = searchInput.value.trim();
+    const grid = document.querySelector(".grid");
 
-        if (query) {
-            // hier ga je de grid refreshen met zoekresultaat in de database
+    if (query) {
+        const res = await fetch(`/api/postsLike?q=${encodeURIComponent(query)}`);
+        const posts = await res.json();
 
+        grid.innerHTML = posts.map(post => `
+            <div class="card" onclick="location.href='/post/${post.id}'">
+                <img src="${post.image_path}" alt="Recipe">
+            </div>
+        `).join("");
 
-        }
+        resizeMasonry(grid);
+    } else {
+        // Als het zoekveld leeg is, toon opnieuw alle posts
+        const res = await fetch("/api/posts");
+        const posts = await res.json();
+
+        grid.innerHTML = posts.map(post => `
+            <div class="card" onclick="location.href='/post/${post.id}'">
+                <img src="${post.image_path}" alt="Recipe">
+            </div>
+        `).join("");
+
+        resizeMasonry(grid);
+    }
     });
 });
 

@@ -4,7 +4,7 @@ import OpenAI from "openai";
 import path from "path";
 import multer from "multer";
 import 'dotenv/config';
-import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID } from "./db/posts.js";
+import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike } from "./db/posts.js";
 
 
 const app = express();
@@ -40,14 +40,14 @@ app.get("/api/posts", (req, res) => {
 app.get("/api/postsLike", (req, res) => {
   try {
     const like = req.query.q || "";
-    const excludeId = parseInt(req.query.excludeId) || null;
-    const posts = getAllPostsLike(like, excludeId);
+    const posts = getAllPostsLike(like);
     res.json(posts);
   } catch (err) {
     console.error("Fout bij fetchen van posts:", err);
     res.status(500).json({ error: "Failed to fetch posts" });
   }
 });
+
 
 app.get("/post/:id", (req, res) => {
   try {
