@@ -30,14 +30,26 @@ body {
 .sidebar button {
     display: flex;
     align-items: center;
-    padding: 15px;
-    font-size: 2rem;
+    justify-content: center;
+    margin-top: 15px;
     border: none;
     background-color: transparent;
-    cursor: pointer;
+    padding: 0;
+
 }
 
-.sidebar button:hover {
+.sidebar button i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    padding: 0;
+    font-size: 2rem;
+}
+
+.sidebar button i:hover {
     background-color: #6f6f6f4b;
 }
 
@@ -122,10 +134,10 @@ body {
 }
 
 .card img:hover {
-        transform: scale(1.02);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-    }
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
 
 .logo {
     display: flex;
