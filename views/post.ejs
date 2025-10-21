@@ -25,16 +25,15 @@
                                 <div class="picture">
                                     <img src="<%= post.image_path %>" alt="Recipe">
                                 </div>
-                                <div class="ingredienten">
+                                <div class="ingredienten" data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
                                     <h2>Ingrediënten:</h2>
-                                    <p>
-                                        <%= post.ingredients %>
-                                    </p>
+                                    <ul class="list-ingredienten">
+                                    </ul>
                                 </div>
                                 <div class="instructies">
                                     <h2>Stappen:</h2>
                                     <p>
-                                        <%= post.steps %>
+                                        <%- post.steps.replace(/\n/g, '<br>' ) %>
                                     </p>
 
                                 </div>

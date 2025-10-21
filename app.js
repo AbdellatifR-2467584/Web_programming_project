@@ -103,6 +103,9 @@ app.get("/uploadlink", (request, response) => {
 
 app.post("/upload", upload.single("image"), (request, response) => {
   const { title, ingredients, steps } = request.body;
+  if (!ingredients) {
+    ingredients = ["De gebruiker heeft geen ingediënten toegevoegd"];
+  }
   const imagePath = "\\" + request.file.path;
 
   createPost({ imagePath, title, ingredients, steps });

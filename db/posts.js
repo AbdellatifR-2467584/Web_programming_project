@@ -26,7 +26,7 @@ export function createPost({ imagePath, title, ingredients, steps }) {
     INSERT INTO posts (image_path, title, ingredients, steps)
     VALUES (?, ?, ?, ?)
   `);
-  return stmt.run(imagePath, title, ingredients, steps);
+  return stmt.run(imagePath, title, JSON.stringify(ingredients), steps);
 }
 
 export function getAllPosts() {
