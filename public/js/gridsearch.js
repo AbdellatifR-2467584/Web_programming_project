@@ -1,14 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const grids = document.getElementsByClassName("grid");
-
-    
-    const titelElement = document.getElementById("postTitel");
-    const searchTerm = titelElement ? titelElement.textContent.trim() : "";
-
-
-    const res = await fetch(`/api/posts?q=${encodeURIComponent(searchTerm)}`);
-    const posts = await res.json();
-
+    const grids = document.getElementsByClassName("gridSearch");
+    const postTitle = document.getElementById("postTitel")?.innerText || "";
+    const res = await fetch(`/api/postsLike?q=${encodeURIComponent(postTitle)}`);
+    const postsLike = await res.json();
     let currentPostId = null;
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     if (pathParts[0] === "post" && !isNaN(pathParts[1])) {
@@ -17,15 +11,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     for (const grid of grids) {
-        grid.innerHTML = posts
+        grid.innerHTML = postsLike
             .filter(post => post.id !== currentPostId)
             .map(post => `
-                <div class="card" onclick="location.href='/post/${post.id}'">
-                    <img src="${post.image_path}" alt="${post.title}">
-                </div>
-            `)
-            .join("");
-
+        <div class="card" onclick="location.href='/post/${post.id}'">
+            <img src="${post.image_path}" alt="Recipe">
+        </div>
+    `).join("");
         const images = grid.querySelectorAll("img");
         let loaded = 0;
         images.forEach(img => {
