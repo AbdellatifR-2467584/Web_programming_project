@@ -6,7 +6,7 @@ const previewImg = document.getElementById("preview-img");
 const removeBtn = document.getElementById("remove-image");
 const label = document.querySelector("body > div > div > div > form > div.form-image-upload > label");
 
-input.addEventListener("change", () => {
+input.addEventListener("change", (event) => {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader()
@@ -35,4 +35,46 @@ removeBtn.addEventListener("click", () => {
     previewContainer.style.display = "none";
     postknop.style.backgroundColor = "gray";
     status.textContent = "Geen bestand geselecteerd";
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const parsed = localStorage.getItem('parsedRecipe');
+    if (parsed) {
+        const recept = JSON.parse(parsed);
+        document.getElementById('title').value = recept.title || '';
+        document.getElementById('ingredients').value = recept.ingredients|| '';
+        document.getElementById('steps').value = recept.steps|| '';
+
+        // optioneel verwijderen van localStorage zodat het niet dubbel wordt geladen
+        //localStorage.removeItem('parsedRecipe');
+    }
+});
+
+document.getElementById('fetch-btn').addEventListener('click', async () => {
+  const url = document.getElementById('recipe-url').value.trim();
+  if (!url) return alert('Voer een geldige URL in.');
+
+  try {
+    const response = await fetch('/api/fetchrecipe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error || 'Fout bij ophalen recept');
+    }
+
+    const data = await response.json();
+    const recept = data.recept;
+
+
+    document.getElementById('title').value = recept.title || '';
+    document.getElementById('ingredients').value = recept.ingredients|| '';
+    document.getElementById('steps').value = recept.steps|| '';
+
+  } catch (error) {
+    alert('Fout bij ophalen recept: ' + error.message);
+  }
 });

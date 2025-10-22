@@ -8,13 +8,16 @@
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "fetch": "^1.1.0",
     "multer": "^2.0.2",
     "node": "^24.10.0",
-    "nodemon": "^3.1.10"
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.10",
+    "openai": "^6.4.0"
   },
   "description": "A skeleton that provides some of the basics to get starting with the web programming project.",
   "repository": {

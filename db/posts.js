@@ -31,10 +31,55 @@ export function createPost({ imagePath, title, ingredients, steps }) {
 
 export function getAllPosts() {
   return db.prepare(`
-    SELECT *
+    SELECT id, image_path
     FROM posts
     ORDER BY id DESC
   `).all();
+}
+
+export function getAllPostsLike(like, excludeId = null) {
+  const likeTerm = like?.trim() || "";
+  const pattern = `%${likeTerm}%`;
+
+  let query = `
+    SELECT 
+      id, 
+      image_path,
+      title,
+      CASE
+        WHEN title LIKE ? THEN 1
+        ELSE 0
+      END AS is_match,
+      INSTR(LOWER(title), LOWER(?)) AS position
+    FROM posts
+  `;
+
+  const params = [pattern, likeTerm];
+
+  // ✅ Als er een excludeId is, sluit die dan uit
+  if (excludeId) {
+    query += ` WHERE id != ?`;
+    params.push(excludeId);
+  }
+
+  query += `
+    ORDER BY 
+      is_match DESC,
+      position ASC,
+      id DESC
+  `;
+
+  return db.prepare(query).all(...params);
+}
+
+
+
+export function getPostInfoByID(id) {
+  return db.prepare(`
+    SELECT *
+    FROM posts
+    WHERE id = ?
+  `).get(id);
 }
 
 export function getPostBySearch(searchTerm) {
@@ -45,4 +90,5 @@ export function getPostBySearch(searchTerm) {
     WHERE posts.title LIKE ?
     ORDER BY posts.id DESC
   `);
-  return stmt.all(`%${searchTerm}%`);}
+  return stmt.all(`%${searchTerm}%`);
+}
