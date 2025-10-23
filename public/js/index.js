@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchForm = document.querySelector(".searchform");
     const searchInput = document.querySelector(".searchinput");
 
-    searchForm.addEventListener("submit", async (event) => {
+    searchForm.addEventListener("input", async (event) => {
         event.preventDefault(); // voorkomt herladen van de pagina
 
         const query = searchInput.value.trim();

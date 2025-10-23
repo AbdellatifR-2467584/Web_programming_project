@@ -3,8 +3,11 @@ import fetch from "node-fetch";
 import OpenAI from "openai";
 import path from "path";
 import multer from "multer";
+import session from "express-session";
+import bcrypt from "bcrypt";
 import 'dotenv/config';
 import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike } from "./db/posts.js";
+import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
 
 
 const app = express();
@@ -21,11 +24,44 @@ if (!process.env.DEPLOYMENT) {
   // Serve static files from the "views" directory
   app.use(express.static("./views"));
 }
-// send LLM antwoord van recept
 
+// Session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || "supersecretkey",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 dag
+}));
 
-// get uploaded images
+// Middleware om user in EJS beschikbaar te maken
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  next();
+});
 
+app.use("/uploads", express.static("uploads"));
+
+// Middleware for serving static files
+app.use(express.static("public"));
+
+// Middleware for parsing JSON bodies
+app.use(express.json());
+
+// Middleware for debug logging
+app.use((request, response, next) => {
+  console.log(
+    `Request URL: ${request.url} @ ${new Date().toLocaleString("nl-BE")}`
+  );
+  next();
+});
+
+const storage = multer.diskStorage({
+  destination: (request, file, cb) => cb(null, "uploads/"),
+  filename: (request, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+});
+const upload = multer({ storage });
+
+// Your routes here ...
 app.get("/api/posts", (req, res) => {
   try {
     const posts = getAllPosts();
@@ -61,29 +97,6 @@ app.get("/post/:id", (req, res) => {
   }
 });
 
-app.use("/uploads", express.static("uploads"));
-
-// Middleware for serving static files
-app.use(express.static("public"));
-
-// Middleware for parsing JSON bodies
-app.use(express.json());
-
-// Middleware for debug logging
-app.use((request, response, next) => {
-  console.log(
-    `Request URL: ${request.url} @ ${new Date().toLocaleString("nl-BE")}`
-  );
-  next();
-});
-
-const storage = multer.diskStorage({
-  destination: (request, file, cb) => cb(null, "uploads/"),
-  filename: (request, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
-const upload = multer({ storage });
-
-// Your routes here ...
 app.get("/", (request, response) => {
   const posts = getAllPosts();
   response.render("index", { posts });
@@ -168,6 +181,67 @@ app.post("/api/fetchrecipe", async (req, res) => {
     return res.status(500).json({ error: "Fout bij ophalen recept ooooooooooo" });
   }
 });
+
+// --- REGISTER ---
+app.get("/register", (req, res) => {
+  res.render("register", { error: null });
+});
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) return res.render("register", { error: "Vul alle velden in" });
+
+  try {
+    const existingUser = getUserByUsername(username);
+    if (existingUser) return res.render("register", { error: "Username bestaat al" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    createUser(username, hashedPassword);
+    res.redirect("/login");
+  } catch (err) {
+    console.error(err);
+    res.render("register", { error: "Er ging iets mis" });
+  }
+});
+
+// --- LOGIN ---
+app.get("/login", (req, res) => {
+  res.render("login", { error: null });
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) return res.render("login", { error: "Vul alle velden in" });
+
+  try {
+    const user = getUserByUsername(username);
+    if (!user) return res.render("login", { error: "Onbekende username" });
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.render("login", { error: "Verkeerd wachtwoord" });
+
+    // Login success
+    req.session.user = { id: user.id, username: user.username };
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    res.render("login", { error: "Er ging iets mis" });
+  }
+});
+
+// --- LOGOUT ---
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/login");
+  });
+});
+
+// --- Middleware om routes te beschermen ---
+function isAuthenticated(req, res, next) {
+  if (req.session.user) return next();
+  res.redirect("/login");
+}
+
 // Middleware for unknown routes
 // Must be last in pipeline
 app.use((request, response, next) => {
@@ -182,7 +256,7 @@ app.use((error, request, response, next) => {
 
 // App starts here
 InitializePostsDatabase();
-
+InitializeUsersDatabase();
 
 
 app.listen(port, () => {

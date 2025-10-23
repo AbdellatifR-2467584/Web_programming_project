@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <% if (error) { %>
+        <p style="color:red">
+            <%= error %>
+        </p>
+        <% } %>
+            <form method="POST" action="/login">
+                <input type="text" name="username" placeholder="Username" required />
+                <input type="password" name="password" placeholder="Wachtwoord" required />
+                <button type="submit">Login</button>
+            </form>
+            <a href="/register">Registreren</a>
+</body>
+
+</html>
