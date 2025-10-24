@@ -6,12 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const ingredients = JSON.parse(ingredientenDiv.dataset.ingredients);
 
     ingredients.forEach((ingredient, i) => {
-        if (i != "") {
-            const li = document.createElement('li');
-            li.innerHTML = `<input type="checkbox" id="ingredient-${i}"> <label for="ingredient-${i}">${ingredient}</label>`;
-            ingredientList.appendChild(li);
-        }
-
+        const li = document.createElement('li');
+        li.innerHTML = `<input type="checkbox" id="ingredient-${i}"> <label for="ingredient-${i}">${ingredient}</label>`;
+        ingredientList.appendChild(li);
     });
 
     const volgendeBtn = document.createElement('button');
