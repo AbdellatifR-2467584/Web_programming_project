@@ -144,16 +144,20 @@ app.post("/api/fetchrecipe", async (req, res) => {
                     {
                       "title": "string",
                       "ingredients": ["array van strings"],
-                      "steps": ["array van strings"]
+                      "steps": ["array van strings"],
+                      "image_url": "https://example.com/spaghetti.jpg",
+                      "post_url": "https://example.com/spaghetti.jpg"
                     }
                     Als een veld ontbreekt, vul het aan met een lege string of lege array.
-                    Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen.`
+                    Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen. Als je geen afbleeding kan vinden vul dan een afbeelding die overeenkomt met het recept. Voeg ook url van het recept toe die zal ik meesturen naast de HTML`
         },
         {
           role: "user",
-          content: `Haal uit de volgende HTML de titel, ingrediënten en stappen van het recept. Geef JSON terug:
+          content: `Haal uit de volgende HTML de titel, ingrediënten, stappen, url en url van de foto van het recept. Geef JSON terug:
           HTML:
-          ${html}`
+          ${html}
+          URL:
+          ${url}`
         },
       ],
       response_format: { type: "json_object" }
@@ -256,7 +260,7 @@ app.use((error, request, response, next) => {
 
 // App starts here
 InitializePostsDatabase();
-InitializeUsersDatabase();
+//InitializeUsersDatabase();
 
 
 app.listen(port, () => {
