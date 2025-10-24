@@ -18,9 +18,14 @@
                 <%- include('partials/searchbar') %>
                     <div class="page">
                         <div class="post">
-                            <h2 id="postTitel">
-                                <%= post.title %>
-                            </h2>
+                            <div class="post-header">
+                                <h2 id="postTitel">
+                                    <%= post.title %>
+                                </h2>
+                                <a href="/post/<%= post.id %>/volgmee" class="follow-along-icon" title="Volg Mee">
+                                    <i class="bi bi-play-circle-fill"></i>
+                                </a>
+                            </div>
                             <div class="container">
                                 <div class="picture">
                                     <img src="<%= post.image_path %>" alt="Recipe">

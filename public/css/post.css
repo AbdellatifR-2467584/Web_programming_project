@@ -37,6 +37,28 @@ body {
 
 }
 
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+}
+
+
+/* Volg mee icoon */
+.follow-along-icon {
+    color: #ff6b6b;
+    font-size: 2rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+}
+
+.follow-along-icon:hover {
+    color: #ff4757;
+    transform: scale(1.1);
+}
+
 #postTitel {
     grid-area: header;
     text-align: left;

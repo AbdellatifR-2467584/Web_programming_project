@@ -97,6 +97,18 @@ app.get("/post/:id", (req, res) => {
   }
 });
 
+app.get('/post/:id/volgmee', async (req, res) => {
+  try {
+    const post = getPostInfoByID(req.params.id);
+    if (!post) return res.status(404).send("Post not found");
+    res.render('followAlong', { post });
+  } catch (err) {
+    console.error("Error fetching post: ", err)
+    res.status(500).send("Failed to load post");
+  }
+});
+
+
 app.get("/", (request, response) => {
   const posts = getAllPosts();
   response.render("index", { posts });
