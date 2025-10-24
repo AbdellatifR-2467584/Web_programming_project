@@ -52,7 +52,13 @@
                             </div>
                             <div class="form-instructies">
                                 <label for="steps">Instructies:</label>
-                                <textarea id="steps" name="steps" required></textarea>
+                                <div id="stappen-lijst">
+                                    <div class="stappen-row">
+                                        <input type="text" id="steps" name="steps[]" required
+                                            placeholder="Type hier je eerste stap">
+                                        <button type="button" id="add2">+</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-recept-url">
                                 <label for="post_url">Recipe link:</label>

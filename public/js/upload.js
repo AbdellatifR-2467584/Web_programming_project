@@ -77,7 +77,7 @@ document.getElementById('fetch-btn').addEventListener('click', async () => {
     document.querySelector('.form-recept-url').classList.add('visible');
     if (recept.image_url) {
       setImageFromUrl(recept.image_url);
-  }
+    }
 
   } catch (error) {
     alert('Fout bij ophalen recept: ' + error.message);
@@ -85,75 +85,116 @@ document.getElementById('fetch-btn').addEventListener('click', async () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const AddButton = document.getElementById("add");
-  const ingredientinput = document.getElementById("ingredients")
+
+  // ===== Ingrediënten =====
   const ingredientenLijst = document.getElementById("ingredienten-lijst");
-  if (!ingredientenLijst) return;
-  function AddButtonfunc() {
-    const newRow = document.createElement('div');
-    newRow.classList.add('ingredienten-row');
-    newRow.innerHTML = `
-      <input type="text" name="ingredients[]" placeholder="Ingrediënt" required>
-      <button type="button" class="remove">-</button>
-    `;
-    ingredientenLijst.appendChild(newRow);
-    ingredientenLijst.lastElementChild.children[0].value = ingredientenLijst.children[0].children[0].value;
-    ingredientenLijst.children[0].children[0].value = "";
+  if (ingredientenLijst) {
+    function addIngredient() {
+      const eersteInput = ingredientenLijst.querySelector('input[name="ingredients[]"]');
+      if (!eersteInput.value.trim()) return; // geen lege input toevoegen
 
-  }
-  AddButton.addEventListener('click', () => {
-    AddButtonfunc();
-  });
+      const newRow = document.createElement('div');
+      newRow.classList.add('ingredienten-row');
+      newRow.innerHTML = `
+        <input type="text" name="ingredients[]" placeholder="Ingrediënt" value="${eersteInput.value}" required>
+        <button type="button" class="remove">-</button>
+      `;
+      ingredientenLijst.appendChild(newRow);
+      eersteInput.value = ""; // leegmaken zodat je kan blijven typen
+      eersteInput.focus();
+    }
 
-  ingredientinput.addEventListener("keypress", function (event) {
-    if (event.key === "Enter") {
-      if (ingredientinput != "") {
-        event.preventDefault();
-        AddButtonfunc();
+    // Event delegation voor + en -
+    ingredientenLijst.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove')) {
+        e.target.parentElement.remove();
+      } else if (e.target.classList.contains('add')) {
+        addIngredient();
       }
+    });
 
-    }
-  });
+    // Enter op de eerste input
+    const eersteIngredientInput = ingredientenLijst.querySelector('input[name="ingredients[]"]');
+    eersteIngredientInput.addEventListener('keypress', (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addIngredient();
+      }
+    });
+  }
 
-  ingredientenLijst.addEventListener('click', (e) => {
-    if (e.target.classList.contains('remove')) {
-      e.target.parentElement.remove();
+  // ===== Stappen =====
+  const stappenlijst = document.getElementById("stappen-lijst");
+  if (stappenlijst) {
+
+    function addStep() {
+      const nieuweRow = document.createElement('div');
+      nieuweRow.classList.add('stappen-row');
+      nieuweRow.innerHTML = `
+        <input type="text" name="steps[]" required placeholder="Type hier je stap">
+        <button type="button" class="remove">-</button>
+      `;
+      stappenlijst.appendChild(nieuweRow);
+
+      const nieuweInput = nieuweRow.querySelector('input');
+      nieuweInput.focus(); // focus op laatste
+      addEnterListener(nieuweInput);
     }
-  });
+
+    function addEnterListener(input) {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === "Enter" && input.value.trim() !== "") {
+          e.preventDefault();
+          addStep();
+        }
+      });
+    }
+
+    const eersteStepInput = stappenlijst.querySelector('input[name="steps[]"]');
+    if (eersteStepInput) addEnterListener(eersteStepInput);
+
+    stappenlijst.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove')) {
+        e.target.parentElement.remove();
+      } else if (e.target.classList.contains('add')) {
+        addStep();
+      }
+    });
+  }
+
 });
-
 async function setImageFromUrl(imageUrl) {
-    if (!imageUrl) return;
+  if (!imageUrl) return;
 
-    try {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
 
-        // Maak een virtuele File
-        const file = new File([blob], 'recipe.jpg', { type: blob.type });
+    // Maak een virtuele File
+    const file = new File([blob], 'recipe.jpg', { type: blob.type });
 
-        // Simuleer een echte file upload
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        const input = document.getElementById('image');
-        input.files = dataTransfer.files;
+    // Simuleer een echte file upload
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    const input = document.getElementById('image');
+    input.files = dataTransfer.files;
 
-        // Toon preview
-        const previewImg = document.getElementById('preview-img');
-        const previewContainer = document.getElementById('image-preview');
-        previewImg.src = URL.createObjectURL(blob);
-        previewContainer.style.display = 'block';
+    // Toon preview
+    const previewImg = document.getElementById('preview-img');
+    const previewContainer = document.getElementById('image-preview');
+    previewImg.src = URL.createObjectURL(blob);
+    previewContainer.style.display = 'block';
 
-        // Update status label
-        document.getElementById('file-status').textContent = file.name;
+    // Update status label
+    document.getElementById('file-status').textContent = file.name;
 
-        // 🔒 Disable upload knop zodat gebruiker geen andere foto kan kiezen
-        input.disabled = true;
-        const label = document.querySelector('.custom-file-button');
-        label.style.display = 'none';
-    } catch (error) {
-        console.error('Kon afbeelding niet laden:', error);
-        document.getElementById('file-status').textContent = 'Afbeelding kon niet geladen worden';
-    }
+    // 🔒 Disable upload knop zodat gebruiker geen andere foto kan kiezen
+    input.disabled = true;
+    const label = document.querySelector('.custom-file-button');
+    label.style.display = 'none';
+  } catch (error) {
+    console.error('Kon afbeelding niet laden:', error);
+    document.getElementById('file-status').textContent = 'Afbeelding kon niet geladen worden';
+  }
 }
 

@@ -115,13 +115,26 @@ app.get("/uploadlink", (request, response) => {
 });
 
 app.post("/upload", upload.single("image"), (request, response) => {
-  const { title, ingredients, steps } = request.body;
-  if (!ingredients) {
-    ingredients = ["De gebruiker heeft geen ingediënten toegevoegd"];
-  }
-  const imagePath = "\\" + request.file.path;
+  console.log("Session user:", request.session.user);
 
-  createPost({ imagePath, title, ingredients, steps });
+  const userId = request.session.user?.id;
+  if (!userId) {
+    console.log("Niet ingelogd, redirecting naar /login");
+    return response.redirect("/login");
+  }
+
+
+  const user = getUserById(userId);
+  if (!user) {
+    console.log("User bestaat niet in users.db");
+    return request.status(400).send("Ongeldige gebruiker");
+  }
+
+
+  const { title, ingredients, steps } = request.body;
+  const image_path = "\\" + request.file.path;
+
+  createPost({ userId, image_path, title, ingredients, steps });
   response.redirect("/");
 });
 
@@ -259,8 +272,9 @@ app.use((error, request, response, next) => {
 });
 
 // App starts here
+InitializeUsersDatabase();
 InitializePostsDatabase();
-//InitializeUsersDatabase();
+
 
 
 app.listen(port, () => {

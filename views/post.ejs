@@ -24,18 +24,21 @@
                             <div class="container">
                                 <div class="picture">
                                     <img src="<%= post.image_path %>" alt="Recipe">
+                                    <div id="poster">
+                                        <p> Gepost door: <%= post.username %>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="ingredienten" data-ingredients='<%- post.ingredients %>'>
+
+                                <div class="ingredienten" data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
                                     <h2>Ingrediënten:</h2>
                                     <ul class="list-ingredienten">
                                     </ul>
                                 </div>
-                                <div class="instructies">
+                                <div class="instructies" data-ingredients='<%- JSON.stringify(post.steps)  %>'>
                                     <h2>Stappen:</h2>
-                                    <p>
-                                        <%- post.steps.replace(/\n/g, '<br>' ) %>
-                                    </p>
-
+                                    <ol class="list-stappen">
+                                    </ol>
                                 </div>
                             </div>
                         </div>

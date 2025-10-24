@@ -1,34 +1,29 @@
 import Database from "better-sqlite3";
+import { getUserById } from "./users.js";
 
 const db = new Database("posts.db", { verbose: console.log });
 
 export function InitializePostsDatabase() {
-  db.pragma("journal_mode = WAL;");
-  db.pragma("busy_timeout = 5000;");
-  db.pragma("synchronous = NORMAL;");
-  db.pragma("cache_size = 1000000000;");
-  db.pragma("foreign_keys = true;");
-  db.pragma("temp_store = memory;");
-
   db.prepare(`
     CREATE TABLE IF NOT EXISTS posts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      image_path TEXT NOT NULL,
-      title TEXT NOT NULL,
-      ingredients TEXT NOT NULL,
-      steps TEXT NOT NULL
-    ) STRICT
+      userId INTEGER NOT NULL,
+      title TEXT,
+      image_path TEXT,
+      ingredients TEXT,
+      steps TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
   `).run();
 }
 
-export function createPost({ imagePath, title, ingredients, steps }) {
+export function createPost({ userId, title, image_path, ingredients, steps }) {
   const stmt = db.prepare(`
-    INSERT INTO posts (image_path, title, ingredients, steps)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO posts (userId, title, image_path, ingredients, steps)
+    VALUES (?, ?, ?, ?, ?)
   `);
-  return stmt.run(imagePath, title, JSON.stringify(ingredients), steps);
+  return stmt.run(userId, title, image_path, JSON.stringify(ingredients), JSON.stringify(steps));
 }
-
 export function getAllPosts() {
   return db.prepare(`
     SELECT id, image_path
@@ -53,11 +48,18 @@ export function getAllPostsLike(like) {
 
 
 export function getPostInfoByID(id) {
-  return db.prepare(`
-    SELECT *
-    FROM posts
-    WHERE id = ?
-  `).get(id);
+
+  const post = db.prepare(`SELECT * FROM posts WHERE id = ?`).get(id);
+  if (!post) return null;
+
+  const user = getUserById(post.userId);
+
+  return {
+    ...post,
+    ingredients: JSON.parse(post.ingredients),
+    steps: JSON.parse(post.steps),
+    username: user?.username || "Onbekend"
+  };
 }
 
 export function getPostBySearch(searchTerm) {
