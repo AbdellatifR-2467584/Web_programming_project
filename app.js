@@ -46,7 +46,7 @@ app.use(express.static("public"));
 
 // Middleware for parsing JSON bodies
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Middleware for debug logging
 app.use((request, response, next) => {
   console.log(

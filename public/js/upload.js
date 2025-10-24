@@ -81,10 +81,10 @@ document.getElementById('fetch-btn').addEventListener('click', async () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   const AddButton = document.getElementById("add");
+  const ingredientinput = document.getElementById("ingredients")
   const ingredientenLijst = document.getElementById("ingredienten-lijst");
   if (!ingredientenLijst) return;
-
-  AddButton.addEventListener('click', () => {
+  function AddButtonfunc() {
     const newRow = document.createElement('div');
     newRow.classList.add('ingredienten-row');
     newRow.innerHTML = `
@@ -94,6 +94,20 @@ document.addEventListener("DOMContentLoaded", () => {
     ingredientenLijst.appendChild(newRow);
     ingredientenLijst.lastElementChild.children[0].value = ingredientenLijst.children[0].children[0].value;
     ingredientenLijst.children[0].children[0].value = "";
+
+  }
+  AddButton.addEventListener('click', () => {
+    AddButtonfunc();
+  });
+
+  ingredientinput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      if (ingredientinput != "") {
+        event.preventDefault();
+        AddButtonfunc();
+      }
+
+    }
   });
 
   ingredientenLijst.addEventListener('click', (e) => {
