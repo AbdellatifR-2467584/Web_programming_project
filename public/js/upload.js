@@ -73,6 +73,11 @@ document.getElementById('fetch-btn').addEventListener('click', async () => {
     document.getElementById('title').value = recept.title || '';
     document.getElementById('ingredients').value = recept.ingredients || '';
     document.getElementById('steps').value = recept.steps || '';
+    document.getElementById('post_url').value = recept.post_url || '';
+    document.querySelector('.form-recept-url').classList.add('visible');
+    if (recept.image_url) {
+      setImageFromUrl(recept.image_url);
+  }
 
   } catch (error) {
     alert('Fout bij ophalen recept: ' + error.message);
@@ -102,3 +107,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+async function setImageFromUrl(imageUrl) {
+    if (!imageUrl) return;
+
+    try {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+
+        // Maak een virtuele File
+        const file = new File([blob], 'recipe.jpg', { type: blob.type });
+
+        // Simuleer een echte file upload
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        const input = document.getElementById('image');
+        input.files = dataTransfer.files;
+
+        // Toon preview
+        const previewImg = document.getElementById('preview-img');
+        const previewContainer = document.getElementById('image-preview');
+        previewImg.src = URL.createObjectURL(blob);
+        previewContainer.style.display = 'block';
+
+        // Update status label
+        document.getElementById('file-status').textContent = file.name;
+
+        // 🔒 Disable upload knop zodat gebruiker geen andere foto kan kiezen
+        input.disabled = true;
+        const label = document.querySelector('.custom-file-button');
+        label.style.display = 'none';
+    } catch (error) {
+        console.error('Kon afbeelding niet laden:', error);
+        document.getElementById('file-status').textContent = 'Afbeelding kon niet geladen worden';
+    }
+}
+
