@@ -5,6 +5,14 @@ body {
     overflow-x: hidden;
 }
 
+button {
+    color: #ff6b6b;
+    border: none;
+    background: none;
+    font-size: 2rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+}
 
 .page {
     display: grid;

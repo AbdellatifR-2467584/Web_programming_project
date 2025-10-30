@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ingredientenLijst.addEventListener('click', (e) => {
       if (e.target.classList.contains('remove')) {
         e.target.parentElement.remove();
-      } else if (e.target.classList.contains('add')) {
+      } else if (e.target.closest('add')) {
         addIngredient();
       }
     });

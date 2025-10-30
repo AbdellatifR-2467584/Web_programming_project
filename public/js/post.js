@@ -25,3 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+function download_pdf() {
+    const pdf = document.getElementById("post")
+    const title = pdf.dataset.title;
+    console.log(title)
+    html2pdf().from(pdf).save(title);
+}
