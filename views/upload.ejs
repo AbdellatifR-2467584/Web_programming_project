@@ -44,14 +44,30 @@
                                 <label for="ingredients">Ingrediënten lijst:</label>
                                 <div id="ingredienten-lijst">
                                     <div class="standaard-row">
-                                        <input type="text" id="ingredients" placeholder="Ingrediënt">
-                                        <button type="button" id="add">+</button>
+                                        <input type="text" id="ingredients" name="ingredients[]"
+                                            placeholder="Ingrediënt">
+                                        <button type="button" class="add" id="add">+</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-instructies">
                                 <label for="steps">Instructies:</label>
-                                <textarea id="steps" name="steps" required></textarea>
+                                <div id="stappen-lijst">
+                                    <div class="stappen-row">
+                                        <input type="text" id="steps" name="steps[]" required
+                                            placeholder="Type hier je eerste stap">
+                                        <button type="button" class="add" id="add2">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-recept-url">
+                                <label for="post_url">Recipe link:</label>
+                                <input type="text" id="post_url" name="post_url">
+                            </div>
+                            <div class="form-youtube-url">
+                                <label for="youtube_url">Youtube link:</label>
+                                <input type="text" id="youtube_url" name="youtube_url"
+                                    placeholder="https://youtube.com/...">
                             </div>
                             <div class="form-post-knop">
                                 <label>Post</label>

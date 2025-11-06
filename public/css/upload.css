@@ -231,19 +231,26 @@ body {
     justify-content: center;
 }
 
-.standaard-row {
+.standaard-row,
+.ingredienten-row,
+.stappen-row {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
     gap: 6px;
 }
 
-.standaard-row input {
+.standaard-row input,
+.ingredienten-row input,
+.stappen-row input {
     flex: 1;
     padding: 6px;
 }
 
-.standaard-row button {
+
+.standaard-row button,
+.ingredienten-row button,
+.stappen-row button {
     background-color: rgb(230, 0, 35);
     color: white;
     border: none;
@@ -251,30 +258,15 @@ body {
     border-radius: 4px;
     cursor: pointer;
 }
-
-.ingredienten-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    gap: 6px;
-}
-
-.ingredienten-row input {
-    flex: 1;
-    padding: 6px;
-}
-
-.ingredienten-row button {
-    background-color: rgb(230, 0, 35);
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-
 
 #ingredienten-lijst {
     margin-bottom: 12px;
+}
+
+.form-recept-url {
+    display: none;
+}
+
+.form-recept-url.visible {
+    display: block;
 }

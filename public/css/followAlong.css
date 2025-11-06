@@ -1,0 +1,154 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Titel */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Ingrediëntenlijst */
+.ingredienten {
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.ingredienten h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    color: #ff6b6b;
+}
+
+.list-ingredienten {
+    list-style: none;
+    padding: 0;
+}
+
+.list-ingredienten li {
+    font-size: 1.1rem;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.list-ingredienten input[type="checkbox"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: #ff6b6b;
+}
+
+/* Volgende knop voor ingrediënten */
+.ingredienten button {
+    display: block;
+    margin: 20px auto 0 auto;
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.ingredienten button:hover {
+    background-color: #ff4757;
+}
+
+/* Stappen container */
+.instructies {
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.instructies h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #1e90ff;
+    text-align: center;
+}
+
+/* Stap tekst */
+#currentStep {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    text-align: center;
+    line-height: 1.6;
+    min-height: 60px;
+}
+
+/* Volgende stap knop */
+.instructies button {
+    background-color: #1e90ff;
+    color: #fff;
+    border: none;
+    padding: 14px 35px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.instructies button:hover {
+    background-color: #1c86ee;
+}
+
+/* Progress bar container */
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    height: 12px;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    height: 12px;
+    width: 0%;
+    background-color: #1e90ff;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .ingredienten,
+    .instructies {
+        width: 90%;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .ingredienten h2,
+    .instructies h2 {
+        font-size: 1.5rem;
+    }
+
+    #currentStep {
+        font-size: 1.1rem;
+    }
+}

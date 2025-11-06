@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import 'dotenv/config';
 import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike } from "./db/posts.js";
 import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
+import { extractYouTubeId } from './utils/youtube.js';
 
 
 const app = express();
@@ -46,7 +47,7 @@ app.use(express.static("public"));
 
 // Middleware for parsing JSON bodies
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Middleware for debug logging
 app.use((request, response, next) => {
   console.log(
@@ -97,6 +98,18 @@ app.get("/post/:id", (req, res) => {
   }
 });
 
+app.get('/post/:id/volgmee', async (req, res) => {
+  try {
+    const post = getPostInfoByID(req.params.id);
+    if (!post) return res.status(404).send("Post not found");
+    res.render('followAlong', { post });
+  } catch (err) {
+    console.error("Error fetching post: ", err)
+    res.status(500).send("Failed to load post");
+  }
+});
+
+
 app.get("/", (request, response) => {
   const posts = getAllPosts();
   response.render("index", { posts });
@@ -114,16 +127,32 @@ app.get("/uploadlink", (request, response) => {
   response.render("uploadlink");
 });
 
-app.post("/upload", upload.single("image"), (request, response) => {
-  const { title, ingredients, steps } = request.body;
-  if (!ingredients) {
-    ingredients = ["De gebruiker heeft geen ingediënten toegevoegd"];
-  }
-  const imagePath = "\\" + request.file.path;
 
-  createPost({ imagePath, title, ingredients, steps });
+
+app.post("/upload", upload.single("image"), (request, response) => {
+  console.log("Session user:", request.session.user);
+
+  const userId = request.session.user?.id;
+  if (!userId) {
+    console.log("Niet ingelogd, redirecting naar /login");
+    return response.redirect("/login");
+  }
+
+
+  const user = getUserById(userId);
+  if (!user) {
+    console.log("User bestaat niet in users.db");
+    return request.status(400).send("Ongeldige gebruiker");
+  }
+
+
+  const { title, ingredients, steps, youtube_url, site_url } = request.body;
+  const image_path = "\\" + request.file.path;
+  const videoId = extractYouTubeId(youtube_url);
+  createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, site_url });
   response.redirect("/");
 });
+
 
 app.post("/api/fetchrecipe", async (req, res) => {
   const { url } = req.body;
@@ -144,16 +173,20 @@ app.post("/api/fetchrecipe", async (req, res) => {
                     {
                       "title": "string",
                       "ingredients": ["array van strings"],
-                      "steps": ["array van strings"]
+                      "steps": ["array van strings"],
+                      "image_url": "https://example.com/spaghetti.jpg",
+                      "post_url": "https://example.com/spaghetti.jpg"
                     }
                     Als een veld ontbreekt, vul het aan met een lege string of lege array.
-                    Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen.`
+                    Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen. Als je geen afbleeding kan vinden vul dan een afbeelding die overeenkomt met het recept. Voeg ook url van het recept toe die zal ik meesturen naast de HTML`
         },
         {
           role: "user",
-          content: `Haal uit de volgende HTML de titel, ingrediënten en stappen van het recept. Geef JSON terug:
+          content: `Haal uit de volgende HTML de titel, ingrediënten, stappen, url en url van de foto van het recept. Geef JSON terug:
           HTML:
-          ${html}`
+          ${html}
+          URL:
+          ${url}`
         },
       ],
       response_format: { type: "json_object" }
@@ -255,8 +288,9 @@ app.use((error, request, response, next) => {
 });
 
 // App starts here
-InitializePostsDatabase();
 InitializeUsersDatabase();
+InitializePostsDatabase();
+
 
 
 app.listen(port, () => {

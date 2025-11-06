@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volg mee: <%= post.title %>
+    </title>
+    <link rel="stylesheet" href="/css/followAlong.css">
+    <script src="/js/followAlong.js" defer></script>
+</head>
+
+<body>
+    <h1 id="postTitel" data-id="<%= post.id %>">
+        <%= post.title %>
+    </h1>
+
+    <!-- Ingrediëntenlijst -->
+    <div class="ingredienten" data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
+        <h2>Ingrediënten</h2>
+        <ul class="list-ingredienten"></ul>
+    </div>
+
+    <!-- Stappen (verborgen totdat de gebruiker de ingrediënten heeft aangevinkt) -->
+    <div class="instructies" data-steps='<%- JSON.stringify(post.steps) %>' style="display:none">
+        <h2>Stappen</h2>
+        <p id="currentStep"></p>
+        <button id="nextStep">Volgende stap</button>
+    </div>
+</body>
+
+</html>
