@@ -164,3 +164,47 @@ body {
 .list-stappen li {
     margin-bottom: 15px;
 }
+
+/* Stijl de Klembord en PDF knoppen consistent met de 'Volg Mee' stijl */
+#clipboard,
+#pdf {
+    /* Uiterlijk en Kleur */
+    color: #ff6b6b;
+    /* Basis kleur van het icoon */
+    font-size: 2rem;
+    /* Grootte van het icoon (i-tag erft dit) */
+
+    /* Zorg dat de knop zelf transparant en randloos is */
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 10px;
+    /* Houdt afstand tussen de knoppen */
+
+    /* Interactie */
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+#clipboard:hover,
+#pdf:hover {
+    color: #ff4757;
+    /* Kleurverandering bij hover */
+    transform: scale(1.1);
+    /* Vergroot het icoon bij hover */
+}
+
+/* Zorg ervoor dat het icoon (de i-tag) de kleur erft */
+#clipboard i,
+#pdf i {
+    font-size: 2rem;
+    /* Zorg dat het icoon zelf de grootte krijgt, mocht het niet geërfd worden */
+}
+
+/* Optioneel: Stijl voor wanneer een knop actief (ingedrukt) is */
+#clipboard:active,
+#pdf:active {
+    transform: scale(0.95);
+    transition-duration: 0.1s;
+}
