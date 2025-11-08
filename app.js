@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 import 'dotenv/config';
 import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike } from "./db/posts.js";
 import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
+import { extractYouTubeId } from './utils/youtube.js';
 
 
 const app = express();
@@ -126,6 +127,8 @@ app.get("/uploadlink", (request, response) => {
   response.render("uploadlink");
 });
 
+
+
 app.post("/upload", upload.single("image"), (request, response) => {
   console.log("Session user:", request.session.user);
 
@@ -143,12 +146,13 @@ app.post("/upload", upload.single("image"), (request, response) => {
   }
 
 
-  const { title, ingredients, steps } = request.body;
+  const { title, ingredients, steps, youtube_url, site_url } = request.body;
   const image_path = "\\" + request.file.path;
-
-  createPost({ userId, image_path, title, ingredients, steps });
+  const videoId = extractYouTubeId(youtube_url);
+  createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, site_url });
   response.redirect("/");
 });
+
 
 app.post("/api/fetchrecipe", async (req, res) => {
   const { url } = req.body;

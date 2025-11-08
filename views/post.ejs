@@ -54,6 +54,14 @@
                                     <ol class="list-stappen">
                                     </ol>
                                 </div>
+                                <div class="youtube" data-url='post.youtube_url'>
+                                    <% if (post.youtube_url) { %>
+                                        <iframe width="560" height="315" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen src="<%= post.youtube_url %>">
+                                        </iframe>
+                                        <% } %>
+                                </div>
                             </div>
                         </div>
                         <%- include('partials/gridSearch') %>
