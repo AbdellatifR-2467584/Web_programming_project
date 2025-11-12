@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <input type="hidden" id="post-data" value='<%= post ? JSON.stringify(post) : "" %>'>
     <div class="layout">
         <%- include('partials/sidebar') %>
             <div class="mainarea">

@@ -85,5 +85,36 @@ export function getAllPostsFromUser(id) {
     WHERE userId = ?
     ORDER BY id DESC
   `);
-  return stmt.all(id); // pass the ID directly, no %
+  return stmt.all(id);
+}
+
+export function deletePostById(id) {
+  const stmt = db.prepare(`DELETE FROM posts WHERE id = ?`);
+  stmt.run(id);
+}
+
+export function updatePostById(id, { title, ingredients, steps, youtube_url, site_url, image_path }) {
+  const cleanIngredients = (ingredients || []).filter(item => item && item.trim() !== "");
+  const cleanSteps = (steps || []).filter(item => item && item.trim() !== "");
+
+  const stmt = db.prepare(`
+    UPDATE posts SET
+      title = ?,
+      ingredients = ?,
+      steps = ?,
+      youtube_url = ?,
+      site_url = ?,
+      image_path = ?
+    WHERE id = ?
+  `);
+
+  return stmt.run(
+    title,
+    JSON.stringify(cleanIngredients),
+    JSON.stringify(cleanSteps),
+    youtube_url || null,
+    site_url || null,
+    image_path || null,
+    id
+  );
 }

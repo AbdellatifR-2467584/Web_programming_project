@@ -25,7 +25,7 @@
                                 <h2 id="postTitel">
                                     <%= post.title %>
                                 </h2>
-                                <div>
+                                <div class="post-header-buttons">
                                     <button id="clipboard" onclick="clipboard_copy()">
                                         <i class="bi bi-clipboard"></i>
                                     </button>
@@ -36,8 +36,8 @@
                                         <i class="bi bi-play-circle-fill"></i>
                                     </a>
                                 </div>
-
                             </div>
+
                             <div class="container">
                                 <div class="picture">
                                     <img src="<%= post.image_path %>" alt="Recipe">

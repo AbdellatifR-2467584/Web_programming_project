@@ -66,11 +66,54 @@ h2 {
 }
 
 .postItem {
+    position: relative;
     flex: 0 0 auto;
     width: 150px;
     height: 150px;
     border-radius: 12px;
     overflow: hidden;
+}
+
+.postItem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.postButtons {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    /* space between edit and delete buttons */
+}
+
+.editForm button,
+.deleteForm button {
+    background: rgba(0, 0, 0, 0.7);
+    /* edit button default color */
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.editForm button:hover {
+    background: rgba(0, 0, 0, 1);
+}
+
+.deleteForm button {
+    background: rgba(255, 0, 0, 0.8);
+}
+
+.deleteForm button:hover {
+    background: rgba(255, 0, 0, 1);
 }
 
 .postItem a {

@@ -1,12 +1,13 @@
 import express from "express";
 import fetch from "node-fetch";
 import OpenAI from "openai";
+import fs from "fs";
 import path from "path";
 import multer from "multer";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import 'dotenv/config';
-import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser } from "./db/posts.js";
+import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser, deletePostById, updatePostById } from "./db/posts.js";
 import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
 import { extractYouTubeId } from './utils/youtube.js';
 
@@ -90,8 +91,8 @@ app.get("/post/:id", (req, res) => {
   try {
     const post = getPostInfoByID(req.params.id);
     if (!post) return res.status(404).send("Post not found");
-
-    res.render("post", { post }); // Render post.ejs with the post data
+    const currentUser = req.session.user || null;
+    res.render("post", { post, currentUser });
   } catch (err) {
     console.error("Error fetching post: ", err)
     res.status(500).send("Failed to load post");
@@ -110,18 +111,51 @@ app.get('/post/:id/volgmee', async (req, res) => {
   }
 });
 
+app.get('/post/:id/edit', isAuthenticated, (req, res) => {
+  const post = getPostInfoByID(req.params.id);
+  if (!post) return res.status(404).send("Post not found");
+  if (req.session.user.id !== post.userId) {
+    return res.status(403).send("Je hebt geen toegang tot deze post");
+  }
+
+  res.render('upload', { post });
+});
+
+app.post('/post/:id/edit', isAuthenticated, upload.single('image'), (req, res) => {
+  const post = getPostInfoByID(req.params.id);
+  if (!post) return res.status(404).send("Post not found");
+
+  if (req.session.user.id !== post.userId) {
+    return res.status(403).send("Je hebt geen toegang tot deze post");
+  }
+
+  const { title, ingredients, steps, youtube_url, site_url } = req.body;
+  const image_path = req.file ? "\\" + req.file.path : post.image_path; // keep old image if none uploaded
+
+  // Update post in DB
+  // You’ll need to create a helper function for updating posts
+  updatePostById(post.id, {
+    title,
+    ingredients,
+    steps,
+    youtube_url,
+    site_url,
+    image_path
+  });
+
+  res.redirect(`/post/${post.id}`);
+});
+
 
 app.get("/user/:username", isAuthenticated, (req, res) => {
   try {
     const user = getUserByUsername(req.params.username);
     if (!user) return res.status(404).send("User not found");
 
-    // Prevent users from accessing other users' pages
     if (req.session.user.username !== user.username) {
       return res.status(403).send("Je hebt geen toegang tot deze pagina");
     }
 
-    // Load user's posts
     const posts = getAllPostsFromUser(user.id);
 
     res.render("user", { user, posts });
@@ -130,6 +164,35 @@ app.get("/user/:username", isAuthenticated, (req, res) => {
     res.status(500).send("Failed to load user");
   }
 });
+
+app.post("/post/:id/delete", isAuthenticated, (req, res) => {
+  try {
+    const post = getPostInfoByID(req.params.id);
+    if (!post) return res.status(404).send("Post not found");
+
+    if (req.session.user.id !== post.userId) {
+      return res.status(403).send("Je hebt geen toegang om dit te verwijderen");
+    }
+
+    // Delete from DB
+    deletePostById(post.id);
+
+    // Delete image file
+    if (post.image_path) {
+      const fsPath = post.image_path.startsWith("\\") ? post.image_path.slice(1) : post.image_path;
+      const filePath = path.resolve(fsPath);
+      fs.unlink(filePath, (err) => {
+        if (err) console.warn("Could not delete image file:", err);
+      });
+    }
+
+    res.redirect(`/user/${req.session.user.username}`);
+  } catch (err) {
+    console.error("Error deleting post:", err);
+    res.status(500).send("Fout bij verwijderen van post");
+  }
+});
+
 
 
 app.get("/", (request, response) => {
@@ -142,7 +205,7 @@ app.get("/v1", (request, response) => {
 });
 
 app.get("/upload", (request, response) => {
-  response.render("upload");
+  response.render("upload", { post: null });
 });
 
 app.get("/uploadlink", (request, response) => {
