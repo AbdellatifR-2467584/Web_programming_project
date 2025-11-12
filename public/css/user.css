@@ -2,7 +2,6 @@ body {
     margin: 0;
     font-family: 'Poppins', 'Segoe UI', sans-serif;
     background-color: #fafafa;
-    overflow-x: hidden;
 }
 
 .userInfo {
@@ -49,11 +48,14 @@ h2 {
 .postsContainer {
     position: relative;
     display: flex;
-    overflow-x: auto;
     gap: 10px;
     margin-left: 70px;
     padding: 10px 0;
     scroll-behavior: smooth;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: calc(100vw);
 }
 
 .postsContainer::-webkit-scrollbar {
