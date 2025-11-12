@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+    background-color: #fafafa;
+    overflow-x: hidden;
+}
+
+.userInfo {
+    display: grid;
+    grid-template-areas:
+        "picture username";
+    grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
+    align-items: start;
+
+    margin-top: 50px;
+    margin-left: 80px;
+}
+
+#profilepicture {
+    grid-area: picture;
+    max-width: 200px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+}
+
+#username {
+    margin-top: 30px;
+    grid-area: username;
+    font-weight: 600px;
+    font-size: 2.5rem;
+}
+
+h2 {
+    margin-left: 70px;
+    text-align: left center;
+    border-bottom: 1px solid #e0e0e0;
+    color: #000000;
+    font-size: 2rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+}
+
+.postsByUser {
+    margin-top: 20px;
+}
+
+.postsContainer {
+    position: relative;
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    margin-left: 70px;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+}
+
+.postsContainer::-webkit-scrollbar {
+    height: 8px;
+}
+
+.postsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.postItem {
+    flex: 0 0 auto;
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.postItem a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+
+.postItem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+.postItem img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}

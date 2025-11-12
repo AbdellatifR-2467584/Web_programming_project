@@ -14,8 +14,9 @@
             <input type="text" placeholder="Zoeken" class="searchinput" />
         </form>
         <% if (user) { %>
-            <p>Welkom, <%= user.username %>
-            </p>
+            <a href="/user/<%= user.username %>">Welkom, <%= user.username %>
+
+            </a>
             <a href="/logout">Uitloggen</a>
             <% } else { %>
                 <a href="/login">Login</a> | <a href="/register">Registreren</a>

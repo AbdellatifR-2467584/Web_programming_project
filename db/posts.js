@@ -77,3 +77,13 @@ export function getPostBySearch(searchTerm) {
   `);
   return stmt.all(`%${searchTerm}%`);
 }
+
+export function getAllPostsFromUser(id) {
+  const stmt = db.prepare(`
+    SELECT id, image_path
+    FROM posts
+    WHERE userId = ?
+    ORDER BY id DESC
+  `);
+  return stmt.all(id); // pass the ID directly, no %
+}

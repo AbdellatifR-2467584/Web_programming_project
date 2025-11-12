@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReciPin</title>
+    <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
+    <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="/js/user.js" defer></script>
+</head>
+
+<body>
+    <div class="layout">
+        <%- include('partials/sidebar') %>
+            <div class="mainarea">
+                <div class="userInfo">
+                    <img id="profilepicture" src="/resources/profilepictures/default.png" alt="profilepicture">
+                    <div id="username">
+                        <%= user.username %>
+                    </div>
+                </div>
+                <div class="postsByUser">
+                    <h2>Posts</h2>
+                    <div class="postsContainer">
+                        <% posts.forEach(post=> { %>
+                            <div class="postItem">
+                                <a href="/post/<%= post.id %>">
+                                    <img src="<%= post.image_path %>" alt="post <%= post.id %>">
+                                </a>
+                            </div>
+                            <% }) %>
+                    </div>
+                </div>
+                <div class="instellingen">
+                    <h2>Instellingen</h2>
+                </div>
+            </div>
+
+    </div>
+</body>
+
+</html>
