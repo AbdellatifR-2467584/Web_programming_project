@@ -7,7 +7,7 @@ import multer from "multer";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import 'dotenv/config';
-import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser, deletePostById, updatePostById } from "./db/posts.js";
+import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser, deletePostById, updatePostById, getAllUniqueIngredients, getPostsByIngredients } from "./db/posts.js";
 import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
 import { extractYouTubeId } from './utils/youtube.js';
 
@@ -193,6 +193,42 @@ app.post("/post/:id/delete", isAuthenticated, (req, res) => {
   }
 });
 
+app.get("/my-ingredients", isAuthenticated, (req, res) => {
+  try {
+    const allIngredients = getAllUniqueIngredients();
+    res.render("my-ingredients", { 
+      user: req.session.user, 
+      allIngredients: allIngredients 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Er ging iets mis bij het laden van de ingrediënten.");
+  }
+});
+
+app.get("/api/all-ingredients", isAuthenticated, (req, res) => {
+  try {
+    const ingredients = getAllUniqueIngredients();
+    res.json(ingredients);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kon ingrediënten niet ophalen." });
+  }
+});
+
+app.get("/api/recipes-by-ingredients", isAuthenticated, (req, res) => {
+  try {
+    const selectedIngredients = req.query.ingredients 
+      ? req.query.ingredients.split(',') 
+      : [];
+      
+    const posts = getPostsByIngredients(selectedIngredients);
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kon recepten niet filteren." });
+  }
+});
 
 
 app.get("/", (request, response) => {
