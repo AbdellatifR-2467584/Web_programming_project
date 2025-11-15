@@ -19,7 +19,7 @@
                     <div class="upload-recipe">
                         <h2>Upload je Recept</h2>
                         <div class="fetch-section">
-                            <input type="text" id="recipe-url" placeholder="Voer recept-URL in" />
+                            <input type="url" id="recipe-url" placeholder="Voer recept-URL in" />
                             <button id="fetch-btn" type="button">Haal recept op</button>
                         </div>
                         <form action="/upload" method="POST" class="recipe-form" enctype="multipart/form-data">
@@ -63,11 +63,11 @@
                             </div>
                             <div class="form-recept-url">
                                 <label for="post_url">Recipe link:</label>
-                                <input type="text" id="post_url" name="post_url">
+                                <input type="url" id="post_url" name="post_url">
                             </div>
                             <div class="form-youtube-url">
                                 <label for="youtube_url">Youtube link:</label>
-                                <input type="text" id="youtube_url" name="youtube_url"
+                                <input type="url" id="youtube_url" name="youtube_url"
                                     placeholder="https://youtube.com/...">
                             </div>
                             <div class="form-post-knop">

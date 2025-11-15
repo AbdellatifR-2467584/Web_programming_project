@@ -7,7 +7,7 @@ import multer from "multer";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import 'dotenv/config';
-import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser, deletePostById, updatePostById } from "./db/posts.js";
+import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser, deletePostById, updatePostById, getAllUniqueIngredients, getPostsByIngredients } from "./db/posts.js";
 import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
 import { extractYouTubeId } from './utils/youtube.js';
 
@@ -193,6 +193,42 @@ app.post("/post/:id/delete", isAuthenticated, (req, res) => {
   }
 });
 
+app.get("/my-ingredients", isAuthenticated, (req, res) => {
+  try {
+    const allIngredients = getAllUniqueIngredients();
+    res.render("my-ingredients", { 
+      user: req.session.user, 
+      allIngredients: allIngredients 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Er ging iets mis bij het laden van de ingrediënten.");
+  }
+});
+
+app.get("/api/all-ingredients", isAuthenticated, (req, res) => {
+  try {
+    const ingredients = getAllUniqueIngredients();
+    res.json(ingredients);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kon ingrediënten niet ophalen." });
+  }
+});
+
+app.get("/api/recipes-by-ingredients", isAuthenticated, (req, res) => {
+  try {
+    const selectedIngredients = req.query.ingredients 
+      ? req.query.ingredients.split(',') 
+      : [];
+      
+    const posts = getPostsByIngredients(selectedIngredients);
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kon recepten niet filteren." });
+  }
+});
 
 
 app.get("/", (request, response) => {
@@ -231,10 +267,10 @@ app.post("/upload", upload.single("image"), (request, response) => {
   }
 
 
-  const { title, ingredients, steps, youtube_url, site_url } = request.body;
+  const { title, ingredients, steps, youtube_url, post_url } = request.body;
   const image_path = "\\" + request.file.path;
   const videoId = extractYouTubeId(youtube_url);
-  createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, site_url });
+  createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, post_url });
   response.redirect("/");
 });
 
@@ -249,7 +285,7 @@ app.post("/api/fetchrecipe", async (req, res) => {
     console.log(html);
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4.1",
+      model: "gpt-4.1-mini",
       messages: [
         {
           role: "system",
@@ -260,8 +296,9 @@ app.post("/api/fetchrecipe", async (req, res) => {
                       "ingredients": ["array van strings"],
                       "steps": ["array van strings"],
                       "image_url": "https://example.com/spaghetti.jpg",
-                      "post_url": "https://example.com/spaghetti.jpg"
+                      "post_url": "https://example.com/recept"
                     }
+                    Het moet in het nederlands zijn.
                     Als een veld ontbreekt, vul het aan met een lege string of lege array.
                     Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen. Als je geen afbleeding kan vinden vul dan een afbeelding die overeenkomt met het recept. Voeg ook url van het recept toe die zal ik meesturen naast de HTML`
         },
