@@ -13,21 +13,21 @@ export function InitializePostsDatabase() {
       ingredients TEXT,
       steps TEXT,
       youtube_url TEXT,
-      site_url TEXT,
+      post_url TEXT,
       created_at TEXT DEFAULT (datetime('now'))
     );
   `).run();
 }
 
-export function createPost({ userId, title, image_path, ingredients, steps, youtube_url, site_url }) {
+export function createPost({ userId, title, image_path, ingredients, steps, youtube_url, post_url }) {
   // Filter lege inputs uit
   const cleanIngredients = (ingredients || []).filter(item => item && item.trim() !== "");
   const cleanSteps = (steps || []).filter(item => item && item.trim() !== "");
   const stmt = db.prepare(`
-    INSERT INTO posts (userId, title, image_path, ingredients, steps, youtube_url, site_url)
+    INSERT INTO posts (userId, title, image_path, ingredients, steps, youtube_url, post_url)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
-  return stmt.run(userId, title, image_path, JSON.stringify(cleanIngredients), JSON.stringify(cleanSteps), youtube_url || null, site_url || null);
+  return stmt.run(userId, title, image_path, JSON.stringify(cleanIngredients), JSON.stringify(cleanSteps), youtube_url || null, post_url || null);
 }
 export function getAllPosts() {
   return db.prepare(`
@@ -93,7 +93,7 @@ export function deletePostById(id) {
   stmt.run(id);
 }
 
-export function updatePostById(id, { title, ingredients, steps, youtube_url, site_url, image_path }) {
+export function updatePostById(id, { title, ingredients, steps, youtube_url, post_url, image_path }) {
   const cleanIngredients = (ingredients || []).filter(item => item && item.trim() !== "");
   const cleanSteps = (steps || []).filter(item => item && item.trim() !== "");
 
@@ -103,7 +103,7 @@ export function updatePostById(id, { title, ingredients, steps, youtube_url, sit
       ingredients = ?,
       steps = ?,
       youtube_url = ?,
-      site_url = ?,
+      post_url = ?,
       image_path = ?
     WHERE id = ?
   `);
@@ -113,7 +113,7 @@ export function updatePostById(id, { title, ingredients, steps, youtube_url, sit
     JSON.stringify(cleanIngredients),
     JSON.stringify(cleanSteps),
     youtube_url || null,
-    site_url || null,
+    post_url || null,
     image_path || null,
     id
   );

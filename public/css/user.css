@@ -4,6 +4,13 @@ body {
     background-color: #fafafa;
 }
 
+/* Dark mode class */
+body.dark-mode {
+    
+    background-color: #121212;
+    color: #eee;
+}
+
 .userInfo {
     display: grid;
     grid-template-areas:
@@ -135,4 +142,25 @@ h2 {
 .postItem img:hover {
     transform: scale(1.05);
     cursor: pointer;
+}
+
+.darkmode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#darkmodeSwitch {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: all 0.3s;
+}
+
+body.dark-mode #darkmodeSwitch {
+    background-color: #333;
+    color: #fff;
 }

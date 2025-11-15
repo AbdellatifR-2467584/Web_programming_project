@@ -184,7 +184,7 @@ window.addEventListener('DOMContentLoaded', () => {
     submitBtn.innerHTML = `<i class="bi bi-save"></i><br>`;
 
     titleInput.value = postData.title || '';
-    postUrlInput.value = postData.site_url || '';
+    postUrlInput.value = postData.post_url || '';
     youtubeInput.value = postData.youtube_url || '';
 
     if (postData.image_path) {
@@ -216,7 +216,8 @@ window.addEventListener('DOMContentLoaded', () => {
       const recept = data.recept;
 
       titleInput.value = recept.title || '';
-      postUrlInput.value = recept.post_url || '';
+      postUrlInput.value = url;
+      document.querySelector(".form-recept-url").classList.add("visible");
       youtubeInput.value = recept.youtube_url || '';
 
       renderIngredients(recept.ingredients || []);

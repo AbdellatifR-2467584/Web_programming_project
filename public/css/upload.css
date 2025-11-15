@@ -263,10 +263,10 @@ body {
     margin-bottom: 12px;
 }
 
-.form-recept-url {
-    display: none;
-}
+.form-recept-url { 
+    display: none; 
+} 
 
-.form-recept-url.visible {
-    display: block;
+.form-recept-url.visible { 
+    display: block; 
 }

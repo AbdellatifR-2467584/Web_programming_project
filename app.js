@@ -267,10 +267,10 @@ app.post("/upload", upload.single("image"), (request, response) => {
   }
 
 
-  const { title, ingredients, steps, youtube_url, site_url } = request.body;
+  const { title, ingredients, steps, youtube_url, post_url } = request.body;
   const image_path = "\\" + request.file.path;
   const videoId = extractYouTubeId(youtube_url);
-  createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, site_url });
+  createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, post_url });
   response.redirect("/");
 });
 
@@ -285,7 +285,7 @@ app.post("/api/fetchrecipe", async (req, res) => {
     console.log(html);
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4.1",
+      model: "gpt-4.1-mini",
       messages: [
         {
           role: "system",
@@ -296,8 +296,9 @@ app.post("/api/fetchrecipe", async (req, res) => {
                       "ingredients": ["array van strings"],
                       "steps": ["array van strings"],
                       "image_url": "https://example.com/spaghetti.jpg",
-                      "post_url": "https://example.com/spaghetti.jpg"
+                      "post_url": "https://example.com/recept"
                     }
+                    Het moet in het nederlands zijn.
                     Als een veld ontbreekt, vul het aan met een lege string of lege array.
                     Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen. Als je geen afbleeding kan vinden vul dan een afbeelding die overeenkomt met het recept. Voeg ook url van het recept toe die zal ik meesturen naast de HTML`
         },
