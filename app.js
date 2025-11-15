@@ -196,9 +196,9 @@ app.post("/post/:id/delete", isAuthenticated, (req, res) => {
 app.get("/my-ingredients", isAuthenticated, (req, res) => {
   try {
     const allIngredients = getAllUniqueIngredients();
-    res.render("my-ingredients", { 
-      user: req.session.user, 
-      allIngredients: allIngredients 
+    res.render("my-ingredients", {
+      user: req.session.user,
+      allIngredients: allIngredients
     });
   } catch (err) {
     console.error(err);
@@ -218,10 +218,10 @@ app.get("/api/all-ingredients", isAuthenticated, (req, res) => {
 
 app.get("/api/recipes-by-ingredients", isAuthenticated, (req, res) => {
   try {
-    const selectedIngredients = req.query.ingredients 
-      ? req.query.ingredients.split(',') 
+    const selectedIngredients = req.query.ingredients
+      ? req.query.ingredients.split(',')
       : [];
-      
+
     const posts = getPostsByIngredients(selectedIngredients);
     res.json(posts);
   } catch (err) {
@@ -240,7 +240,7 @@ app.get("/v1", (request, response) => {
   response.redirect("/");
 });
 
-app.get("/upload", (request, response) => {
+app.get("/upload", isAuthenticated, (request, response) => {
   response.render("upload", { post: null });
 });
 
@@ -387,7 +387,7 @@ app.post("/login", async (req, res) => {
 // --- LOGOUT ---
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
-    res.redirect("/login");
+    res.redirect("/");
   });
 });
 

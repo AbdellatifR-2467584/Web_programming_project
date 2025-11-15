@@ -3,22 +3,31 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ReciPin</title>
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 
 <body>
-    <h1>Login</h1>
-    <% if (error) { %>
-        <p style="color:red">
-            <%= error %>
-        </p>
-        <% } %>
-            <form method="POST" action="/login">
-                <input type="text" name="username" placeholder="Username" required />
-                <input type="password" name="password" placeholder="Wachtwoord" required />
-                <button type="submit">Login</button>
-            </form>
-            <a href="/register">Registreren</a>
+    <div id="background">
+        <%- include('partials/grid') %>
+    </div>
+
+    <div id="login">
+        <img class="logo" src="/resources/logo/Logo_cirkel.png" alt="Logo">
+        <h1>Login</h1>
+        <% if (error) { %>
+            <p class="error">
+                <%= error %>
+            </p>
+            <% } %>
+                <form method="POST" action="/login">
+                    <input type="text" name="username" placeholder="Username" required />
+                    <input type="password" name="password" placeholder="Wachtwoord" required />
+                    <button type="submit">Login</button>
+                </form>
+                <a href="/register">Registreren</a>
+    </div>
 </body>
 
 </html>

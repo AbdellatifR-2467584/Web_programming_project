@@ -3,22 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | ReciPin</title>
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 
 <body>
-    <h1>Registreren</h1>
-    <% if (error) { %>
-        <p style="color:red">
-            <%= error %>
-        </p>
-        <% } %>
-            <form method="POST" action="/register">
-                <input type="text" name="username" placeholder="Username" required />
-                <input type="password" name="password" placeholder="Wachtwoord" required />
-                <button type="submit">Register</button>
-            </form>
-            <a href="/login">Login</a>
+    <div id="background">
+        <%- include('partials/grid') %>
+    </div>
+    <div id="register">
+        <img class="logo" src="/resources/logo/Logo_cirkel.png" alt="Logo">
+        <h1>Registreren</h1>
+        <% if (error) { %>
+            <p style="color:red">
+                <%= error %>
+            </p>
+            <% } %>
+                <form method="POST" action="/register">
+                    <input type="text" name="username" placeholder="Username" required />
+                    <input type="password" name="password" placeholder="Wachtwoord" required />
+                    <button type="submit">Register</button>
+                </form>
+                <a href="/login">Login</a>
+    </div>
 </body>
 
 </html>
