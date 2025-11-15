@@ -6,6 +6,83 @@ body {
     padding: 0;
 }
 
+/* DARK MODE */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Ingrediëntenlijst */
+body.dark-mode .ingredienten {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .ingredienten h2 {
+    color: #ff6b6b;
+    /* Keep accent */
+}
+
+body.dark-mode .list-ingredienten li {
+    color: #ddd;
+}
+
+body.dark-mode .list-ingredienten input[type="checkbox"] {
+    accent-color: #ff6b6b;
+}
+
+body.dark-mode .ingredienten button {
+    background-color: #ff6b6b;
+    color: #fff;
+}
+
+body.dark-mode .ingredienten button:hover {
+    background-color: #ff4757;
+}
+
+/* Stappen container */
+body.dark-mode .instructies {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .instructies h2 {
+    color: #1e90ff;
+    /* Keep accent */
+}
+
+body.dark-mode #currentStep {
+    color: #e0e0e0;
+}
+
+/* Volgende stap knop */
+body.dark-mode .instructies button {
+    background-color: #1e90ff;
+    color: #fff;
+}
+
+body.dark-mode .instructies button:hover {
+    background-color: #1c86ee;
+}
+
+/* Progress bar */
+body.dark-mode .progress-container {
+    background-color: #333;
+}
+
+body.dark-mode .progress-bar {
+    background-color: #1e90ff;
+}
+
+/* Responsive adjustments (colors remain dark) */
+@media (max-width: 768px) {
+
+    body.dark-mode .ingredienten,
+    body.dark-mode .instructies {
+        background-color: #1e1e1e;
+    }
+}
+
 /* Titel */
 h1 {
     text-align: center;

@@ -11,6 +11,70 @@ body {
     background-color: #fafafa;
 }
 
+/* DARK MODE */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #eee;
+}
+
+body.dark-mode input,
+body.dark-mode textarea {
+    background-color: #2c2c2c;
+    border: 1px solid #555;
+    color: #eee;
+}
+
+body.dark-mode .recipe-form {
+    background-color: #2c2c2c;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .form-image-upload {
+    border-right: 1px solid #555;
+}
+
+body.dark-mode .custom-file-button {
+    background-color: #3a3a3a;
+    color: #eee;
+    box-shadow: inset 0 0 0 2px #555;
+}
+
+body.dark-mode .custom-file-button:hover {
+    background-color: #4c4c4c;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .form-recept-naam,
+body.dark-mode .form-ingredienten-lijst,
+body.dark-mode .form-instructies,
+body.dark-mode .form-post-knop {
+    color: #eee;
+}
+
+body.dark-mode .submit-button {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+body.dark-mode .submit-button:hover {
+    background-color: #e03e3e;
+}
+
+body.dark-mode .image-preview img {
+    border: 1px solid #555;
+}
+
+body.dark-mode .remove-image {
+    background-color: #ff6b6b;
+}
+
+body.dark-mode label {
+    color: #ddd;
+}
+
+body.dark-mode ::placeholder {
+    color: #aaa;
+}
 
 
 .layout {
@@ -263,10 +327,10 @@ body {
     margin-bottom: 12px;
 }
 
-.form-recept-url { 
-    display: none; 
-} 
+.form-recept-url {
+    display: none;
+}
 
-.form-recept-url.visible { 
-    display: block; 
+.form-recept-url.visible {
+    display: block;
 }

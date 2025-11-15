@@ -5,6 +5,87 @@ body {
     background-color: #fafafa;
 }
 
+/* === Dark Mode === */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Layout */
+body.dark-mode .layout {
+    background-color: #121212;
+}
+
+/* Sidebar */
+body.dark-mode .sidebar {
+    background-color: #1e1e1e;
+    border-right: 1px solid #333;
+}
+
+body.dark-mode .sidebar button {
+
+    color: #696868;
+}
+
+body.dark-mode .sidebar button i:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+body.dark-mode .searchform {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: none !important;
+
+}
+
+/* Searchbar / Topbar */
+body.dark-mode .topbar input,
+body.dark-mode .searchbar {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    color: #e0e0e0;
+}
+
+body.dark-mode .searchinput {
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    color: #e0e0e0;
+}
+
+body.dark-mode .searchinput:focus {
+    border-color: #4cb0e2;
+}
+
+/* Grid and cards */
+body.dark-mode .grid {
+    background-color: #121212;
+}
+
+
+body.dark-mode .card img {
+    border: 1px solid #444;
+}
+
+body.dark-mode .card img:hover {
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Links / text */
+body.dark-mode a {
+    color: #4cb0e2;
+}
+
+body.dark-mode a:hover {
+    color: #6fc0ff;
+}
+
+/* Logo */
+body.dark-mode .logo {
+    filter: brightness(0.8);
+}
+
+
 .layout {
     display: flex;
     height: 100vh;

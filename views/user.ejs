@@ -48,11 +48,52 @@
                 </div>
                 <div class="instellingen">
                     <h2>Instellingen</h2>
+
+                    <!-- Settings List -->
+                    <ul class="settings-list">
+                        <li class="settings-item">
+                            <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
+                            <button id="darkmodeSwitch">🌓</button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-pencil-fill"></i> Wijzig gebruikersnaam</span>
+                            <button id="changeUsernameBtn">Bewerken</button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-lock-fill"></i> Wijzig wachtwoord</span>
+                            <button id="changePasswordBtn">Bewerken</button>
+                        </li>
+                    </ul>
                 </div>
-                <div class="darkmode-toggle">
-                    <label for="darkmodeSwitch">Dark Mode:</label>
-                    <button id="darkmodeSwitch">🌓</button>
+                <!-- Modals (unchanged) -->
+                <div id="changeUsernameModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3>Wijzig gebruikersnaam</h3>
+                        <form id="changeUsernameForm">
+                            <input type="text" name="newUsername" placeholder="Nieuwe gebruikersnaam" required>
+                            <button type="submit">Opslaan</button>
+                        </form>
+                        <div id="usernameError" style="color:red; margin-top:5px;"></div>
+                    </div>
                 </div>
+
+                <div id="changePasswordModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3>Wijzig wachtwoord</h3>
+                        <form id="changePasswordForm">
+                            <input type="password" name="currentPassword" placeholder="Huidig wachtwoord" required>
+                            <input type="password" name="newPassword" placeholder="Nieuw wachtwoord" required>
+                            <input type="password" name="confirmPassword" placeholder="Bevestig nieuw wachtwoord"
+                                required>
+                            <button type="submit">Opslaan</button>
+                        </form>
+                        <div id="passwordError" style="color:red; margin-top:5px;"></div>
+                    </div>
+                </div>
+
+
             </div>
 
     </div>

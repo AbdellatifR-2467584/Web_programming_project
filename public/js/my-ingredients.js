@@ -1,3 +1,10 @@
+window.addEventListener('DOMContentLoaded', () => {
+    const body = document.body; // select the body element
+    if (localStorage.getItem('darkmode') === 'enabled') {
+        body.classList.add('dark-mode');
+    }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("ingredient-search");
     const ingredientList = document.getElementById("ingredient-list");
@@ -30,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Bouw de query string
         const queryString = new URLSearchParams({ ingredients: selectedIngredients.join(',') }).toString();
-        
+
         try {
             const res = await fetch(`/api/recipes-by-ingredients?${queryString}`);
             if (!res.ok) {
@@ -85,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //    Zorg ervoor dat deze functie hier beschikbaar is.
     function resizeMasonry(grid) {
         if (!grid) return;
-        
+
         const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
         const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('gap'));
         const items = grid.querySelectorAll('.card');

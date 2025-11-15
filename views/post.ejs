@@ -20,7 +20,8 @@
             <div class="mainarea">
                 <%- include('partials/searchbar') %>
                     <div class="page">
-                        <div class="post" id="post" data-title="<%= post.title %>">
+                        <div class="post" id="post" data-title="<%= post.title %>"
+                            data-current-user='<%= currentUser ? JSON.stringify(currentUser) : "" %>'>
                             <div class="post-header">
                                 <h2 id="postTitel">
                                     <%= post.title %>
@@ -58,28 +59,49 @@
                                     </ol>
                                 </div>
 
-                                <% if (post.youtube_url && post.youtube_url !== 'https://www.youtube.com/embed/null') { %>
+                                <% if (post.youtube_url && post.youtube_url !=='https://www.youtube.com/embed/null' ) {
+                                    %>
                                     <div class="youtube" data-url="<%= post.youtube_url %>">
                                         <iframe width="560" height="315" frameborder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen src="<%= post.youtube_url %>">
                                         </iframe>
                                     </div>
-                                <% } %>
+                                    <% } %>
 
-                                <% if (post.post_url) { %>
-                                <div class="siteurl" data-url="<%= post.post_url %>">
-                                    <a href="<%= post.post_url %>" target="_blank"><%= post.post_url %></a>
-                                </div>
-                                <% } %>
+                                        <% if (post.post_url) { %>
+                                            <div class="siteurl" data-url="<%= post.post_url %>">
+                                                <a href="<%= post.post_url %>" target="_blank">
+                                                    <%= post.post_url %>
+                                                </a>
+                                            </div>
+                                            <% } %>
 
 
                             </div>
+                            <div class="comments">
+                                <h3>Comments</h3>
+                                <div id="comment-list" class="comment-list"></div>
+                                <% if (currentUser) { %>
+                                    <div class="comment-form">
+                                        <textarea id="comment-input" placeholder="Write a comment..."
+                                            rows="3"></textarea>
+                                        <button id="comment-submit">Add Comment</button>
+                                    </div>
+                                    <% } %>
+                            </div>
                         </div>
+
                         <%- include('partials/gridSearch') %>
                     </div>
+
             </div>
     </div>
 </body>
 
 </html>
+<script type="module">
+    import initComments from "/js/comments.js";
+    const postId = "<%= post.id %>";
+    initComments(postId);
+</script>

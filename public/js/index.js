@@ -1,4 +1,11 @@
+window.addEventListener('DOMContentLoaded', () => {
+    const body = document.body; // select the body element
+    if (localStorage.getItem('darkmode') === 'enabled') {
+        body.classList.add('dark-mode');
+    }
+});
 document.addEventListener("DOMContentLoaded", () => {
+
     const homeButton = document.querySelector(".bi.bi-house");
     const uploadButton = document.querySelector(".bi.bi-upload");
     const uploadLinkButton = document.querySelector(".bi.bi-link-45deg");
@@ -17,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     ingredientsButton.addEventListener("click", () => {
-            window.location.href = "/my-ingredients";
+        window.location.href = "/my-ingredients";
     });
 
     const searchForm = document.querySelector(".searchform");

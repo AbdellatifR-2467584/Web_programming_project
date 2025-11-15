@@ -8,8 +8,9 @@ import session from "express-session";
 import bcrypt from "bcrypt";
 import 'dotenv/config';
 import { InitializePostsDatabase, createPost, getAllPosts, getPostInfoByID, getAllPostsLike, getAllPostsFromUser, deletePostById, updatePostById, getAllUniqueIngredients, getPostsByIngredients } from "./db/posts.js";
-import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById } from "./db/users.js";
+import { InitializeUsersDatabase, createUser, getUserByUsername, getUserById, updateUsername, updatePassword } from "./db/users.js";
 import { extractYouTubeId } from './utils/youtube.js';
+import { InitializeCommentsDatabase, addComment, getCommentsByPostId, getCommentById, deleteCommentById } from "./db/comments.js";
 
 
 const app = express();
@@ -165,6 +166,41 @@ app.get("/user/:username", isAuthenticated, (req, res) => {
   }
 });
 
+app.post("/user/change-username", isAuthenticated, (req, res) => {
+  const { newUsername } = req.body;
+  const userId = req.session.user.id;
+
+  if (!newUsername) return res.status(400).json({ error: "Vul een nieuwe gebruikersnaam in." });
+
+  const existingUser = getUserByUsername(newUsername);
+  if (existingUser) return res.status(400).json({ error: "Deze gebruikersnaam is al in gebruik." });
+
+  const result = updateUsernameDB(userId, newUsername);
+  if (result.changes === 0) return res.status(400).json({ error: "Geen gebruiker gevonden met dit ID." });
+
+  req.session.user.username = newUsername;
+  return res.json({ success: true, newUsername });
+});
+
+app.post("/user/change-password", isAuthenticated, async (req, res) => {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+  const user = getUserById(req.session.user.id);
+
+  if (!user) return res.status(400).json({ error: "Gebruiker niet gevonden" });
+  if (!currentPassword || !newPassword || !confirmPassword)
+    return res.status(400).json({ error: "Vul alle velden in" });
+  if (newPassword !== confirmPassword)
+    return res.status(400).json({ error: "Nieuw wachtwoord en bevestiging komen niet overeen" });
+
+  const match = await bcrypt.compare(currentPassword, user.password);
+  if (!match) return res.status(400).json({ error: "Huidig wachtwoord is incorrect" });
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  updatePassword(user.id, hashed);
+
+  res.json({ success: true });
+});
+
 app.post("/post/:id/delete", isAuthenticated, (req, res) => {
   try {
     const post = getPostInfoByID(req.params.id);
@@ -190,6 +226,48 @@ app.post("/post/:id/delete", isAuthenticated, (req, res) => {
   } catch (err) {
     console.error("Error deleting post:", err);
     res.status(500).send("Fout bij verwijderen van post");
+  }
+});
+
+app.post("/api/post/:id/comments", isAuthenticated, (req, res) => {
+  try {
+    const postId = req.params.id;
+    const userId = req.session.user.id;
+    const { content } = req.body;
+
+    if (!content || content.trim() === "") {
+      return res.status(400).json({ error: "Comment mag niet leeg zijn" });
+    }
+
+    addComment(postId, userId, content.trim());
+    const comments = getCommentsByPostId(postId);
+    res.json(comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Kon comment niet toevoegen" });
+  }
+});
+
+app.get("/api/post/:id/comments", (req, res) => {
+  const postId = parseInt(req.params.id, 10);
+  const comments = getCommentsByPostId(postId);
+  res.json(comments);
+});
+
+app.delete("/api/comments/:id", isAuthenticated, (req, res) => {
+  try {
+    const commentId = parseInt(req.params.id, 10);
+    const comment = getCommentById(commentId);
+
+    if (!comment) return res.status(404).json({ error: "Comment not found" });
+    if (comment.userId !== req.session.user.id)
+      return res.status(403).json({ error: "Not allowed to delete this comment" });
+
+    deleteCommentById(commentId);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete comment" });
   }
 });
 
@@ -412,7 +490,7 @@ app.use((error, request, response, next) => {
 // App starts here
 InitializeUsersDatabase();
 InitializePostsDatabase();
-
+InitializeCommentsDatabase();
 
 
 app.listen(port, () => {

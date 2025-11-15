@@ -1,4 +1,9 @@
-
+window.addEventListener('DOMContentLoaded', () => {
+    const body = document.body; // select the body element
+    if (localStorage.getItem('darkmode') === 'enabled') {
+        body.classList.add('dark-mode');
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const ingredientenDiv = document.querySelector('.ingredienten');

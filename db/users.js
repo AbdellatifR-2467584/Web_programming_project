@@ -35,3 +35,24 @@ export function getUserById(id) {
     SELECT * FROM users WHERE id = ?
   `).get(id);
 }
+
+export function updateUsername(userId, newUsername) {
+  const stmt = db.prepare(`
+    UPDATE users
+    SET username = ?
+    WHERE id = ?
+  `);
+  return stmt.run(newUsername, userId);
+}
+
+
+
+export function updatePassword(userId, hashedPassword) {
+  const stmt = db.prepare(`
+    UPDATE users
+    SET password = ?
+    WHERE id = ?
+  `);
+  return stmt.run(hashedPassword, userId);
+}
+

@@ -1,3 +1,9 @@
+window.addEventListener('DOMContentLoaded', () => {
+    const body = document.body; // select the body element
+    if (localStorage.getItem('darkmode') === 'enabled') {
+        body.classList.add('dark-mode');
+    }
+});
 document.addEventListener("DOMContentLoaded", async () => {
     const grids = document.getElementsByClassName("gridSearch");
     const postTitle = document.getElementById("postTitel")?.innerText || "";

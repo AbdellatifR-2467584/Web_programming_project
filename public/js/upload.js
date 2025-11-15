@@ -1,4 +1,11 @@
 window.addEventListener('DOMContentLoaded', () => {
+  const body = document.body; // select the body element
+  if (localStorage.getItem('darkmode') === 'enabled') {
+    body.classList.add('dark-mode');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('.recipe-form');
   const titleInput = document.getElementById('title');
   const postUrlInput = document.getElementById('post_url');
