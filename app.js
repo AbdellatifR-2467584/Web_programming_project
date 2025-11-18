@@ -175,7 +175,7 @@ app.post("/user/change-username", isAuthenticated, (req, res) => {
   const existingUser = getUserByUsername(newUsername);
   if (existingUser) return res.status(400).json({ error: "Deze gebruikersnaam is al in gebruik." });
 
-  const result = updateUsernameDB(userId, newUsername);
+  const result = updateUsername(userId, newUsername);
   if (result.changes === 0) return res.status(400).json({ error: "Geen gebruiker gevonden met dit ID." });
 
   req.session.user.username = newUsername;
