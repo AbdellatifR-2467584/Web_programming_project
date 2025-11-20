@@ -432,3 +432,15 @@ body.dark-mode .comments button:hover {
 .comments button:hover {
     background-color: #ff4b4b;
 }
+
+.layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+.mainarea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}

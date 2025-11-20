@@ -3,24 +3,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReciPin</title>
     <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
-    <link rel="stylesheet" href="/css/searchbar.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <script src="/js/index.js" defer></script>
-</head>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ReciPin</title>
+        <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
+        <link rel="stylesheet" href="/css/searchbar.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <script src="/js/searchbar.js" defer></script>
+    </head>
 
 <body>
     <header class="searchbar">
-        <form role="search" class="searchform">
-            <input type="text" placeholder="Zoeken" class="searchinput" />
-        </form>
-        <% if (user) { %>
-            <a href="/user/<%= user.username %>">Welkom, <%= user.username %>
-
-            </a>
-            <a href="/logout">Uitloggen</a>
-            <% } else { %>
-                <a href="/login">Login</a> | <a href="/register">Registreren</a>
-                <% } %>
-
+        <div class="search-container">
+            <form role="search" class="searchform">
+                <input type="text" placeholder="Zoeken" class="searchinput" />
+            </form>
+        </div>
+        <div class="auth-section">
+            <% if (user) { %>
+                <a href="/user/<%= user.username %>" class="profile-link" title="Naar profiel">
+                    <img src="/resources/profilepictures/default.png" alt="Profiel" class="profile-pic-small">
+                </a>
+                <% } else { %>
+                    <div class="auth-buttons">
+                        <a href="/login" class="auth-btn login-btn">Login</a>
+                        <a href="/register" class="auth-btn register-btn">Registreren</a>
+                    </div>
+                    <% } %>
+        </div>
     </header>
 </body>

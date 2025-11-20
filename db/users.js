@@ -1,11 +1,6 @@
-import Database from "better-sqlite3";
-
-const db = new Database("users.db", { verbose: console.log });
+import db from "./connection.js";
 
 export function InitializeUsersDatabase() {
-  db.pragma("journal_mode = WAL;");
-  db.pragma("foreign_keys = true;");
-
   db.prepare(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

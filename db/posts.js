@@ -1,7 +1,5 @@
-import Database from "better-sqlite3";
+import db from "./connection.js";
 import { getUserById } from "./users.js";
-
-const db = new Database("posts.db", { verbose: console.log });
 
 export function InitializePostsDatabase() {
   db.prepare(`
@@ -14,7 +12,8 @@ export function InitializePostsDatabase() {
       steps TEXT,
       youtube_url TEXT,
       post_url TEXT,
-      created_at TEXT DEFAULT (datetime('now'))
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     );
   `).run();
 }
@@ -156,7 +155,7 @@ export function getPostsByIngredients(userIngredients = []) {
   const matchingPosts = allPosts.filter(post => {
     try {
       const recipeIngredients = JSON.parse(post.ingredients);
-      
+
       // Sla recepten over zonder (geldige) ingrediëntenlijst
       if (!Array.isArray(recipeIngredients) || recipeIngredients.length === 0) {
         return false;

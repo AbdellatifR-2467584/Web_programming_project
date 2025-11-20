@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             .filter(post => post.id !== currentPostId)
             .map(post => `
         <div class="card" onclick="location.href='/post/${post.id}'">
-            <img src="${post.image_path}" alt="Recipe">
+            <img src="/${post.image_path}" alt="Recipe">
         </div>
     `).join("");
         const images = grid.querySelectorAll("img");
