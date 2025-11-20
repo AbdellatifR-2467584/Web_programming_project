@@ -17,10 +17,14 @@ body.dark-mode .post {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
 }
 
-body.dark-mode .post-header,
-body.dark-mode .post-header-buttons,
-#postTitel {
+body.dark-mode .post h2 {
     color: #e0e0e0 !important;
+}
+
+body.dark-mode .post-header.dark-mode,
+body.dark-mode .post-header-buttons.dark-mode,
+#postTitel.dark-mode {
+    color: #e0e0e0;
 }
 
 
