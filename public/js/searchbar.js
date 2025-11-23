@@ -4,8 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".searchinput");
 
     if (searchForm && searchInput) {
+        searchForm.addEventListener("submit", (event) => {
+            event.preventDefault(); 
+            //rederict naar index en vul in de searchbar de searchinput in
+        });
         searchForm.addEventListener("input", async (event) => {
-            event.preventDefault(); // voorkomt herladen van de pagina
+            event.preventDefault();
 
             const query = searchInput.value.trim();
             const grid = document.querySelector(".grid");
@@ -26,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     resizeMasonry(grid);
                 }
             } else {
-                // Als het zoekveld leeg is, toon opnieuw alle posts
                 const res = await fetch("/api/posts");
                 const posts = await res.json();
 

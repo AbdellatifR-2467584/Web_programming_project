@@ -1,11 +1,8 @@
-/* Container voor de ingrediënten-selectiepagina */
-/* DARK MODE */
 body.dark-mode {
     background-color: #121212;
     color: #e0e0e0;
 }
 
-/* Container for ingredients page */
 body.dark-mode .my-ingredients-container {
     background-color: #1e1e1e;
     color: #e0e0e0;
@@ -14,14 +11,12 @@ body.dark-mode .my-ingredients-container {
 body.dark-mode .my-ingredients-container h2,
 body.dark-mode .my-ingredients-container h3 {
     color: #ff6b6b;
-    /* Keep accent color */
 }
 
 body.dark-mode .my-ingredients-container p {
     color: #ccc;
 }
 
-/* Search bar and button */
 body.dark-mode #ingredient-search {
     background-color: #2a2a2a;
     border: 1px solid #555;
@@ -41,7 +36,6 @@ body.dark-mode #find-recipes-btn:hover {
     background-color: #ff4757;
 }
 
-/* Ingredient checkbox list */
 body.dark-mode .ingredient-list {
     background-color: #1f1f1f;
     border: 1px solid #555;
@@ -59,7 +53,6 @@ body.dark-mode .ingredient-label input[type="checkbox"] {
     accent-color: #ff6b6b;
 }
 
-/* Recipes grid */
 body.dark-mode #recipes-grid {
     background-color: transparent;
 }
@@ -85,7 +78,6 @@ body.dark-mode #recipes-grid {
     margin-bottom: 1.5rem;
 }
 
-/* Zoekbalk en knop */
 .ingredient-controls {
     display: flex;
     gap: 1rem;
@@ -96,7 +88,6 @@ body.dark-mode #recipes-grid {
     flex-grow: 1;
     padding: 0.75rem 1rem;
     border-radius: 25px;
-    /* Consistent met searchbar */
     border: 1px solid #ccc;
     font-size: 1rem;
 }
@@ -106,7 +97,6 @@ body.dark-mode #recipes-grid {
     border: none;
     border-radius: 25px;
     background-color: #e60023;
-    /* Pinterest rood, pas aan indien nodig */
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -118,13 +108,11 @@ body.dark-mode #recipes-grid {
     background-color: #d0001e;
 }
 
-/* Styling voor de ingrediënten-checkbox-lijst */
 .ingredient-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 0.75rem;
     max-height: 400px;
-    /* Maak de lijst scrollbaar */
     overflow-y: auto;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
@@ -143,7 +131,6 @@ body.dark-mode #recipes-grid {
     transition: background-color 0.1s;
     font-size: 0.9rem;
     text-transform: capitalize;
-    /* Maakt 'ei' -> 'Ei' */
 }
 
 .ingredient-label:hover {
@@ -154,7 +141,6 @@ body.dark-mode #recipes-grid {
     margin-right: 5px;
 }
 
-/* Verberg labels die niet matchen met de zoekopdracht */
 .ingredient-label.hidden {
     display: none;
 }
@@ -167,8 +153,22 @@ body.dark-mode #recipes-grid {
     padding-bottom: 0.5rem;
 }
 
-/* Zorg ervoor dat de grid-resultaten correct worden weergegeven */
 #recipes-grid {
     padding: 0;
-    /* De .grid class heeft mogelijk al padding */
+}
+
+.layout {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.mainarea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    
+    overflow-y: auto; 
+    position: relative;
 }

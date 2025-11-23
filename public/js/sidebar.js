@@ -13,10 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/upload";
     });
 
-    uploadLinkButton.addEventListener("click", () => {
-        window.location.href = "/uploadlink";
-    });
-
     ingredientsButton.addEventListener("click", () => {
         window.location.href = "/my-ingredients";
     });

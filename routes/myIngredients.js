@@ -17,15 +17,6 @@ router.get("/my-ingredients", isAuthenticated, (req, res) => {
     }
 });
 
-router.get("/api/all-ingredients", isAuthenticated, (req, res) => {
-    try {
-        const ingredients = getAllUniqueIngredients();
-        res.json(ingredients);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Kon ingrediënten niet ophalen." });
-    }
-});
 
 router.get("/api/recipes-by-ingredients", isAuthenticated, (req, res) => {
     try {

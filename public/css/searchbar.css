@@ -5,7 +5,6 @@ body {
     background-color: #fafafa;
 }
 
-/* Searchbar / Topbar */
 body.dark-mode .topbar input,
 body.dark-mode .searchbar {
     background-color: #1e1e1e;
@@ -26,7 +25,6 @@ body {
     background-color: #fafafa;
 }
 
-/* Searchbar / Topbar */
 body.dark-mode .topbar input,
 body.dark-mode .searchbar {
     background-color: #1e1e1e;
@@ -52,7 +50,6 @@ body.dark-mode .searchinput:focus {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Push items to edges */
     height: 60px;
 }
 
@@ -73,7 +70,6 @@ body.dark-mode .searchinput:focus {
     width: 100%;
     max-width: 500px;
     border-radius: 25px;
-    /* More rounded */
     border: 1px solid #ccc;
     outline: none;
     transition: all 0.2s ease;
@@ -87,13 +83,11 @@ body.dark-mode .searchinput:focus {
     box-shadow: 0 0 0 2px rgba(76, 176, 226, 0.2);
 }
 
-/* Auth Section */
 .auth-section {
     display: flex;
     align-items: center;
     gap: 1rem;
     min-width: 150px;
-    /* Prevent jumping */
     justify-content: flex-end;
 }
 
@@ -136,14 +130,12 @@ body.dark-mode .searchinput:focus {
 .register-btn {
     color: #fff;
     background-color: #ff4b4b;
-    /* Brand color */
 }
 
 .register-btn:hover {
     background-color: #e63b3b;
 }
 
-/* Dark Mode Adjustments */
 body.dark-mode .searchbar {
     background-color: #1e1e1e;
     border-bottom: 1px solid #333;

@@ -129,26 +129,58 @@ router.get("/uploadlink", (request, response) => {
     response.render("uploadlink");
 });
 
-router.post("/upload", upload.single("image"), (request, response) => {
+router.post("/upload", upload.single("image"), async (request, response) => {
     console.log("Session user:", request.session.user);
 
     const userId = request.session.user?.id;
-    if (!userId) {
-        console.log("Niet ingelogd, redirecting naar /login");
-        return response.redirect("/login");
+
+    const { title, ingredients, steps, youtube_url, post_url, image_url_external } = request.body;
+    
+    let image_path = "";
+
+    try {
+        if (request.file) {
+            image_path = "uploads/" + request.file.filename;
+        } 
+        else if (image_url_external) {
+            console.log("AI Afbeelding downloaden van:", image_url_external);
+            
+            const res = await fetch(image_url_external);
+            if (!res.ok) throw new Error(`Kon afbeelding niet downloaden: ${res.statusText}`);
+            
+            const arrayBuffer = await res.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+
+            const filename = `ai-${Date.now()}-${Math.floor(Math.random() * 1000)}.jpg`;
+            
+            const uploadDir = path.join(process.cwd(), 'uploads'); 
+            
+            if (!fs.existsSync(uploadDir)){
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+
+            const filepath = path.join(uploadDir, filename);
+            fs.writeFileSync(filepath, buffer);
+
+            image_path = "uploads/" + filename;
+        }
+
+    } catch (error) {
+        console.error("Fout bij verwerken afbeelding:", error);
     }
 
-    const user = getUserById(userId);
-    if (!user) {
-        console.log("User bestaat niet in users.db");
-        return request.status(400).send("Ongeldige gebruiker");
-    }
-
-    const { title, ingredients, steps, youtube_url, post_url } = request.body;
-    // Use forward slashes
-    const image_path = request.file ? "uploads/" + request.file.filename : "";
     const videoId = extractYouTubeId(youtube_url);
-    createPost({ userId, image_path, title, ingredients, steps, youtube_url: `https://www.youtube.com/embed/${videoId}`, post_url });
+    
+    createPost({ 
+        userId, 
+        image_path, 
+        title, 
+        ingredients, 
+        steps, 
+        youtube_url: videoId ? `https://www.youtube.com/embed/${videoId}` : "", 
+        post_url 
+    });
+    
     response.redirect("/");
 });
 
@@ -166,33 +198,44 @@ router.post("/api/fetchrecipe", async (req, res) => {
         }
 
         const completion = await openai.chat.completions.create({
-            model: "gpt-4.1-mini",
-            messages: [
+        model: "gpt-4.1-mini", 
+        messages: [
+            {
+                role: "system",
+                content: `Je bent een expert in het extraheren van receptdata uit HTML.
+                
+                Jouw taak is JSON teruggeven in dit formaat:
                 {
-                    role: "system",
-                    content: `Je bent een assistent die recepten structureert in JSON.
-                    Het antwoord MOET altijd geldig JSON zijn met deze structuur:
-                    {
-                      "title": "string",
-                      "ingredients": ["array van strings"],
-                      "steps": ["array van strings"],
-                      "image_url": "https://example.com/spaghetti.jpg",
-                      "post_url": "https://example.com/recept"
-                    }
-                    Het moet in het nederlands zijn.
-                    Als een veld ontbreekt, vul het aan met een lege string of lege array.
-                    Zorg dat het antwoord samengevat is GEEN lang antwoord gwn kort en krachtig, als de stappen teveel zijn vat het samen. Als je geen afbleeding kan vinden vul dan een afbeelding die overeenkomt met het recept. Voeg ook url van het recept toe die zal ik meesturen naast de HTML`
-                },
-                {
-                    role: "user",
-                    content: `Haal uit de volgende HTML de titel, ingrediënten, stappen, url en url van de foto van het recept. Geef JSON terug:
-          HTML:
-          ${html}
-          URL:
-          ${url}`
-                },
-            ],
-            response_format: { type: "json_object" }
+                "title": "string",
+                "ingredients": ["array van strings"],
+                "steps": ["array van strings (samengevat, kort en krachtig)"],
+                "image_url": "string (URL)",
+                "post_url": "string (URL)"
+                }
+
+                RICHTLIJNEN VOOR DE AFBEELDING (BELANGRIJK):
+                1. Zoek EERST naar een <meta property="og:image"> tag. Dit is de meest betrouwbare afbeelding.
+                2. Als die er niet is, zoek naar JSON-LD schema data ("@type": "Recipe") en pak de image url daaruit.
+                3. Als laatste redmiddel: pak de src van de grootste <img> tag in de recept-container.
+                4. Als je geen URL vindt geef me dan een url naar een foto die te maken heeft met het recept vootbeeld, zet het de naam in het engels. vergeet niet de p voor de title (/p/title):
+                Gerecht is Spaghetti Bolo -> URL: "https://pollinations.ai/p/spaghetti-bolognese"
+                5. Als de URL relatief is (begint met /), probeer hem compleet te maken met de basis-URL, maar verander niks aan de bestandsnaam.
+
+                Algemene regels:
+                - Taal: Nederlands.
+                - Als stappen te lang zijn: vat samen.
+                - Output moet valid JSON zijn.`
+            },
+            {
+                role: "user",
+                content: `Haal de data uit deze HTML.
+                Basis URL van de pagina: ${url}
+                
+                HTML Content:
+                ${html}`
+            },
+        ],
+        response_format: { type: "json_object" }
         });
 
         let recept;
@@ -209,7 +252,7 @@ router.post("/api/fetchrecipe", async (req, res) => {
             recept = completion.choices[0].message.content;
             console.log("recept is al JSON----------------");
         }
-
+        console.log(recept)
         return res.status(200).json({ recept });
     } catch (error) {
         console.error("Fout bij ophalen recept: ", error);

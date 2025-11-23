@@ -5,13 +5,11 @@ body {
     overflow-x: hidden;
 }
 
-/* Sidebar */
 body.dark-mode .sidebar {
     background-color: #1e1e1e;
     border-right: 1px solid #333;
 }
 
-/* Logo */
 body.dark-mode .logo {
     filter: brightness(0.8);
 }

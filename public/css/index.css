@@ -1,36 +1,57 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
-    overflow-x: hidden;
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color: #fafafa;
+
+    height: 100vh;
+    width: 100%;
+    overflow: hidden; 
 }
 
-/* === Dark Mode === */
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
-}
-
-/* Layout */
-body.dark-mode .layout {
-    background-color: #121212;
-}
 
 .layout {
     display: flex;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
+}
+
+
+.sidebar-container {
+    flex-shrink: 0;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .mainarea {
     flex: 1;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    
+    overflow-y: auto; 
+    position: relative;
 }
 
-/* Links / text */
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+
+body.dark-mode .layout {
+    background-color: #121212;
+}
+
+
 body.dark-mode a {
     color: #4cb0e2;
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
 body.dark-mode a:hover {

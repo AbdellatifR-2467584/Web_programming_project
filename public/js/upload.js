@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-  const body = document.body; // select the body element
+  const body = document.body;
   if (localStorage.getItem('darkmode') === 'enabled') {
     body.classList.add('dark-mode');
   }
@@ -23,7 +23,6 @@ window.addEventListener('DOMContentLoaded', () => {
   const postDataInput = document.getElementById('post-data');
   const postData = postDataInput && postDataInput.value ? JSON.parse(postDataInput.value) : null;
 
-  // ---------------- IMAGE LOGIC ----------------
   function resetImage() {
     uploadLabel.style.display = "inline-block";
     imageInput.value = "";
@@ -52,30 +51,30 @@ window.addEventListener('DOMContentLoaded', () => {
 
   removeBtn.addEventListener('click', resetImage);
 
-  async function setImageFromUrl(imageUrl) {
+  async function downloadImageToInput(imageUrl) {
     if (!imageUrl) return;
-    try {
-      const res = await fetch(imageUrl);
-      const blob = await res.blob();
-      const file = new File([blob], 'recipe.jpg', { type: blob.type });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      imageInput.files = dt.files;
 
-      previewImg.src = URL.createObjectURL(blob);
-      previewContainer.style.display = 'block';
-      statusLabel.textContent = file.name;
-      imageInput.disabled = true;
-      uploadLabel.style.display = 'none';
-      submitBtn.style.backgroundColor = '#e60023';
-      submitBtn.style.color = 'white';
-    } catch (err) {
-      console.error('Kon afbeelding niet laden:', err);
-      statusLabel.textContent = 'Afbeelding kon niet geladen worden';
+    // 1. Laat het plaatje zien in de browser (dit mag wel met CORS!)
+    previewImg.src = imageUrl;
+    previewContainer.style.display = 'block';
+    
+    // 2. Stop de URL in het verborgen veld
+    const hiddenInput = document.getElementById('image_url_external');
+    if (hiddenInput) {
+        hiddenInput.value = imageUrl;
     }
-  }
 
-  // ---------------- INGREDIENT LOGIC ----------------
+    // 3. Update de labels
+    statusLabel.textContent = "Afbeelding gevonden via AI";
+    
+    // We hebben geen fysiek bestand in de <input type="file">, 
+    // dus we laten die met rust. De server moet straks checken op de URL.
+    
+    uploadLabel.style.display = 'none';
+    submitBtn.style.backgroundColor = '#e60023';
+    submitBtn.style.color = 'white';
+}
+
   function renderIngredients(ingredients = []) {
     ingredientContainer.innerHTML = '';
 
@@ -170,11 +169,11 @@ window.addEventListener('DOMContentLoaded', () => {
       lastAdd?.click();
     }
   });
-  function setImageFromUrl(imagePath) {
+  function showExistingImage(imagePath) {
     if (!imagePath) return;
 
     // Normalize backslashes and ensure it starts with /
-    const normalizedPath = '/' + imagePath.replace(/\\/g, '/').replace(/^\/+/, '');
+    const normalizedPath = imagePath.replace(/\\/g, '/').replace(/^\/+/, '');
     console.log(normalizedPath);
     console.log("test");
     previewImg.src = normalizedPath; // directly set src
@@ -195,7 +194,7 @@ window.addEventListener('DOMContentLoaded', () => {
     youtubeInput.value = postData.youtube_url || '';
 
     if (postData.image_path) {
-      setImageFromUrl(postData.image_path);
+      showExistingImage(postData.image_path);
     }
     console.log("test");
     renderIngredients(postData.ingredients || []);
@@ -230,7 +229,8 @@ window.addEventListener('DOMContentLoaded', () => {
       renderIngredients(recept.ingredients || []);
       renderSteps(recept.steps || []);
 
-      if (recept.image_url) setImageFromUrl(recept.image_url);
+      if (recept.image_url){
+        downloadImageToInput(recept.image_url);}
     } catch (err) {
       alert('Fout bij ophalen recept: ' + err.message);
 

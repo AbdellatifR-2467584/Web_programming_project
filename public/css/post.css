@@ -5,7 +5,6 @@ body {
     overflow-x: hidden;
 }
 
-/* DARK MODE */
 body.dark-mode {
     background-color: #121212;
     color: #e0e0e0;
@@ -172,7 +171,6 @@ body.dark-mode .comments button:hover {
 
 
 
-/* Volg mee icoon */
 .follow-along-icon {
     color: #ff6b6b;
     font-size: 2rem;
@@ -224,10 +222,8 @@ body.dark-mode .comments button:hover {
 
 .picture {
     position: relative;
-    /* needed for absolute positioning of child */
     width: 100%;
     height: 300px;
-    /* adjust height as needed */
     overflow: hidden;
 }
 
@@ -293,7 +289,6 @@ body.dark-mode .comments button:hover {
     position: relative;
     overflow: hidden;
     border-radius: 12px;
-    /* optional: match container style */
 }
 
 .youtube iframe {
@@ -309,23 +304,16 @@ body.dark-mode .comments button:hover {
     grid-area: footer;
 }
 
-/* Stijl de Klembord en PDF knoppen consistent met de 'Volg Mee' stijl */
 #clipboard,
 #pdf {
-    /* Uiterlijk en Kleur */
     color: #ff6b6b;
-    /* Basis kleur van het icoon */
     font-size: 2rem;
-    /* Grootte van het icoon (i-tag erft dit) */
 
-    /* Zorg dat de knop zelf transparant en randloos is */
     background: none;
     border: none;
     padding: 0;
     margin-left: 10px;
-    /* Houdt afstand tussen de knoppen */
 
-    /* Interactie */
     cursor: pointer;
     transition: color 0.3s ease, transform 0.2s ease;
 }
@@ -334,19 +322,14 @@ body.dark-mode .comments button:hover {
 #clipboard:hover,
 #pdf:hover {
     color: #ff4757;
-    /* Kleurverandering bij hover */
     transform: scale(1.1);
-    /* Vergroot het icoon bij hover */
 }
 
-/* Zorg ervoor dat het icoon (de i-tag) de kleur erft */
 #clipboard i,
 #pdf i {
     font-size: 2rem;
-    /* Zorg dat het icoon zelf de grootte krijgt, mocht het niet geërfd worden */
 }
 
-/* Optioneel: Stijl voor wanneer een knop actief (ingedrukt) is */
 #clipboard:active,
 #pdf:active {
     transform: scale(0.95);
@@ -380,7 +363,6 @@ body.dark-mode .comments button:hover {
     border-bottom: 1px solid #f0f0f0;
     position: relative;
     padding-right: 25px;
-    /* space for delete icon */
 }
 
 
