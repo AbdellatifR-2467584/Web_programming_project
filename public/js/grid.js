@@ -6,23 +6,30 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 document.addEventListener("DOMContentLoaded", async () => {
     const grids = document.getElementsByClassName("grid");
-    const res = await fetch("/api/posts");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get("q") || "";
+
+    const apiUrl = query ? `/api/postsLike?q=${encodeURIComponent(query)}` : "/api/posts";
+
+    const res = await fetch(apiUrl);
     const posts = await res.json();
+
     let currentPostId = null;
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     if (pathParts[0] === "post" && !isNaN(pathParts[1])) {
         currentPostId = parseInt(pathParts[1]);
     }
 
-
     for (const grid of grids) {
         grid.innerHTML = posts
             .filter(post => post.id !== currentPostId)
             .map(post => `
-        <div class="card" onclick="location.href='/post/${post.id}'">
-            <img src="/${post.image_path}" alt="Recipe">
-        </div>
-    `).join("");
+                <div class="card" onclick="location.href='/post/${post.id}'">
+                    <img src="/${post.image_path}" alt="Recipe">
+                </div>
+            `).join("");
+
         const images = grid.querySelectorAll("img");
         let loaded = 0;
         images.forEach(img => {
@@ -37,7 +44,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         if (loaded === images.length) resizeMasonry(grid);
     }
+
+    const searchInput = document.querySelector(".searchinput");
+    if (searchInput && query) {
+        searchInput.value = query;
+    }
 });
+
 
 function resizeMasonry(grid) {
     const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));

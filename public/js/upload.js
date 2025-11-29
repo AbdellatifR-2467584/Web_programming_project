@@ -57,23 +57,23 @@ window.addEventListener('DOMContentLoaded', () => {
     // 1. Laat het plaatje zien in de browser (dit mag wel met CORS!)
     previewImg.src = imageUrl;
     previewContainer.style.display = 'block';
-    
+
     // 2. Stop de URL in het verborgen veld
     const hiddenInput = document.getElementById('image_url_external');
     if (hiddenInput) {
-        hiddenInput.value = imageUrl;
+      hiddenInput.value = imageUrl;
     }
 
     // 3. Update de labels
     statusLabel.textContent = "Afbeelding gevonden via AI";
-    
+
     // We hebben geen fysiek bestand in de <input type="file">, 
     // dus we laten die met rust. De server moet straks checken op de URL.
-    
+
     uploadLabel.style.display = 'none';
     submitBtn.style.backgroundColor = '#e60023';
     submitBtn.style.color = 'white';
-}
+  }
 
   function renderIngredients(ingredients = []) {
     ingredientContainer.innerHTML = '';
@@ -172,13 +172,13 @@ window.addEventListener('DOMContentLoaded', () => {
   function showExistingImage(imagePath) {
     if (!imagePath) return;
 
-    // Normalize backslashes and ensure it starts with /
-    const normalizedPath = imagePath.replace(/\\/g, '/').replace(/^\/+/, '');
-    console.log(normalizedPath);
-    console.log("test");
-    previewImg.src = normalizedPath; // directly set src
+    // Create normalized path relative to the site root
+    const normalized = new URL(imagePath, window.location.origin).pathname;
+
+    console.log(normalized);
+    previewImg.src = normalized;
     previewContainer.style.display = 'block';
-    statusLabel.textContent = normalizedPath.split('/').pop();
+    statusLabel.textContent = normalized.split('/').pop();
     imageInput.disabled = true;
     uploadLabel.style.display = 'none';
     submitBtn.style.backgroundColor = '#e60023';
@@ -229,8 +229,9 @@ window.addEventListener('DOMContentLoaded', () => {
       renderIngredients(recept.ingredients || []);
       renderSteps(recept.steps || []);
 
-      if (recept.image_url){
-        downloadImageToInput(recept.image_url);}
+      if (recept.image_url) {
+        downloadImageToInput(recept.image_url);
+      }
     } catch (err) {
       alert('Fout bij ophalen recept: ' + err.message);
 

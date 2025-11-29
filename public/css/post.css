@@ -10,6 +10,7 @@ body.dark-mode {
     color: #e0e0e0;
 }
 
+
 body.dark-mode .post {
     background-color: #1e1e1e;
     border: 1px solid #333;
@@ -211,6 +212,7 @@ body.dark-mode .comments button:hover {
 
 .picture {
     grid-area: img;
+    margin-left: 5px;
     width: 100%;
     max-width: 400px;
     aspect-ratio: 1/1;

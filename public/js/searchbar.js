@@ -4,10 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".searchinput");
 
     if (searchForm && searchInput) {
+        // Haal query op uit de URL, zodat input behouden blijft
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryParam = urlParams.get("q");
+        if (queryParam) {
+            searchInput.value = queryParam;
+        }
+
         searchForm.addEventListener("submit", (event) => {
-            event.preventDefault(); 
-            //rederict naar index en vul in de searchbar de searchinput in
+            event.preventDefault();
+            const query = searchInput.value.trim();
+            // Redirect altijd naar de homepagina met query als parameter
+            window.location.href = `/?q=${encodeURIComponent(query)}`;
         });
+
+        // Optioneel: live search op homepage grid
         searchForm.addEventListener("input", async (event) => {
             event.preventDefault();
 
@@ -16,32 +27,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!grid) return;
 
-            if (query) {
-                const res = await fetch(`/api/postsLike?q=${encodeURIComponent(query)}`);
-                const posts = await res.json();
+            const apiUrl = query ? `/api/postsLike?q=${encodeURIComponent(query)}` : "/api/posts";
+            const res = await fetch(apiUrl);
+            const posts = await res.json();
 
-                grid.innerHTML = posts.map(post => `
+            grid.innerHTML = posts.map(post => `
                 <div class="card" onclick="location.href='/post/${post.id}'">
                     <img src="/${post.image_path}" alt="Recipe">
                 </div>
             `).join("");
 
-                if (typeof resizeMasonry === 'function') {
-                    resizeMasonry(grid);
-                }
-            } else {
-                const res = await fetch("/api/posts");
-                const posts = await res.json();
-
-                grid.innerHTML = posts.map(post => `
-                <div class="card" onclick="location.href='/post/${post.id}'">
-                    <img src="/${post.image_path}" alt="Recipe">
-                </div>
-            `).join("");
-
-                if (typeof resizeMasonry === 'function') {
-                    resizeMasonry(grid);
-                }
+            if (typeof resizeMasonry === 'function') {
+                resizeMasonry(grid);
             }
         });
     }

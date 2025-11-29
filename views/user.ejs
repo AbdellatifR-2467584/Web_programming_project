@@ -14,18 +14,20 @@
 <body>
     <div class="layout">
         <%- include('partials/sidebar') %>
-            <div class="mainarea">
-                <div class="userInfo">
+
+            <main class="mainarea">
+                <section class="userInfo">
                     <img id="profilepicture" src="/resources/profilepictures/default.png" alt="profilepicture">
                     <div id="username">
                         <%= user.username %>
                     </div>
-                </div>
-                <div class="postsByUser">
+                </section>
+
+                <section class="postsByUser">
                     <h2>Posts</h2>
                     <div class="postsContainer">
                         <% posts.forEach(post=> { %>
-                            <div class="postItem">
+                            <article class="postItem">
                                 <a href="/post/<%= post.id %>">
                                     <img src="/<%= post.image_path %>" alt="post <%= post.id %>">
                                 </a>
@@ -42,14 +44,13 @@
                                         </button>
                                     </form>
                                 </div>
-                            </div>
+                            </article>
                             <% }) %>
                     </div>
-                </div>
-                <div class="instellingen">
-                    <h2>Instellingen</h2>
+                </section>
 
-                    <!-- Settings List -->
+                <section class="instellingen">
+                    <h2>Instellingen</h2>
                     <ul class="settings-list">
                         <li class="settings-item">
                             <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
@@ -68,7 +69,8 @@
                             <button onclick="location.href='/logout'" class="logout-btn">Uitloggen</button>
                         </li>
                     </ul>
-                </div>
+                </section>
+
                 <!-- Modals -->
                 <div id="changeUsernameModal" class="modal">
                     <div class="modal-content">
@@ -97,10 +99,9 @@
                     </div>
                 </div>
 
-
-            </div>
-
+            </main>
     </div>
 </body>
+
 
 </html>

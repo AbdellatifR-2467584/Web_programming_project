@@ -7,6 +7,6 @@ export function extractYouTubeId(url) {
         return parsedUrl.searchParams.get('v');
     } catch (e) {
         console.error('Ongeldige URL:', url);
-        return null;
+        return;
     }
 }

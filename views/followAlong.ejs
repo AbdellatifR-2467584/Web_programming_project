@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 
 <head>
     <meta charset="UTF-8">
@@ -16,17 +16,17 @@
     </h1>
 
     <!-- Ingrediëntenlijst -->
-    <div class="ingredienten" data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
+    <section class="ingredienten" data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
         <h2>Ingrediënten</h2>
         <ul class="list-ingredienten"></ul>
-    </div>
+    </section>
 
     <!-- Stappen (verborgen totdat de gebruiker de ingrediënten heeft aangevinkt) -->
-    <div class="instructies" data-steps='<%- JSON.stringify(post.steps) %>' style="display:none">
+    <section class="instructies" data-steps='<%- JSON.stringify(post.steps) %>' style="display:none">
         <h2>Stappen</h2>
         <p id="currentStep"></p>
         <button id="nextStep">Volgende stap</button>
-    </div>
+    </section>
 </body>
 
 </html>

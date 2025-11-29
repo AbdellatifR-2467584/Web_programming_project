@@ -17,24 +17,35 @@
             }
         });
     </script>
-    <div id="background">
+
+    <section id="background" aria-hidden="true">
         <%- include('partials/grid') %>
-    </div>
-    <div id="register">
+    </section>
+
+    <main id="register">
         <img class="logo" src="/resources/logo/Logo_cirkel.png" alt="Logo">
         <h1>Registreren</h1>
+
         <% if (error) { %>
             <p style="color:red">
                 <%= error %>
             </p>
             <% } %>
+
                 <form method="POST" action="/register">
-                    <input type="text" name="username" placeholder="Username" required />
-                    <input type="password" name="password" placeholder="Wachtwoord" required />
+                    <label>
+                        Username
+                        <input type="text" name="username" placeholder="Username" required />
+                    </label>
+                    <label>
+                        Wachtwoord
+                        <input type="password" name="password" placeholder="Wachtwoord" required />
+                    </label>
                     <button type="submit">Register</button>
                 </form>
+
                 <a href="/login">Login</a>
-    </div>
+    </main>
 </body>
 
 </html>
