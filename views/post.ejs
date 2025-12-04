@@ -1,54 +1,166 @@
-window.addEventListener('DOMContentLoaded', () => {
-const body = document.body; // select the body element
-if (localStorage.getItem('darkmode') === 'enabled') {
-body.classList.add('dark-mode');
-}
-});
+<!DOCTYPE html>
+<html lang="nl">
 
-function download_pdf() {
-const pdf = document.getElementById("post");
-const title = pdf.dataset.title;
-html2pdf().from(pdf).save(title);
-}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReciPin - <%= post.title %>
+    </title>
 
-async function clipboard_copy() {
-const titel = document.getElementById('postTitel').textContent.trim();
+    <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
+    <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-const ingredientenLijstItems = document.querySelectorAll('.list-ingredienten li');
-let ingredientenTekst = '';
-ingredientenLijstItems.forEach(item => {
-ingredientenTekst += `- ${item.textContent.trim()}\n`;
-});
+    <script src="/js/post.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
 
-const stappenLijstItems = document.querySelectorAll('.list-stappen li');
-let stappenTekst = '';
-stappenLijstItems.forEach((item, index) => {
-stappenTekst += `${index + 1}. ${item.textContent.trim()}\n`;
-});
+<body>
+    <div class="layout">
+        <nav class="sidebar-container">
+            <%- include('partials/sidebar') %>
+        </nav>
 
-const volledigeTekst =
-`RECEPT: ${titel}\n\n` +
-`--- Ingrediënten ---\n` +
-ingredientenTekst +
-`\n--- Bereidingswijze ---\n` +
-stappenTekst;
+        <main class="mainarea">
+            <%- include('partials/searchbar') %>
 
-try {
-await navigator.clipboard.writeText(volledigeTekst);
+                <div class="page">
+                    <div class="post-modal" id="post" data-title="<%= post.title %>"
+                        data-current-user='<%= currentUser ? JSON.stringify(currentUser) : "" %>'>
 
-const knop = document.getElementById('clipboard');
-const origineleHTML = knop.innerHTML;
+                        <div class="post-media">
+                            <figure class="picture">
+                                <img src="/<%= post.image_path %>" alt="<%= post.title %>">
+                            </figure>
 
-knop.innerHTML = '<i class="bi bi-check-lg"></i> Gekopieerd!';
-knop.disabled = true; // Voorkom dubbelklikken
+                            <% if (post.media_path) { %>
+                                <div class="walkthrough-media" style="margin-top: 20px;">
+                                    <% if (post.media_path.endsWith('.mp4') || post.media_path.endsWith('.webm') ||
+                                        post.media_path.endsWith('.mov')) { %>
+                                        <video controls style="width: 100%; border-radius: 16px;">
+                                            <source src="/<%= post.media_path %>" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <% } else { %>
+                                            <img src="/<%= post.media_path %>" alt="Walkthrough Media"
+                                                style="width: 100%; border-radius: 16px;">
+                                            <% } %>
+                                </div>
+                                <% } %>
 
-setTimeout(() => {
-knop.innerHTML = origineleHTML;
-knop.disabled = false;
-}, 2000); // Reset na 2 seconden
+                                    <% if (post.youtube_url && post.youtube_url !=='https://www.youtube.com/embed/null'
+                                        ) { %>
+                                        <div class="youtube-wrapper" data-url="<%= post.youtube_url %>">
+                                            <iframe width="100%" height="315" src="<%= post.youtube_url %>"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen></iframe>
+                                        </div>
+                                        <% } %>
+                        </div>
 
-} catch (err) {
-console.error('Kopiëren mislukt:', err);
-alert('Fout: Het kopiëren naar het klembord is mislukt. Probeer het handmatig. (Zie console voor details)');
-}
-}
+                        <div class="post-details">
+                            <div class="post-header">
+                                <div class="post-actions" data-html2canvas-ignore="true">
+                                    <button id="clipboard" class="action-btn" onclick="clipboard_copy()"
+                                        title="Kopieer Link">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                    <button id="pdf" class="action-btn" onclick="download_pdf()" title="Download PDF">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </button>
+                                    <a href="/post/<%= post.id %>/volgmee" class="action-btn" title="Volg Mee"
+                                        style="display:flex; align-items:center; justify-content:center; text-decoration:none; color:inherit;">
+                                        <i class="bi bi-play-circle-fill"></i>
+                                    </a>
+                                </div>
+
+                                <h1 id="postTitel">
+                                    <%= post.title %>
+                                </h1>
+
+                                <div class="post-meta">
+                                    <div class="user-info">
+                                        <img src="/resources/profilepictures/default.png" alt="User Avatar"
+                                            class="user-avatar-small">
+                                        <span class="username">
+                                            <%= post.username || 'Onbekend' %>
+                                        </span>
+                                    </div>
+                                    <% if (post.post_url) { %>
+                                        <div class="siteurl" data-url="<%= post.post_url %>">
+                                            <a href="<%= post.post_url %>" target="_blank" class="source-link">
+                                                Link naar bron
+                                            </a>
+                                        </div>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="post-content">
+                                <% if (post.ingredients && post.ingredients.length> 0) { %>
+                                    <div class="ingredienten"
+                                        data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
+                                        <h3>Ingrediënten</h3>
+                                        <ul class="list-ingredienten">
+                                            <% post.ingredients.forEach(ingredient=> { %>
+                                                <li>
+                                                    <%= ingredient %>
+                                                </li>
+                                                <% }); %>
+                                        </ul>
+                                    </div>
+                                    <% } %>
+
+                                        <% if (post.steps && post.steps.length> 0) { %>
+                                            <div class="instructies" data-steps='<%- JSON.stringify(post.steps) %>'>
+                                                <h3>Bereiding</h3>
+                                                <ol class="list-stappen">
+                                                    <% post.steps.forEach(step=> { %>
+                                                        <li>
+                                                            <%= step %>
+                                                        </li>
+                                                        <% }); %>
+                                                </ol>
+                                            </div>
+                                            <% } %>
+                            </div>
+
+                            <div class="comments" data-html2canvas-ignore="true">
+                                <h3>Reacties</h3>
+                                <div id="comment-list" class="comment-list">
+                                </div>
+
+                                <% if (currentUser) { %>
+                                    <form class="comment-form">
+                                        <div class="comment-input-wrapper">
+                                            <img src="/resources/profilepictures/default.png" alt="My Avatar"
+                                                class="user-avatar-tiny">
+                                            <textarea id="comment-input" placeholder="Voeg een reactie toe..."
+                                                rows="1"></textarea>
+                                        </div>
+                                        <button type="button" id="comment-submit"
+                                            style="margin-top: 10px;">Plaatsen</button>
+                                    </form>
+                                    <% } else { %>
+                                        <p><a href="/login">Log in</a> om te reageren.</p>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </div id="grid">
+
+                    <%- include('partials/gridSearch') %>
+                </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import initComments from "/js/comments.js";
+        const postId = "<%= post.id %>";
+        initComments(postId);
+    </script>
+</body>
+
+</html>
