@@ -39,7 +39,7 @@ async function clipboard_copy() {
         const knop = document.getElementById('clipboard');
         const origineleHTML = knop.innerHTML;
 
-        knop.innerHTML = '<i class="bi bi-check-lg"></i> Gekopieerd!';
+        knop.innerHTML = '<i class="bi bi-check-lg"></i>';
         knop.disabled = true; // Voorkom dubbelklikken
 
         setTimeout(() => {
