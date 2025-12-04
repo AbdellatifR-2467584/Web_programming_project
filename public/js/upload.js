@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const postData = postDataInput && postDataInput.value ? JSON.parse(postDataInput.value) : null;
 
   function resetImage() {
-    uploadLabel.style.display = "inline-block";
+    uploadLabel.style.display = "flex";
     imageInput.value = "";
     previewImg.src = "";
     previewContainer.style.display = "none";
@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const reader = new FileReader();
       reader.onload = e => {
         previewImg.src = e.target.result;
-        previewContainer.style.display = 'inline-block';
+        previewContainer.style.display = 'block';
         statusLabel.textContent = file.name;
         uploadLabel.style.display = "none";
         submitBtn.style.backgroundColor = "#e60023";

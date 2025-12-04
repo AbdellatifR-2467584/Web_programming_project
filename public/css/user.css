@@ -35,6 +35,7 @@ body.dark-mode h2 {
 
 .mainarea {
     flex: 1;
+    overflow-x: hidden;
 }
 
 body.dark-mode .postItem {
