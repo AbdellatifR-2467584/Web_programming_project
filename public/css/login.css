@@ -23,6 +23,11 @@ body.dark-mode input {
     color: #e0e0e0;
 }
 
+.grid {
+    pointer-events: none;
+}
+
+
 #background {
     position: fixed;
     top: 0;
