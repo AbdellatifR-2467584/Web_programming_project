@@ -298,8 +298,10 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('fetch-btn')?.addEventListener('click', async () => {
     const url = document.getElementById('recipe-url').value.trim();
     if (!url) return alert('Voer een geldige URL in.');
+    const loading = document.getElementById('loading');
 
     try {
+      loading.style.display = 'flex';
       const res = await fetch('/api/fetchrecipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -326,6 +328,8 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       alert('Fout bij ophalen recept: ' + err.message);
 
+    }finally {
+      loading.style.display = 'none';
     }
   });
 });

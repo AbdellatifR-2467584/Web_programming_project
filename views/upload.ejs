@@ -15,6 +15,10 @@
     <script src="/js/upload.js" defer></script>
 </head>
 
+<div id="loading" style="display:none;">
+  <div class="spinner"></div>
+</div>
+
 <body>
     <input type="hidden" id="post-data" value='<%= post ? JSON.stringify(post) : "" %>'>
 
