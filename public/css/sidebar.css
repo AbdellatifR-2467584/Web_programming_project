@@ -40,11 +40,7 @@
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-<<<<<<< HEAD
     gap: 20px;
-=======
-    gap: 8px;
->>>>>>> 8ee31ae7a3d3d0d0cbbc21a50f4faac2b1338c43
     width: 100%;
     align-items: center;
 }
