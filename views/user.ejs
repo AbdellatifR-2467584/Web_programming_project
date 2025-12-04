@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReciPin - <%= user.username %>
-    </title>
-    <meta name="description" content="Je account op ReciPin">
+    <title>ReciPin</title>
     <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
     <link rel="stylesheet" href="/css/user.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -33,73 +31,82 @@
                                 <a href="/post/<%= post.id %>">
                                     <img src="/<%= post.image_path %>" alt="post <%= post.id %>">
                                 </a>
-                                <div class="postButtons">
-                                    <form action="/post/<%= post.id %>/edit" method="GET" class="editForm">
-                                        <button type="submit" class="post-button" title="Bewerken">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button>
-                                    </form>
-                                    <form action="/post/<%= post.id %>/delete" method="POST" class="deleteForm">
-                                        <button type="submit"
-                                            onclick="return confirm('Weet je zeker dat je deze post wilt verwijderen?')">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                                <% if (locals.isOwner) { %>
+                                    <div class="postButtons">
+                                        <form action="/post/<%= post.id %>/edit" method="GET" class="editForm">
+                                            <button type="submit" class="post-button" title="Bewerken">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                        </form>
+                                        <form action="/post/<%= post.id %>/delete" method="POST" class="deleteForm">
+                                            <button type="submit"
+                                                onclick="return confirm('Weet je zeker dat je deze post wilt verwijderen?')">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <% } %>
                             </article>
                             <% }) %>
                     </div>
                 </section>
 
-                <section class="instellingen">
-                    <h2>Instellingen</h2>
-                    <ul class="settings-list">
-                        <li class="settings-item">
-                            <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
-                            <button id="darkmodeSwitch">🌓</button>
-                        </li>
-                        <li class="settings-item">
-                            <span><i class="bi bi-pencil-fill"></i> Wijzig gebruikersnaam</span>
-                            <button id="changeUsernameBtn">Bewerken</button>
-                        </li>
-                        <li class="settings-item">
-                            <span><i class="bi bi-lock-fill"></i> Wijzig wachtwoord</span>
-                            <button id="changePasswordBtn">Bewerken</button>
-                        </li>
-                        <li class="settings-item">
-                            <span><i class="bi bi-box-arrow-right"></i> Uitloggen</span>
-                            <button onclick="location.href='/logout'" class="logout-btn">Uitloggen</button>
-                        </li>
-                    </ul>
-                </section>
+                <% if (locals.isOwner) { %>
+                    <section class="instellingen">
+                        <h2>Instellingen</h2>
+                        <ul class="settings-list">
+                            <li class="settings-item">
+                                <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
+                                <button id="darkmodeSwitch">🌓</button>
+                            </li>
+                            <li class="settings-item">
+                                <span><i class="bi bi-pencil-fill"></i> Wijzig gebruikersnaam</span>
+                                <button id="changeUsernameBtn">Bewerken</button>
+                            </li>
+                            <li class="settings-item">
+                                <span><i class="bi bi-lock-fill"></i> Wijzig wachtwoord</span>
+                                <button id="changePasswordBtn">Bewerken</button>
+                            </li>
+                            <li class="settings-item">
+                                <span><i class="bi bi-box-arrow-right"></i> Uitloggen</span>
+                                <button onclick="location.href='/logout'" class="logout-btn">Uitloggen</button>
+                            </li>
+                        </ul>
+                    </section>
+                    <% } %>
 
-                <!-- Modals -->
-                <div id="changeUsernameModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h3>Wijzig gebruikersnaam</h3>
-                        <form id="changeUsernameForm">
-                            <input type="text" name="newUsername" placeholder="Nieuwe gebruikersnaam" required>
-                            <button type="submit">Opslaan</button>
-                        </form>
-                        <div id="usernameError" style="color:red; margin-top:5px;"></div>
-                    </div>
-                </div>
+                        <!-- Modals -->
+                        <% if (locals.isOwner) { %>
+                            <div id="changeUsernameModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h3>Wijzig gebruikersnaam</h3>
+                                    <form id="changeUsernameForm">
+                                        <input type="text" name="newUsername" placeholder="Nieuwe gebruikersnaam"
+                                            required>
+                                        <button type="submit">Opslaan</button>
+                                    </form>
+                                    <div id="usernameError" style="color:red; margin-top:5px;"></div>
+                                </div>
+                            </div>
 
-                <div id="changePasswordModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h3>Wijzig wachtwoord</h3>
-                        <form id="changePasswordForm">
-                            <input type="password" name="currentPassword" placeholder="Huidig wachtwoord" required>
-                            <input type="password" name="newPassword" placeholder="Nieuw wachtwoord" required>
-                            <input type="password" name="confirmPassword" placeholder="Bevestig nieuw wachtwoord"
-                                required>
-                            <button type="submit">Opslaan</button>
-                        </form>
-                        <div id="passwordError" style="color:red; margin-top:5px;"></div>
-                    </div>
-                </div>
+                            <div id="changePasswordModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <h3>Wijzig wachtwoord</h3>
+                                    <form id="changePasswordForm">
+                                        <input type="password" name="currentPassword" placeholder="Huidig wachtwoord"
+                                            required>
+                                        <input type="password" name="newPassword" placeholder="Nieuw wachtwoord"
+                                            required>
+                                        <input type="password" name="confirmPassword"
+                                            placeholder="Bevestig nieuw wachtwoord" required>
+                                        <button type="submit">Opslaan</button>
+                                    </form>
+                                    <div id="passwordError" style="color:red; margin-top:5px;"></div>
+                                </div>
+                            </div>
+                            <% } %>
 
             </main>
     </div>

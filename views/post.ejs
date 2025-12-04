@@ -86,7 +86,9 @@
                                         <img src="/resources/profilepictures/default.png" alt="User Avatar"
                                             class="user-avatar-small">
                                         <span class="username">
-                                            <%= post.username || 'Onbekend' %>
+                                            <a href="http://localhost:8080/user/<%= post.username %>">
+                                                <%= post.username || 'Onbekend' %>
+                                            </a>
                                         </span>
                                     </div>
                                     <% if (post.post_url) { %>
