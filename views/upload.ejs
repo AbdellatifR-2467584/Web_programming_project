@@ -5,95 +5,150 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload je recept - ReciPin</title>
-    <meta name="description" content="Deel je recepten op ReciPin"> 
-    
+    <meta name="description" content="Deel je recepten op ReciPin">
+
     <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/upload.css">
-    
+
     <script src="/js/upload.js" defer></script>
 </head>
 
 <body>
     <input type="hidden" id="post-data" value='<%= post ? JSON.stringify(post) : "" %>'>
-    
+
     <div class="layout">
         <nav class="sidebar-container">
             <%- include('partials/sidebar') %>
         </nav>
-            
+
         <main class="mainarea">
             <%- include('partials/searchbar') %>
-            
-            <section class="upload-recipe">
-                <h2>Upload je Recept</h2>
-                
-                <section class="fetch-section" aria-label="Recept ophalen van URL">
-                    <input type="url" id="recipe-url" placeholder="Voer recept-URL in" />
-                    <button id="fetch-btn" type="button">Haal recept op</button>
-                </section>
 
-                <form action="/upload" method="POST" class="recipe-form" enctype="multipart/form-data">
-                    <div class="form-image-upload">
-                        <input type="file" id="image" name="image" accept="image/*" hidden>
-                        <label for="image" class="custom-file-button">
-                            <i class="bi bi-upload"></i>
-                            Kies een afbeelding
-                        </label>
-                        
-                        <div id="image-preview" class="image-preview" style="display:none;">
-                            <img id="preview-img" src="" alt="Preview">
-                            <button type="button" id="remove-image" class="remove-image" aria-label="Verwijder afbeelding">&times;</button>
-                        </div>
-                        <span id="file-status">Geen bestand geselecteerd</span>
+                <div class="upload-container">
+                    <div class="upload-header">
+                        <h2>Maak een Pin</h2>
                     </div>
 
-                    <div class="form-recept-naam">
-                        <label for="title">Recept naam:</label>
-                        <input type="text" id="title" name="title" required>
-                    </div>
+                    <div class="upload-body">
+                        <form action="/upload" method="POST" class="recipe-form" enctype="multipart/form-data">
 
-                    <div class="form-ingredienten-lijst">
-                        <label for="ingredients">Ingrediënten lijst:</label>
-                        <div id="ingredienten-lijst">
-                            <div class="standaard-row">
-                                <input type="text" id="ingredients" name="ingredients[]" placeholder="Ingrediënt">
-                                <button type="button" class="add" id="add">+</button>
+                            <!-- Left Column: Media -->
+                            <div class="upload-media-col">
+                                <section class="fetch-section" aria-label="Recept ophalen van URL">
+                                    <div class="fetch-wrapper">
+                                        <input type="url" id="recipe-url" placeholder="Recept URL ophalen" />
+                                        <button id="fetch-btn" type="button" class="secondary-btn">Ophalen</button>
+                                    </div>
+                                </section>
+                                <div class="form-image-upload">
+                                    <input type="file" id="image" name="image" accept="image/*" hidden>
+                                    <label for="image" class="custom-file-button" id="upload-label">
+                                        <div class="upload-icon-circle">
+                                            <i class="bi bi-arrow-up-circle-fill"></i>
+                                        </div>
+                                        <p>Kies een bestand of sleep het hierheen</p>
+                                        <span class="upload-recommendation">We raden aan een afbeelding van
+                                            hoge kwaliteit te gebruiken (.jpg, .png)</span>
+                                    </label>
+
+                                    <div id="image-preview" class="image-preview" style="display:none;">
+                                        <img id="preview-img" src="" alt="Preview">
+                                        <button type="button" id="remove-image" class="remove-image"
+                                            aria-label="Verwijder afbeelding">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </div>
+                                    <span id="file-status" style="display: none;">Geen bestand
+                                        geselecteerd</span>
+                                </div>
+
+
+                                <div class="form-image-upload" style="margin-top: 20px;">
+                                    <input type="file" id="media" name="media" accept="image/*,video/*" hidden>
+                                    <label for="media" class="custom-file-button" id="media-label">
+                                        <div class="upload-icon-circle">
+                                            <i class="bi bi-film"></i>
+                                        </div>
+                                        <p>Voeg walkthrough media toe (optioneel)</p>
+                                        <span class="upload-recommendation">Video of afbeelding voor in de post</span>
+                                    </label>
+
+                                    <div id="media-preview" class="image-preview" style="display:none;">
+                                        <div id="media-content"></div>
+                                        <button type="button" id="remove-media" class="remove-image"
+                                            aria-label="Verwijder media">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </div>
+                                    <span id="media-status" style="display: none;">Geen bestand
+                                        geselecteerd</span>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="form-instructies">
-                        <label for="steps">Instructies:</label>
-                        <div id="stappen-lijst">
-                            <div class="stappen-row">
-                                <input type="text" id="steps" name="steps[]" required placeholder="Type hier je eerste stap">
-                                <button type="button" class="add" id="add2">+</button>
+                            <!-- Right Column: Details -->
+                            <div class="upload-details-col">
+                                <div class="form-post-knop-top">
+                                    <button type="submit" class="submit-button publish-btn"
+                                        aria-label="Recept plaatsen">
+                                        Publiceren
+                                    </button>
+                                </div>
+
+                                <div class="form-recept-naam">
+                                    <label for="title" class="sr-only">Recept naam</label>
+                                    <input type="text" id="title" name="title" placeholder="Voeg je titel toe" required
+                                        class="title-input">
+                                </div>
+
+                                <div class="user-profile-stub">
+                                    <img src="/resources/profilepictures/default.png" alt="User"
+                                        class="user-avatar-small">
+                                    <span class="username">Jouw profiel</span>
+                                </div>
+
+                                <div class="form-ingredienten-lijst">
+                                    <label for="ingredients">Ingrediënten</label>
+                                    <div id="ingredienten-lijst" class="dynamic-list">
+                                        <div class="standaard-row">
+                                            <input type="text" id="ingredients" name="ingredients[]"
+                                                placeholder="Toevoegen...">
+                                            <button type="button" class="add" id="add">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-instructies">
+                                    <label for="steps">Bereiding</label>
+                                    <div id="stappen-lijst" class="dynamic-list">
+                                        <div class="stappen-row">
+                                            <input type="text" id="steps" name="steps[]" required
+                                                placeholder="Toevoegen...">
+                                            <button type="button" class="add" id="add2">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-recept-url">
+                                    <label for="post_url">Link naar bestemming</label>
+                                    <input type="url" id="post_url" name="post_url"
+                                        placeholder="Voeg een link naar de bestemming toe">
+                                </div>
+
+                                <div class="form-youtube-url">
+                                    <label for="youtube_url">Youtube video</label>
+                                    <input type="url" id="youtube_url" name="youtube_url"
+                                        placeholder="Link naar YouTube video">
+                                </div>
+
+                                <input type="hidden" id="image_url_external" name="image_url_external">
                             </div>
-                        </div>
+                        </form>
                     </div>
-
-                    <div class="form-recept-url">
-                        <label for="post_url">Recept link:</label> <input type="url" id="post_url" name="post_url">
-                    </div>
-
-                    <div class="form-youtube-url">
-                        <label for="youtube_url">Youtube link:</label>
-                        <input type="url" id="youtube_url" name="youtube_url" placeholder="https://youtube.com/...">
-                    </div>
-
-                    <input type="hidden" id="image_url_external" name="image_url_external">
-
-                    <div class="form-post-knop">
-                        <span class="label-text">Post</span>
-                        <button type="submit" class="submit-button" aria-label="Recept plaatsen">
-                            <i class="bi bi-plus"></i>
-                        </button>
-                    </div>
-                </form>
-            </section>
+                </div>
         </main>
     </div>
 </body>
+
 </html>

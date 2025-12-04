@@ -8,6 +8,7 @@ export function InitializePostsDatabase() {
       userId INTEGER NOT NULL,
       title TEXT,
       image_path TEXT,
+      media_path TEXT,
       ingredients TEXT,
       steps TEXT,
       youtube_url TEXT,
@@ -18,15 +19,15 @@ export function InitializePostsDatabase() {
   `).run();
 }
 
-export function createPost({ userId, title, image_path, ingredients, steps, youtube_url, post_url }) {
+export function createPost({ userId, title, image_path, media_path, ingredients, steps, youtube_url, post_url }) {
   // Filter lege inputs uit
   const cleanIngredients = (ingredients || []).filter(item => item && item.trim() !== "");
   const cleanSteps = (steps || []).filter(item => item && item.trim() !== "");
   const stmt = db.prepare(`
-    INSERT INTO posts (userId, title, image_path, ingredients, steps, youtube_url, post_url)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO posts (userId, title, image_path, media_path, ingredients, steps, youtube_url, post_url)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  return stmt.run(userId, title, image_path, JSON.stringify(cleanIngredients), JSON.stringify(cleanSteps), youtube_url || null, post_url || null);
+  return stmt.run(userId, title, image_path, media_path || null, JSON.stringify(cleanIngredients), JSON.stringify(cleanSteps), youtube_url || null, post_url || null);
 }
 export function getAllPosts() {
   return db.prepare(`
@@ -92,7 +93,7 @@ export function deletePostById(id) {
   stmt.run(id);
 }
 
-export function updatePostById(id, { title, ingredients, steps, youtube_url, post_url, image_path }) {
+export function updatePostById(id, { title, ingredients, steps, youtube_url, post_url, image_path, media_path }) {
   const cleanIngredients = (ingredients || []).filter(item => item && item.trim() !== "");
   const cleanSteps = (steps || []).filter(item => item && item.trim() !== "");
 
@@ -103,7 +104,8 @@ export function updatePostById(id, { title, ingredients, steps, youtube_url, pos
       steps = ?,
       youtube_url = ?,
       post_url = ?,
-      image_path = ?
+      image_path = ?,
+      media_path = ?
     WHERE id = ?
   `);
 
@@ -114,6 +116,7 @@ export function updatePostById(id, { title, ingredients, steps, youtube_url, pos
     youtube_url || null,
     post_url || null,
     image_path || null,
+    media_path || null,
     id
   );
 }

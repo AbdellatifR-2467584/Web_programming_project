@@ -1,4 +1,5 @@
 export function extractYouTubeId(url) {
+    if (!url) return;
     try {
         const parsedUrl = new URL(url);
         if (parsedUrl.hostname === 'youtu.be') {

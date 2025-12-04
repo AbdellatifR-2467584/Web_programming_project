@@ -12,19 +12,31 @@ window.addEventListener('DOMContentLoaded', () => {
   const youtubeInput = document.getElementById('youtube_url');
   const ingredientContainer = document.getElementById('ingredienten-lijst');
   const stepsContainer = document.getElementById('stappen-lijst');
+
+  // Main Image Elements
   const imageInput = document.getElementById('image');
   const previewContainer = document.getElementById('image-preview');
   const previewImg = document.getElementById('preview-img');
   const removeBtn = document.getElementById('remove-image');
   const statusLabel = document.getElementById('file-status');
-  const uploadLabel = document.querySelector('.custom-file-button');
+  const uploadLabel = document.getElementById('upload-label');
+
+  // Walkthrough Media Elements
+  const mediaInput = document.getElementById('media');
+  const mediaPreviewContainer = document.getElementById('media-preview');
+  const mediaContent = document.getElementById('media-content');
+  const removeMediaBtn = document.getElementById('remove-media');
+  const mediaStatusLabel = document.getElementById('media-status');
+  const mediaLabel = document.getElementById('media-label');
+
   const submitBtn = form.querySelector('.submit-button');
 
   const postDataInput = document.getElementById('post-data');
   const postData = postDataInput && postDataInput.value ? JSON.parse(postDataInput.value) : null;
 
+  // --- Main Image Logic ---
   function resetImage() {
-    uploadLabel.style.display = "inline-block";
+    uploadLabel.style.display = "flex";
     imageInput.value = "";
     previewImg.src = "";
     previewContainer.style.display = "none";
@@ -39,7 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const reader = new FileReader();
       reader.onload = e => {
         previewImg.src = e.target.result;
-        previewContainer.style.display = 'inline-block';
+        previewContainer.style.display = 'block';
         statusLabel.textContent = file.name;
         uploadLabel.style.display = "none";
         submitBtn.style.backgroundColor = "#e60023";
@@ -50,6 +62,51 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   removeBtn.addEventListener('click', resetImage);
+
+  // --- Walkthrough Media Logic ---
+  function resetMedia() {
+    mediaLabel.style.display = "flex";
+    mediaInput.value = "";
+    mediaContent.innerHTML = "";
+    mediaPreviewContainer.style.display = "none";
+    mediaStatusLabel.textContent = "Geen bestand geselecteerd";
+    mediaInput.disabled = false;
+  }
+
+  mediaInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileType = file.type;
+      const reader = new FileReader();
+
+      reader.onload = e => {
+        mediaContent.innerHTML = ""; // Clear previous content
+
+        if (fileType.startsWith('video/')) {
+          const video = document.createElement('video');
+          video.src = e.target.result;
+          video.controls = true;
+          video.style.maxWidth = '100%';
+          video.style.maxHeight = '400px';
+          video.style.borderRadius = '16px';
+          mediaContent.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = "Media Preview";
+          mediaContent.appendChild(img);
+        }
+
+        mediaPreviewContainer.style.display = 'block';
+        mediaStatusLabel.textContent = file.name;
+        mediaLabel.style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    } else resetMedia();
+  });
+
+  removeMediaBtn.addEventListener('click', resetMedia);
+
 
   async function downloadImageToInput(imageUrl) {
     if (!imageUrl) return;
@@ -169,6 +226,7 @@ window.addEventListener('DOMContentLoaded', () => {
       lastAdd?.click();
     }
   });
+
   function showExistingImage(imagePath) {
     if (!imagePath) return;
 
@@ -184,6 +242,35 @@ window.addEventListener('DOMContentLoaded', () => {
     submitBtn.style.backgroundColor = '#e60023';
     submitBtn.style.color = 'white';
   }
+
+  function showExistingMedia(mediaPath) {
+    if (!mediaPath) return;
+
+    const normalized = new URL(mediaPath, window.location.origin).pathname;
+    const isVideo = normalized.endsWith('.mp4') || normalized.endsWith('.webm') || normalized.endsWith('.mov');
+
+    mediaContent.innerHTML = "";
+    if (isVideo) {
+      const video = document.createElement('video');
+      video.src = normalized;
+      video.controls = true;
+      video.style.maxWidth = '100%';
+      video.style.maxHeight = '400px';
+      video.style.borderRadius = '16px';
+      mediaContent.appendChild(video);
+    } else {
+      const img = document.createElement('img');
+      img.src = normalized;
+      img.alt = "Media Preview";
+      mediaContent.appendChild(img);
+    }
+
+    mediaPreviewContainer.style.display = 'block';
+    mediaStatusLabel.textContent = normalized.split('/').pop();
+    mediaInput.disabled = true;
+    mediaLabel.style.display = 'none';
+  }
+
   // ---------------- PREFILL DATA ----------------
   if (postData) {
     form.action = `/post/${postData.id}/edit`;
@@ -196,6 +283,10 @@ window.addEventListener('DOMContentLoaded', () => {
     if (postData.image_path) {
       showExistingImage(postData.image_path);
     }
+    if (postData.media_path) {
+      showExistingMedia(postData.media_path);
+    }
+
     console.log("test");
     renderIngredients(postData.ingredients || []);
     renderSteps(postData.steps || []);

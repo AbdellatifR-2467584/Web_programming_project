@@ -4,10 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReciPin</title>
+    <title>ReciPin - <%= post.title %>
+    </title>
+
     <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
     <link rel="stylesheet" href="/css/post.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <script src="/js/post.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
         integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
@@ -16,91 +19,148 @@
 
 <body>
     <div class="layout">
-        <%- include('partials/sidebar') %>
+        <nav class="sidebar-container">
+            <%- include('partials/sidebar') %>
+        </nav>
 
-            <main class="mainarea">
-                <%- include('partials/searchbar') %>
+        <main class="mainarea">
+            <%- include('partials/searchbar') %>
 
-                    <section class="page">
-                        <article class="post" id="post" data-title="<%= post.title %>"
-                            data-current-user='<%= currentUser ? JSON.stringify(currentUser) : "" %>'>
+                <div class="page">
+                    <div class="post-modal" id="post" data-title="<%= post.title %>"
+                        data-current-user='<%= currentUser ? JSON.stringify(currentUser) : "" %>'>
 
-                            <header class="post-header">
-                                <h2 id="postTitel">
-                                    <%= post.title %>
-                                </h2>
-                                <div class="post-header-buttons">
-                                    <button id="clipboard" onclick="clipboard_copy()">
+                        <div class="post-media">
+                            <figure class="picture">
+                                <img src="/<%= post.image_path %>" alt="<%= post.title %>">
+                            </figure>
+
+                            <% if (post.media_path) { %>
+                                <div class="walkthrough-media" style="margin-top: 20px;">
+                                    <% if (post.media_path.endsWith('.mp4') || post.media_path.endsWith('.webm') ||
+                                        post.media_path.endsWith('.mov')) { %>
+                                        <video controls style="width: 100%; border-radius: 16px;">
+                                            <source src="/<%= post.media_path %>" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        <% } else { %>
+                                            <img src="/<%= post.media_path %>" alt="Walkthrough Media"
+                                                style="width: 100%; border-radius: 16px;">
+                                            <% } %>
+                                </div>
+                                <% } %>
+
+                                    <% if (post.youtube_url && post.youtube_url !=='https://www.youtube.com/embed/null'
+                                        ) { %>
+                                        <div class="youtube-wrapper" data-url="<%= post.youtube_url %>">
+                                            <iframe width="100%" height="315" src="<%= post.youtube_url %>"
+                                                frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen></iframe>
+                                        </div>
+                                        <% } %>
+                        </div>
+
+                        <div class="post-details">
+                            <div class="post-header">
+                                <div class="post-actions" data-html2canvas-ignore="true">
+                                    <button id="clipboard" class="action-btn" onclick="clipboard_copy()"
+                                        title="Kopieer Link">
                                         <i class="bi bi-clipboard"></i>
                                     </button>
-                                    <button id="pdf" onclick="download_pdf()">
+                                    <button id="pdf" class="action-btn" onclick="download_pdf()" title="Download PDF">
                                         <i class="bi bi-file-earmark-pdf"></i>
                                     </button>
-                                    <a href="/post/<%= post.id %>/volgmee" class="follow-along-icon" title="Volg Mee">
+                                    <a href="/post/<%= post.id %>/volgmee" class="action-btn" title="Volg Mee"
+                                        style="display:flex; align-items:center; justify-content:center; text-decoration:none; color:inherit;">
                                         <i class="bi bi-play-circle-fill"></i>
                                     </a>
                                 </div>
-                            </header>
 
-                            <div class="container">
-                                <figure class="picture">
-                                    <img src="/<%= post.image_path %>" alt="Recipe">
-                                    <figcaption id="poster">Gepost door: <%= post.username %>
-                                    </figcaption>
-                                </figure>
+                                <h1 id="postTitel">
+                                    <%= post.title %>
+                                </h1>
 
-                                <section class="ingredienten"
-                                    data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
-                                    <h2>Ingrediënten:</h2>
-                                    <ul class="list-ingredienten"></ul>
-                                </section>
+                                <div class="post-meta">
+                                    <div class="user-info">
+                                        <img src="/resources/profilepictures/default.png" alt="User Avatar"
+                                            class="user-avatar-small">
+                                        <span class="username">
+                                            <%= post.username || 'Onbekend' %>
+                                        </span>
+                                    </div>
+                                    <% if (post.post_url) { %>
+                                        <div class="siteurl" data-url="<%= post.post_url %>">
+                                            <a href="<%= post.post_url %>" target="_blank" class="source-link">
+                                                Link naar bron
+                                            </a>
+                                        </div>
+                                        <% } %>
+                                </div>
+                            </div>
 
-                                <section class="instructies" data-ingredients='<%- JSON.stringify(post.steps) %>'>
-                                    <h2>Stappen:</h2>
-                                    <ol class="list-stappen"></ol>
-                                </section>
-
-                                <% if (post.youtube_url && post.youtube_url !=='https://www.youtube.com/embed/null' ) {
-                                    %>
-                                    <section class="youtube" data-url="<%= post.youtube_url %>">
-                                        <iframe width="560" height="315" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen src="<%= post.youtube_url %>"></iframe>
-                                    </section>
+                            <div class="post-content">
+                                <% if (post.ingredients && post.ingredients.length> 0) { %>
+                                    <div class="ingredienten"
+                                        data-ingredients='<%- JSON.stringify(post.ingredients) %>'>
+                                        <h3>Ingrediënten</h3>
+                                        <ul class="list-ingredienten">
+                                            <% post.ingredients.forEach(ingredient=> { %>
+                                                <li>
+                                                    <%= ingredient %>
+                                                </li>
+                                                <% }); %>
+                                        </ul>
+                                    </div>
                                     <% } %>
 
-                                        <% if (post.post_url) { %>
-                                            <section class="siteurl" data-url="<%= post.post_url %>">
-                                                <a href="<%= post.post_url %>" target="_blank">
-                                                    <%= post.post_url %>
-                                                </a>
-                                            </section>
+                                        <% if (post.steps && post.steps.length> 0) { %>
+                                            <div class="instructies" data-steps='<%- JSON.stringify(post.steps) %>'>
+                                                <h3>Bereiding</h3>
+                                                <ol class="list-stappen">
+                                                    <% post.steps.forEach(step=> { %>
+                                                        <li>
+                                                            <%= step %>
+                                                        </li>
+                                                        <% }); %>
+                                                </ol>
+                                            </div>
                                             <% } %>
                             </div>
 
-                            <section class="comments" data-html2canvas-ignore="true">
-                                <h3>Comments</h3>
-                                <div id="comment-list" class="comment-list"></div>
+                            <div class="comments" data-html2canvas-ignore="true">
+                                <h3>Reacties</h3>
+                                <div id="comment-list" class="comment-list">
+                                </div>
+
                                 <% if (currentUser) { %>
                                     <form class="comment-form">
-                                        <textarea id="comment-input" placeholder="Write a comment..."
-                                            rows="3"></textarea>
-                                        <button type="button" id="comment-submit">Add Comment</button>
+                                        <div class="comment-input-wrapper">
+                                            <img src="/resources/profilepictures/default.png" alt="My Avatar"
+                                                class="user-avatar-tiny">
+                                            <textarea id="comment-input" placeholder="Voeg een reactie toe..."
+                                                rows="1"></textarea>
+                                        </div>
+                                        <button type="button" id="comment-submit"
+                                            style="margin-top: 10px;">Plaatsen</button>
                                     </form>
-                                    <% } %>
-                            </section>
-                        </article>
+                                    <% } else { %>
+                                        <p><a href="/login">Log in</a> om te reageren.</p>
+                                        <% } %>
+                            </div>
+                        </div>
+                    </div id="grid">
 
-                        <%- include('partials/gridSearch') %>
-                    </section>
-            </main>
+                    <%- include('partials/gridSearch') %>
+                </div>
+        </main>
     </div>
+
+    <script type="module">
+        import initComments from "/js/comments.js";
+        const postId = "<%= post.id %>";
+        initComments(postId);
+    </script>
 </body>
 
 </html>
-
-<script type="module">
-    import initComments from "/js/comments.js";
-    const postId = "<%= post.id %>";
-    initComments(postId);
-</script>

@@ -69,7 +69,7 @@ router.get('/post/:id/edit', isAuthenticated, (req, res) => {
     res.render('upload', { post });
 });
 
-router.post('/post/:id/edit', isAuthenticated, upload.single('image'), (req, res) => {
+router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 1 }]), (req, res) => {
     const post = getPostInfoByID(req.params.id);
     if (!post) return res.status(404).send("Post not found");
 
@@ -79,15 +79,19 @@ router.post('/post/:id/edit', isAuthenticated, upload.single('image'), (req, res
 
     const { title, ingredients, steps, youtube_url, site_url } = req.body;
     // Use forward slashes for cross-platform compatibility
-    const image_path = req.file ? "uploads/" + req.file.filename : post.image_path;
+    const image_path = req.files['image'] ? "uploads/" + req.files['image'][0].filename : post.image_path;
+    const media_path = req.files['media'] ? "uploads/" + req.files['media'][0].filename : post.media_path;
+
+    const videoId = extractYouTubeId(youtube_url);
 
     updatePostById(post.id, {
         title,
         ingredients,
         steps,
-        youtube_url,
+        youtube_url: videoId ? `https://www.youtube.com/embed/${videoId}` : "",
         site_url,
-        image_path
+        image_path,
+        media_path
     });
 
     res.redirect(`/post/${post.id}`);
@@ -129,33 +133,34 @@ router.get("/uploadlink", (request, response) => {
     response.render("uploadlink");
 });
 
-router.post("/upload", upload.single("image"), async (request, response) => {
+router.post("/upload", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 1 }]), async (request, response) => {
     console.log("Session user:", request.session.user);
 
     const userId = request.session.user?.id;
 
     const { title, ingredients, steps, youtube_url, post_url, image_url_external } = request.body;
-    
+
     let image_path = "";
+    let media_path = "";
 
     try {
-        if (request.file) {
-            image_path = "uploads/" + request.file.filename;
-        } 
+        if (request.files['image']) {
+            image_path = "uploads/" + request.files['image'][0].filename;
+        }
         else if (image_url_external) {
             console.log("AI Afbeelding downloaden van:", image_url_external);
-            
+
             const res = await fetch(image_url_external);
             if (!res.ok) throw new Error(`Kon afbeelding niet downloaden: ${res.statusText}`);
-            
+
             const arrayBuffer = await res.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
 
             const filename = `ai-${Date.now()}-${Math.floor(Math.random() * 1000)}.jpg`;
-            
-            const uploadDir = path.join(process.cwd(), 'uploads'); 
-            
-            if (!fs.existsSync(uploadDir)){
+
+            const uploadDir = path.join(process.cwd(), 'uploads');
+
+            if (!fs.existsSync(uploadDir)) {
                 fs.mkdirSync(uploadDir, { recursive: true });
             }
 
@@ -165,22 +170,27 @@ router.post("/upload", upload.single("image"), async (request, response) => {
             image_path = "uploads/" + filename;
         }
 
+        if (request.files['media']) {
+            media_path = "uploads/" + request.files['media'][0].filename;
+        }
+
     } catch (error) {
         console.error("Fout bij verwerken afbeelding:", error);
     }
 
     const videoId = extractYouTubeId(youtube_url);
-    
-    createPost({ 
-        userId, 
-        image_path, 
-        title, 
-        ingredients, 
-        steps, 
-        youtube_url: videoId ? `https://www.youtube.com/embed/${videoId}` : "", 
-        post_url 
+
+    createPost({
+        userId,
+        image_path,
+        media_path,
+        title,
+        ingredients,
+        steps,
+        youtube_url: videoId ? `https://www.youtube.com/embed/${videoId}` : "",
+        post_url
     });
-    
+
     response.redirect("/");
 });
 
@@ -198,11 +208,11 @@ router.post("/api/fetchrecipe", async (req, res) => {
         }
 
         const completion = await openai.chat.completions.create({
-        model: "gpt-4.1-mini", 
-        messages: [
-            {
-                role: "system",
-                content: `Je bent een expert in het extraheren van receptdata uit HTML.
+            model: "gpt-4.1-mini",
+            messages: [
+                {
+                    role: "system",
+                    content: `Je bent een expert in het extraheren van receptdata uit HTML.
                 
                 Jouw taak is JSON teruggeven in dit formaat:
                 {
@@ -225,17 +235,17 @@ router.post("/api/fetchrecipe", async (req, res) => {
                 - Taal: Nederlands.
                 - Als stappen te lang zijn: vat samen.
                 - Output moet valid JSON zijn.`
-            },
-            {
-                role: "user",
-                content: `Haal de data uit deze HTML.
+                },
+                {
+                    role: "user",
+                    content: `Haal de data uit deze HTML.
                 Basis URL van de pagina: ${url}
                 
                 HTML Content:
                 ${html}`
-            },
-        ],
-        response_format: { type: "json_object" }
+                },
+            ],
+            response_format: { type: "json_object" }
         });
 
         let recept;
