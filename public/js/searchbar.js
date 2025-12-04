@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Optioneel: live search op homepage grid
+        if (window.location.pathname !== "/") return;
         searchForm.addEventListener("input", async (event) => {
             event.preventDefault();
 

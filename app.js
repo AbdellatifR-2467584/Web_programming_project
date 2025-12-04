@@ -68,7 +68,7 @@ app.use(indexRoutes);
 // Middleware for unknown routes
 // Must be last in pipeline
 app.use((request, response, next) => {
-  response.status(404).send("Sorry can't find that!");
+  response.status(404).render("404");
 });
 
 // Middleware for error handling
