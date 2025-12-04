@@ -35,6 +35,7 @@
                                 <img src="/<%= post.image_path %>" alt="<%= post.title %>">
                             </figure>
 
+<<<<<<< HEAD
                             <% if (post.media_path) { %>
                                 <div class="walkthrough-media" style="margin-top: 20px;">
                                     <% if (post.media_path.endsWith('.mp4') || post.media_path.endsWith('.webm') ||
@@ -59,6 +60,15 @@
                                                 allowfullscreen></iframe>
                                         </div>
                                         <% } %>
+=======
+                            <% if (post.youtube_url && post.youtube_url !=='https://www.youtube.com/embed/null' ) { %>
+                                <div class="youtube-wrapper" data-url="<%= post.youtube_url %>">
+                                    <iframe width="100%" height="315" src="<%= post.youtube_url %>" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen></iframe>
+                                </div>
+                                <% } %>
+>>>>>>> 8ee31ae7a3d3d0d0cbbc21a50f4faac2b1338c43
                         </div>
 
                         <div class="post-details">
