@@ -401,11 +401,6 @@ body.dark-mode .post-details span {
     color: #e4e6eb;
 }
 
-body.dark-mode .post-modal {
-    background-color: #ffffff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.773);
-}
-
 
 body.dark-mode .action-btn {
     color: #e4e6eb;
