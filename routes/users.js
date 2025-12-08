@@ -11,13 +11,10 @@ router.get("/user/:username", isAuthenticated, (req, res) => {
         const user = getUserByUsername(req.params.username);
         if (!user) return res.status(404).send("User not found");
 
-        if (req.session.user.username !== user.username) {
-            return res.status(403).send("Je hebt geen toegang tot deze pagina");
-        }
-
+        const isOwner = req.session.user && req.session.user.username === user.username;
         const posts = getAllPostsFromUser(user.id);
 
-        res.render("user", { user, posts });
+        res.render("user", { user, posts, isOwner });
     } catch (err) {
         console.error("Error fetching user page:", err);
         res.status(500).send("Failed to load user");

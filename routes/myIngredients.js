@@ -4,7 +4,7 @@ import { getAllUniqueIngredients, getPostsByIngredients } from "../db/posts.js";
 
 const router = express.Router();
 
-router.get("/my-ingredients", isAuthenticated, (req, res) => {
+router.get("/my-ingredients", (req, res) => {
     try {
         const allIngredients = getAllUniqueIngredients();
         res.render("my-ingredients", {
@@ -18,7 +18,7 @@ router.get("/my-ingredients", isAuthenticated, (req, res) => {
 });
 
 
-router.get("/api/recipes-by-ingredients", isAuthenticated, (req, res) => {
+router.get("/api/recipes-by-ingredients", (req, res) => {
     try {
         const selectedIngredients = req.query.ingredients
             ? req.query.ingredients.split(',')

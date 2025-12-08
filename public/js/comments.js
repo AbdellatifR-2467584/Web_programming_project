@@ -21,11 +21,16 @@ export default function initComments(postId) {
                     : '';
 
                 return `<div class="comment">
-                <p>
-                    <strong>${c.username}:</strong> ${c.content}
-                    <span class="delete-wrapper">${deleteBtn}</span>
-                </p>
-            </div>`;
+    <p>
+        <strong>
+            <a href="/user/${c.username}" class="comment-user-link">
+                ${c.username}
+            </a>:
+        </strong> 
+        ${c.content}
+        <span class="delete-wrapper">${deleteBtn}</span>
+    </p>
+</div>`;
             }).join("");
 
             // attach delete listeners
