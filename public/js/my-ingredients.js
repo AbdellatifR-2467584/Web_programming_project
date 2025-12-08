@@ -11,9 +11,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const findButton = document.getElementById("find-recipes-btn");
     const recipesGrid = document.getElementById("recipes-grid");
     const labels = ingredientList.querySelectorAll(".ingredient-label");
+    const loadMoreBtn = document.getElementById("load-more-btn");
+    let visibleLimit = 20;
+
+
+    function applyLimit() {
+        const query = searchInput.value.toLowerCase().trim();
+
+        // Als we aan het zoeken zijn, negeer de limiet en verberg de knop
+        if (query.length > 0) {
+            loadMoreBtn.classList.add("hidden");
+            return;
+        }
+
+        // Als we NIET zoeken, pas de 'Toon meer' logica toe
+        labels.forEach((label, index) => {
+            if (index >= visibleLimit) {
+                label.classList.add("hidden");
+            } else {
+                label.classList.remove("hidden");
+            }
+        });
+
+        // Verberg knop als alles getoond is
+        if (visibleLimit >= labels.length) {
+            loadMoreBtn.classList.add("hidden");
+        } else {
+            loadMoreBtn.classList.remove("hidden");
+            loadMoreBtn.innerText = "Toon meer ingrediënten";
+        }
+    }
+
+    // Voer direct uit bij laden
+    applyLimit();
+
+    // Event listener voor de knop
+    loadMoreBtn.addEventListener("click", () => {
+        visibleLimit += 20; // Laat er 20 meer zien
+        applyLimit();
+    });
+
 
     searchInput.addEventListener("input", () => {
         const query = searchInput.value.toLowerCase().trim();
+        if (searchInput.value.trim() === "") {
+            applyLimit(); // Herstel de 'batch' weergave als zoekbalk leeg is
+        } else {
+            loadMoreBtn.classList.add("hidden"); // Verberg knop tijdens typen
+        }
         labels.forEach(label => {
             const ingredientName = label.querySelector("span").textContent.toLowerCase();
             if (ingredientName.includes(query)) {
@@ -82,17 +127,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function resizeMasonry(grid) {
-    const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
-    const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('gap'));
-    const items = grid.querySelectorAll('.card');
+        const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+        const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('gap'));
+        const items = grid.querySelectorAll('.card');
 
-    items.forEach(item => {
-        const img = item.querySelector('img');
-        const itemHeight = img.getBoundingClientRect().height;
-        const rowSpan = Math.ceil((itemHeight + rowGap) / (rowHeight + rowGap));
-        item.style.gridRowEnd = `span ${rowSpan}`;
-    });
-}
+        items.forEach(item => {
+            const img = item.querySelector('img');
+            const itemHeight = img.getBoundingClientRect().height;
+            const rowSpan = Math.ceil((itemHeight + rowGap) / (rowHeight + rowGap));
+            item.style.gridRowEnd = `span ${rowSpan}`;
+        });
+    }
 
     window.addEventListener("resize", () => resizeMasonry(recipesGrid));
 });

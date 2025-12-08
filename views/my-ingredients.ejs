@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn Ingrediënten - ReciPin</title>
-    <meta name="description" content="Kijk welke recepten je kan maken met de ingredienten die je thuis hebt."> 
+    <meta name="description" content="Kijk welke recepten je kan maken met de ingredienten die je thuis hebt.">
     <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/my-ingredients.css">
-   
+
     <script src="/js/my-ingredients.js" defer></script>
 </head>
 
@@ -19,38 +19,45 @@
         <nav class="sidebar-container">
             <%- include('partials/sidebar') %>
         </nav>
-            
+
         <main class="mainarea">
             <%- include('partials/searchbar') %>
-            
-            <section class="my-ingredients-container">
-                <h2>Wat heb je in huis?</h2>
-                <p>Selecteer de ingrediënten die je hebt. Wij tonen de recepten die je volledig kunt maken.</p>
 
-                <div class="ingredient-controls">
-                    <input type="text" id="ingredient-search" placeholder="Zoek ingrediënt...">
-                    <button id="find-recipes-btn">Vind Recepten</button>
-                </div>
+                <section class="my-ingredients-container">
+                    <h2>Wat heb je in huis?</h2>
+                    <p>Selecteer de ingrediënten die je hebt. Wij tonen de recepten die je volledig kunt maken.</p>
 
-                <div class="ingredient-list" id="ingredient-list">
-                    <% if (locals.allIngredients && allIngredients.length > 0) { %>
-                        <% allIngredients.forEach(ingredient => { %>
-                            <label class="ingredient-label">
-                                <input type="checkbox" value="<%= ingredient %>">
-                                <span><%= ingredient %></span>
-                            </label>
-                        <% }); %>
-                    <% } else { %>
-                        <p>Geen ingrediënten gevonden in de database.</p>
-                    <% } %>
-                </div>
+                    <div class="ingredient-controls">
+                        <input type="text" id="ingredient-search" placeholder="Zoek ingrediënt...">
+                        <button id="find-recipes-btn">Vind Recepten</button>
+                    </div>
 
-                <h3>Beschikbare Recepten</h3>
-                
-                <div class="grid" id="recipes-grid">
-                </div>
-            </section>
+                    <div class="ingredient-list" id="ingredient-list">
+                        <% if (locals.allIngredients && allIngredients.length> 0) { %>
+                            <% allIngredients.forEach(ingredient=> { %>
+                                <label class="ingredient-label">
+                                    <input type="checkbox" value="<%= ingredient %>">
+                                    <span>
+                                        <%= ingredient %>
+                                    </span>
+                                </label>
+                                <% }); %>
+                                    <% } else { %>
+                                        <p>Geen ingrediënten gevonden in de database.</p>
+                                        <% } %>
+                    </div>
+
+                    <div class="load-more-wrapper">
+                        <button id="load-more-btn">Toon meer ingrediënten</button>
+                    </div>
+
+                    <h3>Beschikbare Recepten</h3>
+
+                    <div class="grid" id="recipes-grid">
+                    </div>
+                </section>
         </main>
     </div>
 </body>
+
 </html>

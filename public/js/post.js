@@ -5,10 +5,14 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
 function download_pdf() {
     const pdf = document.getElementById("post");
+    const wasDark = document.body.classList.contains('dark-mode');
+    if (wasDark) document.body.classList.remove('dark-mode');
     const title = pdf.dataset.title;
     html2pdf().from(pdf).save(title);
+    if (wasDark) document.body.classList.add('dark-mode');
 }
 
 async function clipboard_copy() {
