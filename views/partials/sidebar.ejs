@@ -15,6 +15,12 @@
         <a href="/my-ingredients" class="nav-item" aria-label="Mijn Ingrediënten">
             <i class="bi bi-basket-fill"></i>
         </a>
+        <% if (locals.user) { %>
+            <a href="/user/<%= user.username %>" class="nav-item mobile-user-link" aria-label="Profiel">
+                <img src="/resources/profilepictures/default.png" alt="Profiel"
+                    style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+            </a>
+            <% } %>
     </nav>
 </aside>
 

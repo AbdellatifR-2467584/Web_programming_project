@@ -172,3 +172,45 @@ body.dark-mode .profile-pic-small {
 .searchbar a:first-of-type {
     margin-left: 30px;
 }
+
+@media (max-width: 768px) {
+    .searchbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        height: auto;
+    }
+
+    .search-container {
+        width: 100%;
+        order: 2;
+        /* Put search bar below buttons? Or keep it above? Let's keep it above (default order) or maybe below looks better if it's like a header? */
+        /* Let's try default order first: Search then Buttons. */
+    }
+
+    .searchform {
+        width: 100%;
+    }
+
+    .searchinput {
+        width: 100%;
+        box-sizing: border-box;
+        /* Ensure padding doesn't overflow width */
+    }
+
+    .auth-section {
+        width: 100%;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .searchbar a:first-of-type {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-link {
+        display: none;
+    }
+}
