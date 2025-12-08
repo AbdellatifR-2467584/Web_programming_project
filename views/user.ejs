@@ -13,102 +13,102 @@
 
 <body>
     <div class="layout">
-        <%- include('partials/sidebar') %>
+        <nav class="sidebar-container">
+            <%- include('partials/sidebar') %>
+        </nav>
 
-            <main class="mainarea">
-                <section class="userInfo">
-                    <img id="profilepicture" src="/resources/profilepictures/default.png" alt="profilepicture">
-                    <div id="username">
-                        <%= user.username %>
-                    </div>
-                </section>
+        <main class="mainarea">
+            <section class="userInfo">
+                <img id="profilepicture" src="/resources/profilepictures/default.png" alt="profilepicture">
+                <div id="username">
+                    <%= user.username %>
+                </div>
+            </section>
 
-                <section class="postsByUser">
-                    <h2>Posts</h2>
-                    <div class="postsContainer">
-                        <% posts.forEach(post=> { %>
-                            <article class="postItem">
-                                <a href="/post/<%= post.id %>">
-                                    <img src="/<%= post.image_path %>" alt="post <%= post.id %>">
-                                </a>
-                                <% if (locals.isOwner) { %>
-                                    <div class="postButtons">
-                                        <form action="/post/<%= post.id %>/edit" method="GET" class="editForm">
-                                            <button type="submit" class="post-button" title="Bewerken">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </button>
-                                        </form>
-                                        <form action="/post/<%= post.id %>/delete" method="POST" class="deleteForm">
-                                            <button type="submit"
-                                                onclick="return confirm('Weet je zeker dat je deze post wilt verwijderen?')">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                    <% } %>
-                            </article>
-                            <% }) %>
-                    </div>
-                </section>
-
-                <% if (locals.isOwner) { %>
-                    <section class="instellingen">
-                        <h2>Instellingen</h2>
-                        <ul class="settings-list">
-                            <li class="settings-item">
-                                <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
-                                <button id="darkmodeSwitch">🌓</button>
-                            </li>
-                            <li class="settings-item">
-                                <span><i class="bi bi-pencil-fill"></i> Wijzig gebruikersnaam</span>
-                                <button id="changeUsernameBtn">Bewerken</button>
-                            </li>
-                            <li class="settings-item">
-                                <span><i class="bi bi-lock-fill"></i> Wijzig wachtwoord</span>
-                                <button id="changePasswordBtn">Bewerken</button>
-                            </li>
-                            <li class="settings-item">
-                                <span><i class="bi bi-box-arrow-right"></i> Uitloggen</span>
-                                <button onclick="location.href='/logout'" class="logout-btn">Uitloggen</button>
-                            </li>
-                        </ul>
-                    </section>
-                    <% } %>
-
-                        <!-- Modals -->
-                        <% if (locals.isOwner) { %>
-                            <div id="changeUsernameModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close">&times;</span>
-                                    <h3>Wijzig gebruikersnaam</h3>
-                                    <form id="changeUsernameForm">
-                                        <input type="text" name="newUsername" placeholder="Nieuwe gebruikersnaam"
-                                            required>
-                                        <button type="submit">Opslaan</button>
+            <section class="postsByUser">
+                <h2>Posts</h2>
+                <div class="postsContainer">
+                    <% posts.forEach(post=> { %>
+                        <article class="postItem">
+                            <a href="/post/<%= post.id %>">
+                                <img src="/<%= post.image_path %>" alt="post <%= post.id %>">
+                            </a>
+                            <% if (locals.isOwner) { %>
+                                <div class="postButtons">
+                                    <form action="/post/<%= post.id %>/edit" method="GET" class="editForm">
+                                        <button type="submit" class="post-button" title="Bewerken">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
                                     </form>
-                                    <div id="usernameError" style="color:red; margin-top:5px;"></div>
-                                </div>
-                            </div>
-
-                            <div id="changePasswordModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close">&times;</span>
-                                    <h3>Wijzig wachtwoord</h3>
-                                    <form id="changePasswordForm">
-                                        <input type="password" name="currentPassword" placeholder="Huidig wachtwoord"
-                                            required>
-                                        <input type="password" name="newPassword" placeholder="Nieuw wachtwoord"
-                                            required>
-                                        <input type="password" name="confirmPassword"
-                                            placeholder="Bevestig nieuw wachtwoord" required>
-                                        <button type="submit">Opslaan</button>
+                                    <form action="/post/<%= post.id %>/delete" method="POST" class="deleteForm">
+                                        <button type="submit"
+                                            onclick="return confirm('Weet je zeker dat je deze post wilt verwijderen?')">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
                                     </form>
-                                    <div id="passwordError" style="color:red; margin-top:5px;"></div>
                                 </div>
-                            </div>
-                            <% } %>
+                                <% } %>
+                        </article>
+                        <% }) %>
+                </div>
+            </section>
 
-            </main>
+            <% if (locals.isOwner) { %>
+                <section class="instellingen">
+                    <h2>Instellingen</h2>
+                    <ul class="settings-list">
+                        <li class="settings-item">
+                            <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
+                            <button id="darkmodeSwitch">🌓</button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-pencil-fill"></i> Wijzig gebruikersnaam</span>
+                            <button id="changeUsernameBtn">Bewerken</button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-lock-fill"></i> Wijzig wachtwoord</span>
+                            <button id="changePasswordBtn">Bewerken</button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-box-arrow-right"></i> Uitloggen</span>
+                            <button onclick="location.href='/logout'" class="logout-btn">Uitloggen</button>
+                        </li>
+                    </ul>
+                </section>
+                <% } %>
+
+                    <!-- Modals -->
+                    <% if (locals.isOwner) { %>
+                        <div id="changeUsernameModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>Wijzig gebruikersnaam</h3>
+                                <form id="changeUsernameForm">
+                                    <input type="text" name="newUsername" placeholder="Nieuwe gebruikersnaam" required>
+                                    <button type="submit">Opslaan</button>
+                                </form>
+                                <div id="usernameError" style="color:red; margin-top:5px;"></div>
+                            </div>
+                        </div>
+
+                        <div id="changePasswordModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>Wijzig wachtwoord</h3>
+                                <form id="changePasswordForm">
+                                    <input type="password" name="currentPassword" placeholder="Huidig wachtwoord"
+                                        required>
+                                    <input type="password" name="newPassword" placeholder="Nieuw wachtwoord" required>
+                                    <input type="password" name="confirmPassword"
+                                        placeholder="Bevestig nieuw wachtwoord" required>
+                                    <button type="submit">Opslaan</button>
+                                </form>
+                                <div id="passwordError" style="color:red; margin-top:5px;"></div>
+                            </div>
+                        </div>
+                        <% } %>
+
+        </main>
     </div>
 </body>
 

@@ -58,6 +58,10 @@ body.dark-mode input {
     z-index: 10;
 }
 
+.grid {
+    pointer-events: none;
+}
+
 #register .logo {
     display: block;
     width: 80px;
@@ -104,4 +108,10 @@ body.dark-mode input {
 
 #register a:hover {
     text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    #background {
+        padding: 0 20px;
+    }
 }

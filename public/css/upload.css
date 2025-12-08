@@ -401,6 +401,7 @@ label {
 }
 
 /* Responsive */
+/* Responsive */
 @media (max-width: 768px) {
     .mainarea {
         padding-bottom: 80px;
@@ -413,6 +414,13 @@ label {
 
     .upload-media-col {
         max-width: 100%;
+        order: 2;
+        /* appear second on mobile */
+    }
+
+    .upload-details-col {
+        order: 1;
+        /* appear first on mobile */
     }
 
     .form-image-upload {
@@ -530,4 +538,8 @@ body.dark-mode #loading {
 body.dark-mode .spinner {
     border-color: #555;
     border-top-color: #e0e0e0;
+}
+
+.searchbar {
+    width: 100%;
 }

@@ -109,3 +109,9 @@ body.dark-mode input {
 #login a:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+    #background {
+        padding: 0 20px;
+    }
+}

@@ -359,13 +359,40 @@ body {
         height: auto;
         max-height: none;
         border-radius: 0;
-        /* No radius on mobile full screen */
         box-shadow: none;
     }
 
     .post-media {
-        height: 300px;
+        width: 90%;
+        height: auto;
         flex: none;
+        padding: 10px;
+        align-self: center;
+        gap: 5px;
+        background-color: transparent;
+    }
+
+    .picture {
+        border-radius: 16px;
+        margin: 0;
+    }
+
+    .picture img {
+        border-radius: 16px;
+        max-height: none;
+    }
+
+    .walkthrough-media,
+    .youtube-wrapper {
+        margin-top: 0;
+        border-radius: 16px;
+        padding: 0;
+    }
+
+    .walkthrough-media video,
+    .walkthrough-media img,
+    .youtube-wrapper iframe {
+        border-radius: 0;
     }
 
     .post-details {
