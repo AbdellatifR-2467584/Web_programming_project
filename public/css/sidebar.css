@@ -179,6 +179,7 @@ body.dark-mode a:hover {
 
     .mainarea {
         padding-bottom: 80px;
+        height: 100vh !important;
     }
 
     body.dark-mode .sidebar-container {
