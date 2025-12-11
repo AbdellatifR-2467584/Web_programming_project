@@ -54,7 +54,7 @@ router.post("/login", async (req, res) => {
             // 1. Sla tijdelijk op wie er probeert in te loggen
             const code = Math.floor(100000 + Math.random() * 900000);
             req.session.pre2fa = { userId: user.id, code };
-
+            console.log(code);
             // 2. Stuur de code
             await send2FACodeSMS(user.phone_number, code);
 

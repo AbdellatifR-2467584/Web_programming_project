@@ -8,6 +8,10 @@ const client = twilio(
 
 export default async function send2FACodeSMS(phoneNumber, code) {
     try {
+        /*console.log("Twilio SID:", process.env.TWILIO_ACCOUNT_SID);
+        console.log("Twilio Auth Token length:", process.env.TWILIO_AUTH_TOKEN.length);
+        console.log("From number:", process.env.TWILIO_FROM_NUMBER);
+        console.log("To number:", phoneNumber);*/
         await client.messages.create({
             body: `Je 2FA code is: ${code}`,
             from: process.env.TWILIO_FROM_NUMBER,
