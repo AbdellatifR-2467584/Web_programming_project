@@ -7,6 +7,7 @@ export function InitializeUsersDatabase() {
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       role TEXT DEFAULT 'user',
+      phone_number TEXT,
       created_at TEXT DEFAULT (datetime('now'))
     ) STRICT;
   `).run();

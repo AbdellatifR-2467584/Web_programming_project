@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Verificatie</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
+</head>
+
+<body>
+    <div class="login-container">
+        <form action="/login/verify" method="POST" class="login-form">
+            <h2>2FA Verificatie</h2>
+            <% if (error) { %>
+                <div class="error-message">
+                    <%= error %>
+                </div>
+                <% } %>
+                    <div class="input-group">
+                        <input type="text" name="code" placeholder="Voer 6-cijferige code in" required>
+                    </div>
+                    <button type="submit">Verifiëren</button>
+        </form>
+    </div>
+</body>
+
+</html>

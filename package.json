@@ -17,7 +17,8 @@
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
     "nodemon": "^3.1.10",
-    "openai": "^6.4.0"
+    "openai": "^6.4.0",
+    "twilio": "^5.10.7"
   },
   "description": "A skeleton that provides some of the basics to get starting with the web programming project.",
   "repository": {
