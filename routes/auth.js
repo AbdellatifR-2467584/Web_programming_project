@@ -56,7 +56,7 @@ router.post("/login", async (req, res) => {
             req.session.pre2fa = { userId: user.id, code };
             console.log(code);
             // 2. Stuur de code
-            await send2FACodeSMS(user.phone_number, code);
+            //await send2FACodeSMS(user.phone_number, code);
 
             // 3. Stuur gebruiker naar invulscherm
             return res.redirect("/login/verify");

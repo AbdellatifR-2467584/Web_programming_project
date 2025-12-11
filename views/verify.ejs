@@ -11,20 +11,32 @@
 </head>
 
 <body>
-    <div class="login-container">
-        <form action="/login/verify" method="POST" class="login-form">
-            <h2>2FA Verificatie</h2>
-            <% if (error) { %>
-                <div class="error-message">
-                    <%= error %>
-                </div>
-                <% } %>
-                    <div class="input-group">
-                        <input type="text" name="code" placeholder="Voer 6-cijferige code in" required>
-                    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            if (localStorage.getItem('darkmode') === 'enabled') {
+                body.classList.add('dark-mode');
+            }
+        });
+    </script>
+
+    <section id="background" aria-hidden="true">
+        <%- include('partials/grid') %>
+    </section>
+
+    <main id="verify">
+        <img class="logo" src="/resources/logo/Logo_cirkel.png" alt="Logo">
+        <h2>2FA Verificatie</h2>
+        <% if (error) { %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+            <% } %>
+                <form action="/login/verify" method="POST">
+                    <input type="text" name="code" placeholder="Voer 6-cijferige code in" required>
                     <button type="submit">Verifiëren</button>
-        </form>
-    </div>
+                </form>
+    </main>
 </body>
 
 </html>
