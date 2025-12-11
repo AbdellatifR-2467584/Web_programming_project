@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
         if (!match) return res.render("login", { error: "Verkeerd wachtwoord" });
 
         // Login success
-        req.session.user = { id: user.id, username: user.username };
+        req.session.user = { id: user.id, username: user.username, role: user.role };
         res.redirect("/");
     } catch (err) {
         console.error(err);

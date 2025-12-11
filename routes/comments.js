@@ -35,7 +35,7 @@ router.delete("/api/comments/:id", isAuthenticated, (req, res) => {
         const comment = getCommentById(commentId);
 
         if (!comment) return res.status(404).json({ error: "Comment not found" });
-        if (comment.userId !== req.session.user.id)
+        if (comment.userId !== req.session.user.id && req.session.user.role !== 'mod')
             return res.status(403).json({ error: "Not allowed to delete this comment" });
 
         deleteCommentById(commentId);

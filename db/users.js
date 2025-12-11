@@ -6,6 +6,7 @@ export function InitializeUsersDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
+      role TEXT DEFAULT 'user',
       created_at TEXT DEFAULT (datetime('now'))
     ) STRICT;
   `).run();

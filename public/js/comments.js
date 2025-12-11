@@ -14,7 +14,7 @@ export default function initComments(postId) {
             const comments = await res.json();
 
             commentList.innerHTML = comments.map(c => {
-                const deleteBtn = (currentUser && currentUser.id === c.userId)
+                const deleteBtn = (currentUser && (currentUser.id === c.userId || currentUser.role === 'mod'))
                     ? `<span class="delete-comment" data-id="${c.id}" title="Delete">
                 <i class="bi bi-trash"></i>
            </span>`

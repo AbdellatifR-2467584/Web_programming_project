@@ -33,19 +33,21 @@
                             <a href="/post/<%= post.id %>">
                                 <img src="/<%= post.image_path %>" alt="post <%= post.id %>">
                             </a>
-                            <% if (locals.isOwner) { %>
+                            <% if (locals.isOwner || locals.isMod) { %>
                                 <div class="postButtons">
-                                    <form action="/post/<%= post.id %>/edit" method="GET" class="editForm">
-                                        <button type="submit" class="post-button" title="Bewerken">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button>
-                                    </form>
-                                    <form action="/post/<%= post.id %>/delete" method="POST" class="deleteForm">
-                                        <button type="submit"
-                                            onclick="return confirm('Weet je zeker dat je deze post wilt verwijderen?')">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </form>
+                                    <% if (locals.isOwner) { %>
+                                        <form action="/post/<%= post.id %>/edit" method="GET" class="editForm">
+                                            <button type="submit" class="post-button" title="Bewerken">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                        </form>
+                                        <% } %>
+                                            <form action="/post/<%= post.id %>/delete" method="POST" class="deleteForm">
+                                                <button type="submit"
+                                                    onclick="return confirm('Weet je zeker dat je deze post wilt verwijderen?')">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </form>
                                 </div>
                                 <% } %>
                         </article>

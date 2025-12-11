@@ -102,7 +102,7 @@ router.post("/post/:id/delete", isAuthenticated, (req, res) => {
         const post = getPostInfoByID(req.params.id);
         if (!post) return res.status(404).send("Post not found");
 
-        if (req.session.user.id !== post.userId) {
+        if (req.session.user.id !== post.userId && req.session.user.role !== 'mod') {
             return res.status(403).send("Je hebt geen toegang om dit te verwijderen");
         }
 

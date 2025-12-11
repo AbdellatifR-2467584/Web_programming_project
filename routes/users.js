@@ -12,9 +12,10 @@ router.get("/user/:username", isAuthenticated, (req, res) => {
         if (!user) return res.status(404).send("User not found");
 
         const isOwner = req.session.user && req.session.user.username === user.username;
+        const isMod = req.session.user && req.session.user.role === 'mod';
         const posts = getAllPostsFromUser(user.id);
 
-        res.render("user", { user, posts, isOwner });
+        res.render("user", { user, posts, isOwner, isMod });
     } catch (err) {
         console.error("Error fetching user page:", err);
         res.status(500).send("Failed to load user");
