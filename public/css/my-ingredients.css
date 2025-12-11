@@ -146,6 +146,7 @@ body.dark-mode {
     grid-auto-rows: 10px;
     gap: 16px;
     padding: 0;
+    margin-bottom: 12rem;
 }
 
 /* Card Styles (Reusing grid.css logic but ensuring consistency) */
