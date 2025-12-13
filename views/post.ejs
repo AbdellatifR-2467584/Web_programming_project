@@ -64,6 +64,12 @@
                         <div class="post-details">
                             <div class="post-header">
                                 <div class="post-actions" data-html2canvas-ignore="true">
+                                    <button id="favorite-btn"
+                                        class="action-btn <%= typeof favorited !== 'undefined' && favorited ? 'active' : '' %>"
+                                        data-post-id="<%= post.id %>" title="Opslaan als favoriet">
+                                        <i
+                                            class="bi <%= typeof favorited !== 'undefined' && favorited ? 'bi-heart-fill' : 'bi-heart' %>"></i>
+                                    </button>
                                     <button id="clipboard" class="action-btn" onclick="clipboard_copy()"
                                         title="Kopieer Link">
                                         <i class="bi bi-clipboard"></i>
@@ -83,8 +89,8 @@
 
                                 <div class="post-meta">
                                     <div class="user-info">
-                                        <img src="/resources/profilepictures/default.png" alt="User Avatar"
-                                            class="user-avatar-small">
+                                        <img src="/resources/profilepictures/<%= post.user_profile_picture || 'default.png' %>"
+                                            alt="User Avatar" class="user-avatar-small">
                                         <span class="username">
                                             <a href="http://localhost:8080/user/<%= post.username %>">
                                                 <%= post.username || 'Onbekend' %>
@@ -138,8 +144,8 @@
                                 <% if (currentUser) { %>
                                     <form class="comment-form">
                                         <div class="comment-input-wrapper">
-                                            <img src="/resources/profilepictures/default.png" alt="My Avatar"
-                                                class="user-avatar-tiny">
+                                            <img src="/resources/profilepictures/<%= currentUser ? (currentUser.profile_picture || 'default.png') : 'default.png' %>"
+                                                alt="My Avatar" class="user-avatar-tiny">
                                             <textarea id="comment-input" placeholder="Voeg een reactie toe..."
                                                 rows="1"></textarea>
                                         </div>

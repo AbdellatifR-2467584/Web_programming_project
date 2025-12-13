@@ -47,7 +47,7 @@ router.post("/login", async (req, res) => {
             if (!user.phone_number) {
                 // Fallback if no phone number set
                 console.warn("Moderator has no phone number, skipping 2FA (INSECURE)");
-                req.session.user = { id: user.id, username: user.username, role: user.role };
+                req.session.user = { id: user.id, username: user.username, role: user.role, profile_picture: user.profile_picture };
                 return res.redirect("/");
             }
 
@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
         }
 
         // Normale user: direct inloggen
-        req.session.user = { id: user.id, username: user.username, role: user.role };
+        req.session.user = { id: user.id, username: user.username, role: user.role, profile_picture: user.profile_picture };
         res.redirect("/");
     } catch (err) {
         console.error(err);
@@ -91,7 +91,7 @@ router.post("/login/verify", async (req, res) => {
             return res.redirect("/login?error=user_not_found");
         }
 
-        req.session.user = { id: user.id, username: user.username, role: user.role };
+        req.session.user = { id: user.id, username: user.username, role: user.role, profile_picture: user.profile_picture };
         delete req.session.pre2fa; // Clear pre2fa session data
         res.redirect("/");
     } else {

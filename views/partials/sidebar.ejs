@@ -16,8 +16,8 @@
             <i class="bi bi-basket-fill"></i>
         </a>
         <% if (locals.user) { %>
-            <a href="/user/<%= user.username %>" class="nav-item mobile-user-link" aria-label="Profiel">
-                <img src="/resources/profilepictures/default.png" alt="Profiel"
+            <a href="/user/<%= locals.user.username %>" class="nav-item mobile-user-link" aria-label="Profiel">
+                <img src="/resources/profilepictures/<%= locals.user.profile_picture || 'default.png' %>" alt="Profiel"
                     style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
             </a>
             <% } %>

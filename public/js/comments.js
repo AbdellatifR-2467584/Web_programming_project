@@ -16,21 +16,24 @@ export default function initComments(postId) {
             commentList.innerHTML = comments.map(c => {
                 const deleteBtn = (currentUser && (currentUser.id === c.userId || currentUser.role === 'mod'))
                     ? `<span class="delete-comment" data-id="${c.id}" title="Delete">
-                <i class="bi bi-trash"></i>
+                <i class="bi bi-trash3-fill"></i>
            </span>`
                     : '';
 
                 return `<div class="comment">
-    <p>
-        <strong>
-            <a href="/user/${c.username}" class="comment-user-link">
-                ${c.username}
-            </a>:
-        </strong> 
-        ${c.content}
-        <span class="delete-wrapper">${deleteBtn}</span>
-    </p>
-</div>`;
+                    <a href="/user/${c.username}" class="comment-pfp-link">
+                        <img src="/resources/profilepictures/${c.user_profile_picture}" alt="${c.username}" class="comment-pfp">
+                    </a>
+                    <div class="comment-content">
+                        <strong>
+                            <a href="/user/${c.username}" class="comment-user-link">
+                                ${c.username}
+                            </a>
+                        </strong>
+                        <span class="comment-text">${c.content}</span>
+                    </div>
+                    ${deleteBtn}
+                </div>`;
             }).join("");
 
             // attach delete listeners

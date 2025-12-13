@@ -1,8 +1,9 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { isAuthenticated } from "../middleware/auth.js";
-import { getUserByUsername, updateUsername, getUserById, updatePassword } from "../db/users.js";
+import { getUserByUsername, updateUsername, getUserById, updatePassword, updateProfilePicture } from "../db/users.js";
 import { getAllPostsFromUser } from "../db/posts.js";
+import { getFavoritesByUser } from "../db/favorites.js";
 
 const router = express.Router();
 
@@ -14,8 +15,9 @@ router.get("/user/:username", isAuthenticated, (req, res) => {
         const isOwner = req.session.user && req.session.user.username === user.username;
         const isMod = req.session.user && req.session.user.role === 'mod';
         const posts = getAllPostsFromUser(user.id);
+        const favoritePosts = getFavoritesByUser(user.id);
 
-        res.render("user", { user, posts, isOwner, isMod });
+        res.render("user", { user, posts, favoritePosts, isOwner, isMod });
     } catch (err) {
         console.error("Error fetching user page:", err);
         res.status(500).send("Failed to load user");
@@ -56,5 +58,39 @@ router.post("/user/change-password", isAuthenticated, async (req, res) => {
 
     res.json({ success: true });
 });
+
+
+import multer from "multer";
+import path from "path";
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/resources/profilepictures");
+    },
+    filename: (req, file, cb) => {
+        cb(null, `user-${req.session.user.id}-${Date.now()}${path.extname(file.originalname)}`);
+    }
+});
+
+const upload = multer({ storage });
+
+router.post("/user/upload-pfp", isAuthenticated, upload.single("profilePicture"), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "Geen bestand geüpload." });
+    }
+
+    const userId = req.session.user.id;
+    const filename = req.file.filename;
+
+    try {
+        updateProfilePicture(userId, filename);
+        req.session.user.profile_picture = filename; // Update session
+        res.json({ success: true, filename });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ error: "Database update failed." });
+    }
+});
+
 
 export default router;

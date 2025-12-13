@@ -61,3 +61,74 @@ async function clipboard_copy() {
         alert('Fout: Het kopiëren naar het klembord is mislukt. Probeer het handmatig. (Zie console voor details)');
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const favoriteBtn = document.getElementById("favorite-btn");
+
+    if (favoriteBtn) {
+        favoriteBtn.addEventListener("click", async () => {
+            const postId = favoriteBtn.dataset.postId;
+            const icon = favoriteBtn.querySelector("i");
+
+            // Optimistic UI update
+            const isFilled = icon.classList.contains("bi-heart-fill");
+            if (isFilled) {
+                icon.classList.remove("bi-heart-fill");
+                icon.classList.add("bi-heart");
+                favoriteBtn.classList.remove("active");
+            } else {
+                icon.classList.remove("bi-heart");
+                icon.classList.add("bi-heart-fill");
+                favoriteBtn.classList.add("active");
+            }
+
+            try {
+                const response = await fetch(`/post/${postId}/favorite`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (response.status === 401) {
+                    alert("Je moet ingelogd zijn om favorieten op te slaan.");
+                    // Revert UI
+                    if (isFilled) {
+                        icon.classList.add("bi-heart-fill");
+                        icon.classList.remove("bi-heart");
+                        favoriteBtn.classList.add("active");
+                    } else {
+                        icon.classList.add("bi-heart");
+                        icon.classList.remove("bi-heart-fill");
+                        favoriteBtn.classList.remove("active");
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+
+                // Ensure UI matches server state (just in case)
+                if (data.favorited) {
+                    icon.classList.remove("bi-heart");
+                    icon.classList.add("bi-heart-fill");
+                    favoriteBtn.classList.add("active");
+                } else {
+                    icon.classList.remove("bi-heart-fill");
+                    icon.classList.add("bi-heart");
+                    favoriteBtn.classList.remove("active");
+                }
+
+            } catch (error) {
+                console.error("Error toggling favorite:", error);
+                // Revert UI on error
+                if (isFilled) {
+                    icon.classList.remove("bi-heart");
+                    icon.classList.add("bi-heart-fill");
+                    favoriteBtn.classList.add("active");
+                } else {
+                    icon.classList.remove("bi-heart-fill");
+                    icon.classList.add("bi-heart");
+                    favoriteBtn.classList.remove("active");
+                }
+            }
+        });
+    }
+});

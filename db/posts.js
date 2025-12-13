@@ -63,7 +63,8 @@ export function getPostInfoByID(id) {
     ...post,
     ingredients: JSON.parse(post.ingredients),
     steps: JSON.parse(post.steps),
-    username: user?.username || "Onbekend"
+    username: user?.username || "Onbekend",
+    user_profile_picture: user?.profile_picture || "default.png"
   };
 }
 

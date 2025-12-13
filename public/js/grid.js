@@ -28,6 +28,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             .map(post => `
                 <div class="card" onclick="location.href='/post/${post.id}'">
                     <img src="/${post.image_path}" alt="Recipe">
+                    <button class="grid-favorite-btn ${post.isFavorited ? 'active' : ''}" 
+                            onclick="toggleGridFavorite(event, '${post.id}')"
+                            title="Opslaan als favoriet">
+                        <i class="bi ${post.isFavorited ? 'bi-heart-fill' : 'bi-heart'}"></i>
+                    </button>
                 </div>
             `).join("");
 
@@ -100,3 +105,71 @@ function checkMobileLayout(grid) {
         grid.style.padding = "";
     }
 }
+
+// Global function for grid favorite button
+window.toggleGridFavorite = async function (event, postId) {
+    event.stopPropagation(); // Prevent card click (navigation)
+    event.preventDefault();
+
+    const btn = event.currentTarget;
+    const icon = btn.querySelector("i");
+
+    // Optimistic UI
+    const isFilled = icon.classList.contains("bi-heart-fill");
+    if (isFilled) {
+        icon.classList.remove("bi-heart-fill");
+        icon.classList.add("bi-heart");
+        btn.classList.remove("active");
+    } else {
+        icon.classList.remove("bi-heart");
+        icon.classList.add("bi-heart-fill");
+        btn.classList.add("active");
+    }
+
+    try {
+        const response = await fetch(`/post/${postId}/favorite`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (response.status === 401) {
+            alert("Je moet ingelogd zijn om favorieten op te slaan.");
+            // Revert
+            if (isFilled) {
+                icon.classList.add("bi-heart-fill");
+                icon.classList.remove("bi-heart");
+                btn.classList.add("active");
+            } else {
+                icon.classList.add("bi-heart");
+                icon.classList.remove("bi-heart-fill");
+                btn.classList.remove("active");
+            }
+            return;
+        }
+
+        // Sync with server response
+        const data = await response.json();
+        if (data.favorited) {
+            icon.classList.remove("bi-heart");
+            icon.classList.add("bi-heart-fill");
+            btn.classList.add("active");
+        } else {
+            icon.classList.remove("bi-heart-fill");
+            icon.classList.add("bi-heart");
+            btn.classList.remove("active");
+        }
+
+    } catch (err) {
+        console.error("Error toggling favorite:", err);
+        // Revert
+        if (isFilled) {
+            icon.classList.add("bi-heart-fill");
+            icon.classList.remove("bi-heart");
+            btn.classList.add("active");
+        } else {
+            icon.classList.add("bi-heart");
+            icon.classList.remove("bi-heart-fill");
+            btn.classList.remove("active");
+        }
+    }
+};

@@ -8,6 +8,7 @@ import { isAuthenticated } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
 import { getAllPosts, getAllPostsLike, getPostInfoByID, updatePostById, deletePostById, createPost } from "../db/posts.js";
 import { getUserById } from "../db/users.js";
+import { toggleFavorite, isFavorited, getFavoritesByUser } from "../db/favorites.js";
 import { extractYouTubeId } from "../utils/youtube.js";
 
 const router = express.Router();
@@ -18,6 +19,18 @@ const openai = process.env.OPENAI_API_KEY
 router.get("/api/posts", (req, res) => {
     try {
         const posts = getAllPosts();
+
+        // Enrich with favorite status if logged in
+        if (req.session.user) {
+            const userId = req.session.user.id;
+            const favorites = getFavoritesByUser(userId).map(p => p.id); // Get IDs
+            const favoritesSet = new Set(favorites);
+
+            posts.forEach(post => {
+                post.isFavorited = favoritesSet.has(post.id);
+            });
+        }
+
         res.json(posts);
     } catch (err) {
         console.error("Fout bij fetchen van posts: ", err);
@@ -29,6 +42,19 @@ router.get("/api/postsLike", (req, res) => {
     try {
         const like = req.query.q || "";
         const posts = getAllPostsLike(like);
+
+        // Enrich with favorite status
+        if (req.session.user) {
+            const userId = req.session.user.id;
+            const favorites = getFavoritesByUser(userId).map(p => p.id);
+            const favoritesSet = new Set(favorites);
+
+            posts.forEach(post => {
+                post.isFavorited = favoritesSet.has(post.id);
+            });
+        }
+
+
         res.json(posts);
     } catch (err) {
         console.error("Fout bij fetchen van posts:", err);
@@ -41,7 +67,11 @@ router.get("/post/:id", (req, res) => {
         const post = getPostInfoByID(req.params.id);
         if (!post) return res.status(404).send("Post not found");
         const currentUser = req.session.user || null;
-        res.render("post", { post, currentUser });
+        let favorited = false;
+        if (currentUser) {
+            favorited = isFavorited(currentUser.id, post.id);
+        }
+        res.render("post", { post, currentUser, favorited });
     } catch (err) {
         console.error("Error fetching post: ", err)
         res.status(500).send("Failed to load post");
@@ -122,6 +152,18 @@ router.post("/post/:id/delete", isAuthenticated, (req, res) => {
     } catch (err) {
         console.error("Error deleting post:", err);
         res.status(500).send("Fout bij verwijderen van post");
+    }
+});
+
+router.post("/post/:id/favorite", isAuthenticated, (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.session.user.id;
+        const favorited = toggleFavorite(userId, postId);
+        res.json({ favorited });
+    } catch (err) {
+        console.error("Error toggling favorite:", err);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 

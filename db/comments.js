@@ -30,11 +30,15 @@ export function getCommentsByPostId(postId) {
       ORDER BY created_at ASC
     `).all(postId);
 
-  // Attach username dynamically from users.db
-  return rows.map(row => ({
-    ...row,
-    username: getUserById(row.userId)?.username || "Unknown"
-  }));
+  // Attach username and pfp dynamically from users.db
+  return rows.map(row => {
+    const user = getUserById(row.userId);
+    return {
+      ...row,
+      username: user?.username || "Unknown",
+      user_profile_picture: user?.profile_picture || "default.png"
+    };
+  });
 }
 
 export function deleteCommentById(commentId) {

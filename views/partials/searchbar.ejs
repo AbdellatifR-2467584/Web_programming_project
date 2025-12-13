@@ -3,26 +3,21 @@
 <header class="searchbar">
     <div class="search-container">
         <form action="/search" method="GET" role="search" class="searchform">
-            <input 
-                type="text" 
-                name="q" 
-                placeholder="Zoeken" 
-                class="searchinput" 
-                autocomplete="off"
-            >
+            <input type="text" name="q" placeholder="Zoeken" class="searchinput" autocomplete="off">
         </form>
     </div>
     <div class="auth-section">
         <% if (locals.user) { %>
-            <a href="/user/<%= user.username %>" class="profile-link">
-                <img src="/resources/profilepictures/default.png" alt="Profiel" class="profile-pic-small">
+            <a href="/user/<%= locals.user.username %>" class="profile-link">
+                <img src="/resources/profilepictures/<%= locals.user.profile_picture || 'default.png' %>" alt="Profiel"
+                    class="profile-pic-small">
             </a>
-        <% } else { %>
-            <div class="auth-buttons">
-                <a href="/login" class="auth-btn login-btn">Login</a>
-                <a href="/register" class="auth-btn register-btn">Registreren</a>
-            </div>
-        <% } %>
+            <% } else { %>
+                <div class="auth-buttons">
+                    <a href="/login" class="auth-btn login-btn">Login</a>
+                    <a href="/register" class="auth-btn register-btn">Registreren</a>
+                </div>
+                <% } %>
     </div>
 </header>
 

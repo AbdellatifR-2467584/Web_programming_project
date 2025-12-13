@@ -19,7 +19,11 @@ body.dark-mode .card img:hover {
 }
 
 .card {
+    position: relative;
+    /* Needed for absolute positioning of button */
     overflow: hidden;
+    border-radius: 8px;
+    /* Ensure radius applies to container */
 }
 
 .card img {
@@ -36,6 +40,75 @@ body.dark-mode .card img:hover {
     cursor: pointer;
 }
 
+/* Floating Favorite Button */
+.grid-favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+    z-index: 10;
+}
+
+.grid-favorite-btn i {
+    line-height: 1;
+    display: block;
+    /* Removes any inline spacing */
+    font-size: 1.2rem;
+    color: #1f1f1f;
+    transition: color 0.2s;
+}
+
+/* Show on hover OR if active (favorited) */
+.card:hover .grid-favorite-btn,
+.grid-favorite-btn.active {
+    opacity: 1;
+}
+
+.grid-favorite-btn i {
+    font-size: 1.2rem;
+    color: #1f1f1f;
+    transition: color 0.2s;
+}
+
+.grid-favorite-btn:hover {
+    background-color: #ffffff;
+    transform: scale(1.1);
+}
+
+.grid-favorite-btn.active i {
+    color: #ff6b6b;
+    /* Red heart */
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .grid-favorite-btn {
+    background-color: rgba(30, 30, 30, 0.9);
+}
+
+body.dark-mode .grid-favorite-btn:hover {
+    background-color: #2a2a2a;
+}
+
+body.dark-mode .grid-favorite-btn i {
+    color: #e0e0e0;
+}
+
+body.dark-mode .grid-favorite-btn.active i {
+    color: #ff6b6b;
+}
+
 @media (max-width: 768px) {
     body .grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -44,4 +117,9 @@ body.dark-mode .card img:hover {
         margin-bottom: 8rem;
     }
 
+    /* On mobile, maybe always show if favorited, or just keep same behavior */
+    .grid-favorite-btn {
+        width: 32px;
+        height: 32px;
+    }
 }

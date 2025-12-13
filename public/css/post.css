@@ -166,7 +166,12 @@ body {
 .action-btn.active,
 .action-btn:active {
     color: #ff6b6b;
-    background-color: #ff4757;
+    background-color: transparent;
+    /* Or keep active background if desired */
+}
+
+.action-btn.active .bi-heart-fill {
+    color: #ff6b6b;
 }
 
 
@@ -279,10 +284,64 @@ body {
 
 
 .comment {
+    display: flex;
+    align-items: flex-start;
     padding: 10px 0;
     border-bottom: 1px solid #f0f2f5;
     font-size: 0.9rem;
     color: #1f1f1f;
+    gap: 12px;
+}
+
+.comment-pfp {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.comment-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.4;
+}
+
+.comment-user-link {
+    color: #1f1f1f;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.comment-user-link:hover {
+    text-decoration: underline;
+}
+
+.comment-text {
+    color: #333;
+}
+
+/* Delete button aligned to the right */
+.delete-comment {
+    color: #ccc;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.2s;
+    margin-left: auto;
+    /* Pushes to the right if flex parent allows, but flex:1 on content usually does it */
+    align-self: center;
+}
+
+.delete-comment:hover {
+    color: #ff6b6b;
+}
+
+body.dark-mode .comment-user-link,
+body.dark-mode .comment-text {
+    color: #e0e0e0;
 }
 
 /* Formulier */

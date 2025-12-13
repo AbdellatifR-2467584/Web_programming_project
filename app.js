@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { InitializePostsDatabase } from "./db/posts.js";
 import { InitializeUsersDatabase } from "./db/users.js";
 import { InitializeCommentsDatabase } from "./db/comments.js";
+import { InitializeFavoritesDatabase } from "./db/favorites.js";
 
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
@@ -81,6 +82,7 @@ app.use((error, request, response, next) => {
 InitializeUsersDatabase();
 InitializePostsDatabase();
 InitializeCommentsDatabase();
+InitializeFavoritesDatabase();
 
 
 app.listen(port, () => {

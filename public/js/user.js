@@ -138,3 +138,94 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    // ---- Profile Picture Upload & Preview ----
+    const pfpImg = document.getElementById("profilepicture");
+    const pfpInput = document.getElementById("pfpInput");
+
+    // Modal elements
+    const pfpModal = document.getElementById("changeProfilePictureModal");
+    const pfpPreview = document.getElementById("pfpPreview");
+    const savePfpBtn = document.getElementById("savePfpBtn");
+    const cancelPfpBtn = document.getElementById("cancelPfpBtn");
+    const pfpErrorDiv = document.getElementById("pfpError");
+
+    // Helper to close modal
+    function closePfpModal() {
+        if (pfpModal) {
+            pfpModal.style.display = "none";
+            pfpInput.value = ""; // Clear input
+            pfpPreview.src = "";
+            pfpPreview.style.display = "none";
+            if (pfpErrorDiv) pfpErrorDiv.textContent = "";
+        }
+    }
+
+    if (pfpImg && pfpInput && pfpModal) {
+        // Trigger file input
+        pfpImg.addEventListener("click", () => {
+            pfpInput.click();
+        });
+
+        // Handle file selection -> Show Preview Modal
+        pfpInput.addEventListener("change", () => {
+            const file = pfpInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    pfpPreview.src = e.target.result;
+                    pfpPreview.style.display = "block";
+                    pfpModal.style.display = "flex";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle Cancel
+        if (cancelPfpBtn) {
+            cancelPfpBtn.addEventListener("click", closePfpModal);
+        }
+
+        // Handle Save
+        if (savePfpBtn) {
+            savePfpBtn.addEventListener("click", async () => {
+                const file = pfpInput.files[0];
+                if (!file) {
+                    closePfpModal();
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("profilePicture", file);
+
+                // Disable button to prevent double submit
+                savePfpBtn.disabled = true;
+                savePfpBtn.textContent = "Bezig...";
+
+                try {
+                    const response = await fetch("/user/upload-pfp", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Update main pfp
+                        pfpImg.src = `/resources/profilepictures/${data.filename}?t=${new Date().getTime()}`;
+                        closePfpModal();
+                    } else {
+                        if (pfpErrorDiv) pfpErrorDiv.textContent = data.error || "Upload mislukt.";
+                    }
+                } catch (err) {
+                    console.error("Error uploading profile picture:", err);
+                    if (pfpErrorDiv) pfpErrorDiv.textContent = "Er ging iets mis.";
+                } finally {
+                    savePfpBtn.disabled = false;
+                    savePfpBtn.textContent = "Opslaan";
+                }
+            });
+        }
+    }
+});

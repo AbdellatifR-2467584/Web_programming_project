@@ -21,7 +21,14 @@
 
         <main class="mainarea">
             <section class="userInfo">
-                <img id="profilepicture" src="/resources/profilepictures/default.png" alt="profilepicture">
+                <div>
+                    <img id="profilepicture"
+                        src="/resources/profilepictures/<%= user.profile_picture || 'default.png' %>"
+                        alt="profilepicture" title="Klik om profielfoto te wijzigen">
+                    <% if (locals.isOwner) { %>
+                        <input type="file" id="pfpInput" accept="image/*">
+                        <% } %>
+                </div>
                 <div id="username">
                     <%= user.username %>
                 </div>
@@ -57,13 +64,30 @@
                 </div>
             </section>
 
+            <section class="postsByUser">
+                <h2>Favorieten</h2>
+                <div class="postsContainer">
+                    <% if (locals.favoritePosts && favoritePosts.length> 0) { %>
+                        <% favoritePosts.forEach(post=> { %>
+                            <article class="postItem">
+                                <a href="/post/<%= post.id %>">
+                                    <img src="/<%= post.image_path %>" alt="favoriet <%= post.id %>">
+                                </a>
+                            </article>
+                            <% }) %>
+                                <% } else { %>
+                                    <p style="padding-left: 20px;">Nog geen favorieten opgeslagen.</p>
+                                    <% } %>
+                </div>
+            </section>
+
             <% if (locals.isOwner) { %>
                 <section class="instellingen">
                     <h2>Instellingen</h2>
                     <ul class="settings-list">
                         <li class="settings-item">
                             <span><i class="bi bi-moon-stars-fill"></i> Dark Mode</span>
-                            <button id="darkmodeSwitch">🌓</button>
+                            <button id="darkmodeSwitch"><i class="bi bi-moon-fill"></i></button>
                         </li>
                         <li class="settings-item">
                             <span><i class="bi bi-pencil-fill"></i> Wijzig gebruikersnaam</span>
@@ -91,7 +115,7 @@
                                     <input type="text" name="newUsername" placeholder="Nieuwe gebruikersnaam" required>
                                     <button type="submit">Opslaan</button>
                                 </form>
-                                <div id="usernameError" style="color:red; margin-top:5px;"></div>
+                                <div id="usernameError" class="error-message"></div>
                             </div>
                         </div>
 
@@ -107,7 +131,22 @@
                                         placeholder="Bevestig nieuw wachtwoord" required>
                                     <button type="submit">Opslaan</button>
                                 </form>
-                                <div id="passwordError" style="color:red; margin-top:5px;"></div>
+                                <div id="passwordError" class="error-message"></div>
+                            </div>
+                        </div>
+
+                        <div id="changeProfilePictureModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>Wijzig profielfoto</h3>
+                                <div class="pfp-modal-preview-container">
+                                    <img id="pfpPreview" src="" alt="Voorbeeld">
+                                </div>
+                                <div class="modal-buttons-container">
+                                    <button id="savePfpBtn">Opslaan</button>
+                                    <button id="cancelPfpBtn">Annuleren</button>
+                                </div>
+                                <div id="pfpError" class="error-message centered"></div>
                             </div>
                         </div>
                         <% } %>

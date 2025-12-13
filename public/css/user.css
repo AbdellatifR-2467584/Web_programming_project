@@ -43,10 +43,11 @@ body.dark-mode h2 {
 .userInfo {
     display: grid;
     grid-template-areas: "picture username";
-    grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
+    grid-template-columns: auto 1fr;
     align-items: start;
     margin-top: 50px;
     margin-left: 80px;
+    gap: 40px;
 }
 
 #profilepicture {
@@ -56,6 +57,16 @@ body.dark-mode h2 {
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #ccc;
+    cursor: pointer;
+}
+
+#profilepicture:hover {
+    opacity: 0.8;
+}
+
+/* Hidden File Input */
+#pfpInput {
+    display: none;
 }
 
 #username {
@@ -91,7 +102,6 @@ h2 {
     overflow-x: auto;
     overflow-y: hidden;
     width: calc(100% - 70px);
-    /* Adjust width */
 }
 
 .postsContainer::-webkit-scrollbar {
@@ -139,7 +149,6 @@ h2 {
     display: flex;
     gap: 5px;
     opacity: 0;
-    /* Hidden by default on desktop? Or always visible? Original was visible I think, but let's keep hover effect if nice */
     transition: opacity 0.2s;
 }
 
@@ -164,27 +173,23 @@ h2 {
 }
 
 .deleteForm button {
-    background: rgba(255, 0, 0, 0.8);
+    background-color: rgba(255, 0, 0, 0.8);
 }
 
 .deleteForm button:hover {
-    background: rgba(255, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 1);
 }
 
 /* Settings Section */
-.instellingen {
+.settings-list {
     width: 90%;
     max-width: 600px;
     margin: 40px auto;
     margin-left: 70px;
-    /* Align with other content */
-}
-
-.settings-list {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
+
 
 .settings-item {
     display: flex;
@@ -311,6 +316,56 @@ h2 {
     background-color: #ad081b;
 }
 
+/* Profile Picture Modal Specifics */
+.pfp-modal-preview-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#pfpPreview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
+    display: none;
+    object-fit: cover;
+}
+
+.modal-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#savePfpBtn,
+#cancelPfpBtn {
+    align-self: flex-end;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#cancelPfpBtn {
+    background-color: #ccc;
+}
+
+#cancelPfpBtn:hover {
+    background-color: #bbb;
+}
+
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
+
+.error-message.centered {
+    text-align: center;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from {
@@ -372,13 +427,17 @@ body.dark-mode .modal input {
     color: #e0e0e0;
 }
 
+body.dark-mode .postsContainer::-webkit-scrollbar-thumb {
+    background-color: #65676b;
+    border-radius: 4px;
+}
+
 /* Responsive (Mobile Overrides) */
 @media (max-width: 768px) {
     .mainarea {
         padding-bottom: 80px;
     }
 
-    /* Stack User Info */
     .userInfo {
         display: flex;
         flex-direction: column;
@@ -388,10 +447,18 @@ body.dark-mode .modal input {
         text-align: center;
     }
 
+    .pfp-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
     #profilepicture {
         width: 100px;
         height: 100px;
-        margin-bottom: 10px;
+        margin-bottom: 0;
     }
 
     #username {
@@ -404,7 +471,6 @@ body.dark-mode .modal input {
         text-align: center;
     }
 
-    /* Grid Layout for Posts on Mobile */
     .postsContainer {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -413,7 +479,6 @@ body.dark-mode .modal input {
         width: 100%;
         padding: 10px;
         overflow-x: visible;
-        /* Disable horizontal scroll */
         box-sizing: border-box;
     }
 
@@ -431,5 +496,9 @@ body.dark-mode .modal input {
 
     .settings-item {
         padding: 12px;
+    }
+
+    .postButtons {
+        opacity: 1;
     }
 }

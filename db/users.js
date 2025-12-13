@@ -8,9 +8,16 @@ export function InitializeUsersDatabase() {
       password TEXT NOT NULL,
       role TEXT DEFAULT 'user',
       phone_number TEXT,
-      created_at TEXT DEFAULT (datetime('now'))
+      created_at TEXT DEFAULT (datetime('now')),
+      profile_picture TEXT DEFAULT 'default.png'
     ) STRICT;
   `).run();
+
+    try {
+      db.prepare(`ALTER TABLE users ADD COLUMN profile_picture TEXT DEFAULT 'default.png'`).run();
+    } catch (e) {
+      // Column likely already exists
+    }
 }
 
 export function createUser(username, hashedPassword) {
@@ -50,6 +57,15 @@ export function updatePassword(userId, hashedPassword) {
     SET password = ?
     WHERE id = ?
   `);
-  return stmt.run(hashedPassword, userId);
+    return stmt.run(hashedPassword, userId);
+}
+
+export function updateProfilePicture(userId, filename) {
+  const stmt = db.prepare(`
+    UPDATE users
+    SET profile_picture = ?
+    WHERE id = ?
+  `);
+  return stmt.run(filename, userId);
 }
 
