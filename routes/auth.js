@@ -2,6 +2,10 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { getUserByUsername, createUser, getUserById } from "../db/users.js";
 import send2FACodeSMS from "../utils/send2FACodeSMS.js";
+import sgMail from '@sendgrid/mail';
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+
 
 const router = express.Router();
 
@@ -11,17 +15,39 @@ router.get("/register", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) return res.render("register", { error: "Vul alle velden in" });
+    const { username, password, contact } = req.body;
+    if (!username || !password || !contact) return res.render("register", { error: "Vul alle velden in" });
 
     try {
         const existingUser = getUserByUsername(username);
         if (existingUser) return res.render("register", { error: "Username bestaat al" });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        createUser(username, hashedPassword);
+
+        let phoneNumber = null;
+        let email = null;
+
+        if (contact.includes('@')) {
+            email = contact;
+        } else {
+            // Validate Phone Number
+            // Remove dashes/spaces
+            const cleanContact = contact.replace(/[\s-]/g, '');
+            if (!cleanContact.startsWith('+32')) {
+                return res.render("register", { error: "Telefoonnummer moet beginnen met +32." });
+            }
+            if (!/^\+\d+$/.test(cleanContact)) {
+                return res.render("register", { error: "Ongeldig telefoonnummer formaat." });
+            }
+            phoneNumber = cleanContact;
+        }
+
+        createUser(username, hashedPassword, phoneNumber, email);
         res.redirect("/login");
     } catch (err) {
+        if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+            return res.render("register", { error: "Gebruiker met dit emailadres of gebruikersnaam bestaat al." });
+        }
         console.error(err);
         res.render("register", { error: "Er ging iets mis" });
     }
@@ -43,20 +69,50 @@ router.post("/login", async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.render("login", { error: "Verkeerd wachtwoord" });
 
-        if (user.role === 'mod') {
-            if (!user.phone_number) {
-                // Fallback if no phone number set
-                console.warn("Moderator has no phone number, skipping 2FA (INSECURE)");
-                req.session.user = { id: user.id, username: user.username, role: user.role, profile_picture: user.profile_picture };
-                return res.redirect("/");
-            }
+        if (user.role === 'mod' || user.two_factor_enabled) {
 
-            // 1. Sla tijdelijk op wie er probeert in te loggen
+            // Generate Code
             const code = Math.floor(100000 + Math.random() * 900000);
             req.session.pre2fa = { userId: user.id, code };
-            console.log(code);
-            // 2. Stuur de code
-            //await send2FACodeSMS(user.phone_number, code);
+            console.log("Generated 2FA Code:", code);
+
+            let method = user.two_factor_method || 'email';
+
+
+            if (method === 'sms') {
+                if (!user.phone_number) {
+                    console.warn("User needs SMS 2FA but has no phone number.");
+                    if (user.role === 'mod' && !user.two_factor_enabled) {
+                        console.warn("Moderator has no phone number, skipping 2FA (INSECURE)");
+                        req.session.user = { id: user.id, username: user.username, role: user.role, profile_picture: user.profile_picture };
+                        return res.redirect("/");
+                    }
+                    return res.render("login", { error: "Geen telefoonnummer ingesteld voor 2FA." });
+                }
+                //await send2FACodeSMS(user.phone_number, code);
+            } else if (method === 'email') {
+                if (!user.email) {
+                    return res.render("login", { error: "Geen email ingesteld voor 2FA." });
+                }
+
+                const msg = {
+                    to: user.email,
+                    from: 'ryadabdellatif@gmail.com',
+                    subject: 'Jouw 2FA Verificatiecode',
+                    text: `Je verificatiecode is: ${code}`,
+                    html: `<strong>Je verificatiecode is: ${code}</strong>`,
+                };
+
+                try {
+                    await sgMail.send(msg);
+                } catch (error) {
+                    console.error("SendGrid Error:", error);
+                    if (error.response) {
+                        console.error(error.response.body);
+                    }
+                    return res.render("login", { error: "Kon email niet verzenden." });
+                }
+            }
 
             // 3. Stuur gebruiker naar invulscherm
             return res.redirect("/login/verify");

@@ -1,7 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { isAuthenticated } from "../middleware/auth.js";
-import { getUserByUsername, updateUsername, getUserById, updatePassword, updateProfilePicture } from "../db/users.js";
+import { getUserByUsername, updateUsername, getUserById, updatePassword, updateProfilePicture, updateEmail, updatePhone, getUserByEmail, getUserByPhone, updateTwoFactor } from "../db/users.js";
 import { getAllPostsFromUser } from "../db/posts.js";
 import { getFavoritesByUser } from "../db/favorites.js";
 
@@ -94,3 +94,58 @@ router.post("/user/upload-pfp", isAuthenticated, upload.single("profilePicture")
 
 
 export default router;
+
+router.post("/user/change-email", isAuthenticated, (req, res) => {
+    const { newEmail } = req.body;
+    const userId = req.session.user.id;
+
+    if (!newEmail) return res.status(400).json({ error: "Vul een emailadres in." });
+    if (!newEmail.includes('@')) return res.status(400).json({ error: "Ongeldig emailadres." });
+
+    const existingUser = getUserByEmail(newEmail);
+    if (existingUser) return res.status(400).json({ error: "Dit emailadres is al in gebruik." });
+
+    try {
+        updateEmail(userId, newEmail);
+        return res.json({ success: true, newEmail });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Er ging iets mis." });
+    }
+});
+
+router.post("/user/update-2fa", isAuthenticated, (req, res) => {
+    const { enabled, method } = req.body;
+    const userId = req.session.user.id;
+
+    if (typeof enabled !== 'boolean' || !['email', 'sms', 'app'].includes(method)) {
+        return res.status(400).json({ error: "Ongeldige 2FA instellingen." });
+    }
+
+    try {
+        updateTwoFactor(userId, enabled, method);
+        return res.json({ success: true, enabled, method });
+    } catch (err) {
+        console.error("2FA Error:", err);
+        return res.status(500).json({ error: "Er ging iets mis: " + err.message });
+    }
+});
+
+router.post("/user/change-phone", isAuthenticated, (req, res) => {
+    const { newPhone } = req.body;
+    const userId = req.session.user.id;
+
+    // Basic validity check - just checking if not empty for now, database is TEXT
+    if (!newPhone) return res.status(400).json({ error: "Vul een telefoonnummer in." });
+
+    const existingUser = getUserByPhone(newPhone);
+    if (existingUser) return res.status(400).json({ error: "Dit telefoonnummer is al in gebruik." });
+
+    try {
+        updatePhone(userId, newPhone);
+        return res.json({ success: true, newPhone });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Er ging iets mis." });
+    }
+});

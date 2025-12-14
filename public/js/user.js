@@ -19,22 +19,52 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Buttons
     const usernameBtn = document.getElementById('changeUsernameBtn');
     const passwordBtn = document.getElementById('changePasswordBtn');
+    const emailBtn = document.getElementById('changeEmailBtn');
+    const phoneBtn = document.getElementById('changePhoneBtn');
+    const twoFaBtn = document.getElementById('change2faBtn');
 
+    // Modals
     const usernameModal = document.getElementById('changeUsernameModal');
     const passwordModal = document.getElementById('changePasswordModal');
+    const emailModal = document.getElementById('changeEmailModal');
+    const phoneModal = document.getElementById('changePhoneModal');
+    const twoFaModal = document.getElementById('change2faModal');
 
     const closeButtons = document.querySelectorAll('.modal .close');
 
+    // Open Modals
+    if (usernameBtn) {
+        usernameBtn.addEventListener('click', () => {
+            usernameModal.style.display = 'flex';
+        });
+    }
 
-    usernameBtn.addEventListener('click', () => {
-        usernameModal.style.display = 'flex';
-    });
-    passwordBtn.addEventListener('click', () => {
-        passwordModal.style.display = 'flex';
-    });
+    if (passwordBtn) {
+        passwordBtn.addEventListener('click', () => {
+            passwordModal.style.display = 'flex';
+        });
+    }
 
+    if (emailBtn) {
+        emailBtn.addEventListener('click', () => {
+            emailModal.style.display = 'flex';
+        });
+    }
+
+    if (phoneBtn) {
+        phoneBtn.addEventListener('click', () => {
+            phoneModal.style.display = 'flex';
+        });
+    }
+
+    if (twoFaBtn) {
+        twoFaBtn.addEventListener('click', () => {
+            twoFaModal.style.display = 'flex';
+        });
+    }
 
     // Close modals when clicking X
     closeButtons.forEach(btn => {
@@ -137,6 +167,107 @@ document.addEventListener("DOMContentLoaded", () => {
             passwordErrorDiv.textContent = "Er ging iets mis, probeer opnieuw.";
         }
     });
+
+
+    // ---- Email change ----
+    const emailForm = document.getElementById("changeEmailForm");
+    const emailErrorDiv = document.getElementById("emailError");
+
+    if (emailForm) {
+        emailForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            emailErrorDiv.textContent = "";
+
+            const formData = new FormData(emailForm);
+            const newEmail = formData.get("newEmail");
+
+            try {
+                const response = await fetch("/user/change-email", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ newEmail })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    emailErrorDiv.textContent = data.error;
+                } else if (data.success) {
+                    location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                emailErrorDiv.textContent = "Er ging iets mis, probeer opnieuw.";
+            }
+        });
+    }
+
+    // ---- Phone change ----
+    const phoneForm = document.getElementById("changePhoneForm");
+    const phoneErrorDiv = document.getElementById("phoneError");
+
+    if (phoneForm) {
+        phoneForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            phoneErrorDiv.textContent = "";
+
+            const formData = new FormData(phoneForm);
+            const newPhone = formData.get("newPhone");
+
+            try {
+                const response = await fetch("/user/change-phone", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ newPhone })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    phoneErrorDiv.textContent = data.error;
+                } else if (data.success) {
+                    location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                phoneErrorDiv.textContent = "Er ging iets mis, probeer opnieuw.";
+            }
+        });
+    }
+
+    // ---- 2FA change ----
+    const twoFaForm = document.getElementById("change2faForm");
+    const twoFaErrorDiv = document.getElementById("2faError");
+
+    if (twoFaForm) {
+        twoFaForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            twoFaErrorDiv.textContent = "";
+
+            const formData = new FormData(twoFaForm);
+            const enabled = formData.get("enabled") === "on";
+            const method = formData.get("method");
+
+            try {
+                const response = await fetch("/user/update-2fa", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ enabled, method })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    twoFaErrorDiv.textContent = data.error;
+                } else if (data.success) {
+                    location.reload();
+                }
+            } catch (err) {
+                console.error(err);
+                twoFaErrorDiv.textContent = "Er ging iets mis, probeer opnieuw.";
+            }
+        });
+    }
 });
 
 document.addEventListener("DOMContentLoaded", () => {

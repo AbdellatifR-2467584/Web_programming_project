@@ -98,6 +98,24 @@
                             <button id="changePasswordBtn">Bewerken</button>
                         </li>
                         <li class="settings-item">
+                            <span><i class="bi bi-envelope-fill"></i> Email: <%= user.email || 'Niet ingesteld' %>
+                            </span>
+                            <button id="changeEmailBtn">
+                                <%= user.email ? 'Bewerken' : 'Toevoegen' %>
+                            </button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-telephone-fill"></i> Telefoon: <%= user.phone_number
+                                    || 'Niet ingesteld' %></span>
+                            <button id="changePhoneBtn">
+                                <%= user.phone_number ? 'Bewerken' : 'Toevoegen' %>
+                            </button>
+                        </li>
+                        <li class="settings-item">
+                            <span><i class="bi bi-shield-lock-fill"></i> 2FA Instellingen</span>
+                            <button id="change2faBtn">Bewerken</button>
+                        </li>
+                        <li class="settings-item">
                             <span><i class="bi bi-box-arrow-right"></i> Uitloggen</span>
                             <button onclick="location.href='/logout'" class="logout-btn">Uitloggen</button>
                         </li>
@@ -132,6 +150,66 @@
                                     <button type="submit">Opslaan</button>
                                 </form>
                                 <div id="passwordError" class="error-message"></div>
+                            </div>
+                        </div>
+
+                        <div id="changeEmailModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>Wijzig Email</h3>
+                                <form id="changeEmailForm">
+                                    <input type="email" name="newEmail" placeholder="Nieuw emailadres" required>
+                                    <button type="submit">Opslaan</button>
+                                </form>
+                                <div id="emailError" class="error-message"></div>
+                            </div>
+                        </div>
+
+                        <div id="changePhoneModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>Wijzig Telefoonnummer</h3>
+                                <form id="changePhoneForm">
+                                    <input type="text" name="newPhone" placeholder="Nieuw telefoonnummer" required>
+                                    <button type="submit">Opslaan</button>
+                                </form>
+                                <div id="phoneError" class="error-message"></div>
+                            </div>
+                        </div>
+
+                        <div id="change2faModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close">&times;</span>
+                                <h3>2FA Instellingen</h3>
+                                <form id="change2faForm">
+                                    <div class="two-fa-form-group two-fa-flex">
+                                        <label for="2faEnabled" class="two-fa-label">2FA Inschakelen</label>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="2faEnabled" name="enabled"
+                                                <%=user.two_factor_enabled ? 'checked' : '' %>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    <div class="two-fa-form-group">
+                                        <label class="two-fa-label">Voorkeursmethode:</label>
+                                        <div class="two-fa-options-container">
+                                            <label class="two-fa-option">
+                                                <input type="radio" name="method" value="email" class="custom-radio"
+                                                    <%=user.two_factor_method==='email' ? 'checked' : '' %>>
+                                                <span class="option-text"><i class="bi bi-envelope-fill"></i>
+                                                    Email</span>
+                                            </label>
+                                            <label class="two-fa-option">
+                                                <input type="radio" name="method" value="sms" class="custom-radio"
+                                                    <%=user.two_factor_method==='sms' ? 'checked' : '' %>>
+                                                <span class="option-text"><i class="bi bi-chat-dots-fill"></i>
+                                                    SMS</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="save-btn">Opslaan</button>
+                                </form>
+                                <div id="2faError" class="error-message"></div>
                             </div>
                         </div>
 
