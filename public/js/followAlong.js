@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectAllBtn = document.getElementById('selectAllBtn');
     const startCookingBtn = document.getElementById('startCookingBtn');
 
-    // --- Ingredients Logic ---
+    //ingredienten lijst
     ingredients.forEach((ingredient, i) => {
         const li = document.createElement('li');
         li.innerHTML = `<input type="checkbox" id="ingredient-${i}"> <label for="ingredient-${i}">${ingredient}</label>`;
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startSteps();
     });
 
-    // --- Steps Logic ---
+    //stappen
     function startSteps() {
         const stappenDiv = document.querySelector('.instructies');
         const steps = JSON.parse(stappenDiv.dataset.steps);
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         stappenDiv.style.display = 'flex';
 
-        // Request Wake Lock
+        //voorkomen dat apparaat vanzelf uitvalt
         async function requestWakeLock() {
             try {
                 wakeLock = await navigator.wakeLock.request('screen');
@@ -70,26 +70,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function speak(text) {
             if (!ttsToggle.checked) return;
-            window.speechSynthesis.cancel(); // Stop previous
+            window.speechSynthesis.cancel(); //stop vorige
             const utterance = new SpeechSynthesisUtterance(text);
             window.speechSynthesis.speak(utterance);
         }
 
         function updateUI() {
-            // Update Text
+            //update de text
             if (currentStep < steps.length) {
                 stepText.textContent = steps[currentStep];
                 stepCount.textContent = currentStep + 1;
 
-                // Update Progress Bar
+                //update progress bar
                 const progress = ((currentStep + 1) / steps.length) * 100;
                 progressBar.style.width = `${progress}%`;
 
-                // Update Buttons
+                //update bttns
                 prevBtn.disabled = currentStep === 0;
                 nextBtn.innerHTML = currentStep === steps.length - 1 ? 'Klaar <i class="bi bi-check-lg"></i>' : 'Volgende <i class="bi bi-arrow-right"></i>';
 
-                // Speak
+                //spreek
                 speak(steps[currentStep]);
             } else {
                 finishCooking();
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (wakeLock) wakeLock.release();
         }
 
-        // Event Listeners
+        //volgonde bttn evnet listener
         nextBtn.addEventListener('click', () => {
             if (currentStep < steps.length) {
                 currentStep++;
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             speak(steps[currentStep]);
         });
 
-        // Initial Call
+        //eerste call
         updateUI();
     }
 });

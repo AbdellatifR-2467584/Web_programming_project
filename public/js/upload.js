@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const ingredientContainer = document.getElementById('ingredienten-lijst');
   const stepsContainer = document.getElementById('stappen-lijst');
 
-  // Main Image Elements
+  //Main Image Elements
   const imageInput = document.getElementById('image');
   const previewContainer = document.getElementById('image-preview');
   const previewImg = document.getElementById('preview-img');
@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const statusLabel = document.getElementById('file-status');
   const uploadLabel = document.getElementById('upload-label');
 
-  // Walkthrough Media Elements
+  //Walkthrough Media Elements
   const mediaInput = document.getElementById('media');
   const mediaPreviewContainer = document.getElementById('media-preview');
   const mediaContent = document.getElementById('media-content');
@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const postDataInput = document.getElementById('post-data');
   const postData = postDataInput && postDataInput.value ? JSON.parse(postDataInput.value) : null;
 
-  // --- Main Image Logic ---
+  //main img logica
   function resetImage() {
     uploadLabel.style.display = "flex";
     imageInput.value = "";
@@ -63,10 +63,170 @@ window.addEventListener('DOMContentLoaded', () => {
 
   removeBtn.addEventListener('click', resetImage);
 
-  // --- Walkthrough Media Logic ---
+  //walkthrough media logica
+  let accumulatedMediaFiles = [];
+  let existingMediaPaths = [];
+
+  function updateMediaInputFiles() {
+    const dataTransfer = new DataTransfer();
+    accumulatedMediaFiles.forEach(file => dataTransfer.items.add(file));
+    mediaInput.files = dataTransfer.files;
+    mediaStatusLabel.textContent = `${accumulatedMediaFiles.length + existingMediaPaths.length} bestand(en) geselecteerd`;
+  }
+
+  function updateExistingMediaInputs() {
+    //verwijder oude inputs
+    document.querySelectorAll('input[name="existing_media[]"]').forEach(el => el.remove());
+
+    //voeg nieuwe inputs toe
+    existingMediaPaths.forEach(path => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'existing_media[]';
+      input.value = path;
+      form.appendChild(input);
+    });
+  }
+
+  function renderMediaPreviews() {
+    mediaContent.innerHTML = "";
+    mediaContent.style.display = "flex";
+    mediaContent.style.gap = "10px";
+    mediaContent.style.overflowX = "auto";
+
+    const createWrapper = (isExisting, index) => {
+      const wrapper = document.createElement('div');
+      wrapper.style.minWidth = "150px";
+      wrapper.style.width = "150px";
+      wrapper.style.height = "150px";
+      wrapper.style.position = "relative";
+      wrapper.style.borderRadius = "8px";
+      wrapper.style.overflow = "hidden";
+      wrapper.style.backgroundColor = "#f0f0f0";
+      wrapper.style.flexShrink = "0";
+
+      const removeBtn = document.createElement('button');
+      removeBtn.innerHTML = '<i class="bi bi-x"></i>';
+      removeBtn.className = 'remove-image';
+      removeBtn.style.position = 'absolute';
+      removeBtn.style.top = '5px';
+      removeBtn.style.right = '5px';
+      removeBtn.style.background = 'rgba(0,0,0,0.5)';
+      removeBtn.style.color = '#fff';
+      removeBtn.style.border = 'none';
+      removeBtn.style.borderRadius = '50%';
+      removeBtn.style.width = '24px';
+      removeBtn.style.height = '24px';
+      removeBtn.style.cursor = 'pointer';
+      removeBtn.style.display = 'flex';
+      removeBtn.style.alignItems = 'center';
+      removeBtn.style.justifyContent = 'center';
+      removeBtn.style.zIndex = '10';
+
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (isExisting) {
+          existingMediaPaths.splice(index, 1);
+          updateExistingMediaInputs();
+        } else {
+          accumulatedMediaFiles.splice(index, 1);
+          updateMediaInputFiles();
+        }
+        renderMediaPreviews();
+        if (accumulatedMediaFiles.length === 0 && existingMediaPaths.length === 0) resetMedia();
+      });
+
+      wrapper.appendChild(removeBtn);
+      return wrapper;
+    };
+
+    //render bestaande media
+    existingMediaPaths.forEach((path, index) => {
+      const wrapper = createWrapper(true, index);
+      const normalized = new URL(path, window.location.origin).pathname;
+      const isVideo = normalized.endsWith('.mp4') || normalized.endsWith('.webm') || normalized.endsWith('.mov');
+
+      if (isVideo) {
+        const video = document.createElement('video');
+        video.src = normalized;
+        video.controls = false;
+        video.style.width = '100%';
+        video.style.height = '100%';
+        video.style.objectFit = 'cover';
+        wrapper.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = normalized;
+        img.alt = "Existing Media";
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        wrapper.appendChild(img);
+      }
+      mediaContent.appendChild(wrapper);
+    });
+
+    //render nieuwe files
+    accumulatedMediaFiles.forEach((file, index) => {
+      const fileType = file.type;
+      const reader = new FileReader();
+      const wrapper = createWrapper(false, index);
+
+      mediaContent.appendChild(wrapper);
+
+      reader.onload = ev => {
+        if (fileType.startsWith('video/')) {
+          const video = document.createElement('video');
+          video.src = ev.target.result;
+          video.controls = false;
+          video.style.width = '100%';
+          video.style.height = '100%';
+          video.style.objectFit = 'cover';
+          wrapper.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = ev.target.result;
+          img.alt = "New Media";
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'cover';
+          wrapper.appendChild(img);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    //"+" knop voor meer media
+    const addMoreBtn = document.createElement('div');
+    addMoreBtn.style.minWidth = "150px";
+    addMoreBtn.style.width = "150px";
+    addMoreBtn.style.height = "150px";
+    addMoreBtn.style.borderRadius = "8px";
+    addMoreBtn.style.backgroundColor = "#e0e0e0";
+    addMoreBtn.style.display = "flex";
+    addMoreBtn.style.alignItems = "center";
+    addMoreBtn.style.justifyContent = "center";
+    addMoreBtn.style.cursor = "pointer";
+    addMoreBtn.style.flexShrink = "0";
+    addMoreBtn.innerHTML = '<i class="bi bi-plus-lg" style="font-size: 2rem; color: #666;"></i>';
+
+    addMoreBtn.addEventListener('click', () => {
+      mediaInput.click();
+    });
+
+    mediaContent.appendChild(addMoreBtn);
+
+    mediaPreviewContainer.style.display = 'block';
+    mediaLabel.style.display = "none";
+  }
+
   function resetMedia() {
     mediaLabel.style.display = "flex";
     mediaInput.value = "";
+    accumulatedMediaFiles = [];
+    existingMediaPaths = [];
+    updateExistingMediaInputs();
     mediaContent.innerHTML = "";
     mediaPreviewContainer.style.display = "none";
     mediaStatusLabel.textContent = "Geen bestand geselecteerd";
@@ -74,35 +234,12 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   mediaInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileType = file.type;
-      const reader = new FileReader();
-
-      reader.onload = e => {
-        mediaContent.innerHTML = ""; // Clear previous content
-
-        if (fileType.startsWith('video/')) {
-          const video = document.createElement('video');
-          video.src = e.target.result;
-          video.controls = true;
-          video.style.maxWidth = '100%';
-          video.style.maxHeight = '400px';
-          video.style.borderRadius = '16px';
-          mediaContent.appendChild(video);
-        } else {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          img.alt = "Media Preview";
-          mediaContent.appendChild(img);
-        }
-
-        mediaPreviewContainer.style.display = 'block';
-        mediaStatusLabel.textContent = file.name;
-        mediaLabel.style.display = "none";
-      };
-      reader.readAsDataURL(file);
-    } else resetMedia();
+    const newFiles = Array.from(e.target.files);
+    if (newFiles.length > 0) {
+      accumulatedMediaFiles = [...accumulatedMediaFiles, ...newFiles];
+      updateMediaInputFiles();
+      renderMediaPreviews();
+    }
   });
 
   removeMediaBtn.addEventListener('click', resetMedia);
@@ -185,7 +322,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  // ---------------- STEPS LOGIC ----------------
+  //stappen logica
   function renderSteps(steps = []) {
     stepsContainer.innerHTML = '';
     steps.forEach((step, i) => {
@@ -243,35 +380,20 @@ window.addEventListener('DOMContentLoaded', () => {
     submitBtn.style.color = 'white';
   }
 
-  function showExistingMedia(mediaPath) {
-    if (!mediaPath) return;
+  function showExistingMedia(mediaPaths) {
+    if (!mediaPaths) return;
 
-    const normalized = new URL(mediaPath, window.location.origin).pathname;
-    const isVideo = normalized.endsWith('.mp4') || normalized.endsWith('.webm') || normalized.endsWith('.mov');
+    // Handle legacy single string vs new array
+    const paths = Array.isArray(mediaPaths) ? mediaPaths : [mediaPaths];
+    if (paths.length === 0) return;
 
-    mediaContent.innerHTML = "";
-    if (isVideo) {
-      const video = document.createElement('video');
-      video.src = normalized;
-      video.controls = true;
-      video.style.maxWidth = '100%';
-      video.style.maxHeight = '400px';
-      video.style.borderRadius = '16px';
-      mediaContent.appendChild(video);
-    } else {
-      const img = document.createElement('img');
-      img.src = normalized;
-      img.alt = "Media Preview";
-      mediaContent.appendChild(img);
-    }
-
-    mediaPreviewContainer.style.display = 'block';
-    mediaStatusLabel.textContent = normalized.split('/').pop();
-    mediaInput.disabled = true;
-    mediaLabel.style.display = 'none';
+    existingMediaPaths = paths;
+    updateExistingMediaInputs();
+    renderMediaPreviews();
+    mediaStatusLabel.textContent = `${paths.length} bestand(en) geselecteerd`;
   }
 
-  // ---------------- PREFILL DATA ----------------
+  //date opvullen voor de edit
   if (postData) {
     form.action = `/post/${postData.id}/edit`;
     submitBtn.innerHTML = `<i class="bi bi-save"></i><br>`;
@@ -294,7 +416,7 @@ window.addEventListener('DOMContentLoaded', () => {
     renderIngredients();
     renderSteps();
   }
-  // ---------------- FETCH RECIPE ----------------
+  //ai fetch recipe
   document.getElementById('fetch-btn')?.addEventListener('click', async () => {
     const url = document.getElementById('recipe-url').value.trim();
     if (!url) return alert('Voer een geldige URL in.');
@@ -328,7 +450,7 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       alert('Fout bij ophalen recept: ' + err.message);
 
-    }finally {
+    } finally {
       loading.style.display = 'none';
     }
   });

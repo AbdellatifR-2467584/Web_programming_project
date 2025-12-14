@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const body = document.body; // select the body element
+    const body = document.body;
     if (localStorage.getItem('darkmode') === 'enabled') {
         body.classList.add('dark-mode');
     }
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } catch (error) {
                 console.error("Error toggling favorite:", error);
-                // Revert UI on error
+                //revert ui als error
                 if (isFilled) {
                     icon.classList.remove("bi-heart");
                     icon.classList.add("bi-heart-fill");
@@ -129,6 +129,28 @@ document.addEventListener("DOMContentLoaded", () => {
                     favoriteBtn.classList.remove("active");
                 }
             }
+        });
+    }
+
+    //swipe logica
+    const track = document.querySelector('.carousel-track');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+
+    if (track && prevBtn && nextBtn) {
+
+        //buttons weg als er niet genoeg content is
+        if (track.scrollWidth <= track.clientWidth) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+
+        prevBtn.addEventListener('click', () => {
+            track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' });
+        });
+
+        nextBtn.addEventListener('click', () => {
+            track.scrollBy({ left: track.clientWidth, behavior: 'smooth' });
         });
     }
 });

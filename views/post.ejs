@@ -35,28 +35,51 @@
                                 <img src="/<%= post.image_path %>" alt="<%= post.title %>">
                             </figure>
 
-                            <% if (post.media_path) { %>
-                                <div class="walkthrough-media" style="margin-top: 20px;">
-                                    <% if (post.media_path.endsWith('.mp4') || post.media_path.endsWith('.webm') ||
-                                        post.media_path.endsWith('.mov')) { %>
-                                        <video controls style="width: 100%; border-radius: 16px;">
-                                            <source src="/<%= post.media_path %>" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                        <% } else { %>
-                                            <img src="/<%= post.media_path %>" alt="Walkthrough Media"
-                                                style="width: 100%; border-radius: 16px;">
+                            <% if (post.media_path && post.media_path.length> 0) { %>
+                                <div class="walkthrough-section">
+                                    <h3 class="media-title">Walkthrough</h3>
+                                    <div class="carousel-container">
+                                        <button class="carousel-prev" aria-label="Vorige"><i
+                                                class="bi bi-chevron-left"></i></button>
+                                        <div class="carousel-track">
+                                            <% post.media_path.forEach(path=> { %>
+                                                <% if (path) { %>
+                                                    <div class="carousel-slide">
+                                                        <% if (path.endsWith('.mp4') || path.endsWith('.webm') ||
+                                                            path.endsWith('.mov')) { %>
+                                                            <video controls>
+                                                                <source src="/<%= path %>" type="video/mp4">
+                                                                Your browser does not support the video tag.
+                                                            </video>
+                                                            <% } else { %>
+                                                                <img src="/<%= path %>" alt="Walkthrough Media">
+                                                                <% } %>
+                                                    </div>
+                                                    <% } %>
+                                                        <% }); %>
+                                        </div>
+                                        <button class="carousel-next" aria-label="Volgende"><i
+                                                class="bi bi-chevron-right"></i></button>
+                                        <% if (post.media_path.length> 1) { %>
+                                            <div class="carousel-indicators"
+                                                style="text-align: center; margin-top: 10px; color: #666; font-size: 0.8rem;">
+                                                Swipe of gebruik pijltjes voor meer
+                                            </div>
                                             <% } %>
+                                    </div>
                                 </div>
                                 <% } %>
 
                                     <% if (post.youtube_url && post.youtube_url !=='https://www.youtube.com/embed/null'
                                         ) { %>
-                                        <div class="youtube-wrapper" data-url="<%= post.youtube_url %>">
-                                            <iframe width="100%" height="315" src="<%= post.youtube_url %>"
-                                                frameborder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen></iframe>
+                                        <div class="video-section">
+                                            <h3 class="media-title">Video</h3>
+                                            <div class="youtube-wrapper" data-url="<%= post.youtube_url %>">
+                                                <iframe width="100%" height="315" src="<%= post.youtube_url %>"
+                                                    frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen></iframe>
+                                            </div>
                                         </div>
                                         <% } %>
                         </div>
@@ -157,11 +180,12 @@
                                         <% } %>
                             </div>
                         </div>
-                    </div id="grid">
+                    </div>
+                </div id="grid">
 
-                    <%- include('partials/gridSearch') %>
-                </div>
-        </main>
+                <%- include('partials/gridSearch') %>
+    </div>
+    </main>
     </div>
 
     <script type="module">

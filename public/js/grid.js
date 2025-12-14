@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const body = document.body; // select the body element
+    const body = document.body;
     if (localStorage.getItem('darkmode') === 'enabled') {
         body.classList.add('dark-mode');
     }
@@ -7,21 +7,21 @@ window.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", async () => {
     const grids = document.getElementsByClassName("grid");
 
-    // Fetch posts
+    //fetch alle posts
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("q") || "";
     const apiUrl = query ? `/api/postsLike?q=${encodeURIComponent(query)}` : "/api/posts";
     const res = await fetch(apiUrl);
     const posts = await res.json();
 
-    // Determine current post ID (if any)
+    //krijg post id
     let currentPostId = null;
     const pathParts = window.location.pathname.split("/").filter(Boolean);
     if (pathParts[0] === "post" && !isNaN(pathParts[1])) {
         currentPostId = parseInt(pathParts[1]);
     }
 
-    // Render cards
+    //alle cards laten zien
     Array.from(grids).forEach(grid => {
         grid.innerHTML = posts
             .filter(post => post.id !== currentPostId)
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const images = grid.querySelectorAll("img");
         let loaded = 0;
 
-        // Wait for images to load
+        //wachten tot imgs zijn geladen
         images.forEach(img => {
             if (img.complete) {
                 loaded++;
@@ -60,14 +60,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // Restore search input value
+    //search input
     const searchInput = document.querySelector(".searchinput");
     if (searchInput && query) {
         searchInput.value = query;
     }
 });
 
-// Resize masonry cards based on image heights
+//resize op basis van hoogte vna imgs
 function resizeMasonry(grid) {
     const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
     const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('gap'));
@@ -81,7 +81,7 @@ function resizeMasonry(grid) {
     });
 }
 
-// ✅ Recalculate on window resize to handle media queries
+//resizen opnieuw berekenen
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
@@ -106,7 +106,7 @@ function checkMobileLayout(grid) {
     }
 }
 
-// Global function for grid favorite button
+//grid favo bttn
 window.toggleGridFavorite = async function (event, postId) {
     event.stopPropagation(); // Prevent card click (navigation)
     event.preventDefault();
@@ -114,7 +114,6 @@ window.toggleGridFavorite = async function (event, postId) {
     const btn = event.currentTarget;
     const icon = btn.querySelector("i");
 
-    // Optimistic UI
     const isFilled = icon.classList.contains("bi-heart-fill");
     if (isFilled) {
         icon.classList.remove("bi-heart-fill");
@@ -134,7 +133,7 @@ window.toggleGridFavorite = async function (event, postId) {
 
         if (response.status === 401) {
             alert("Je moet ingelogd zijn om favorieten op te slaan.");
-            // Revert
+            //revert
             if (isFilled) {
                 icon.classList.add("bi-heart-fill");
                 icon.classList.remove("bi-heart");
@@ -147,7 +146,7 @@ window.toggleGridFavorite = async function (event, postId) {
             return;
         }
 
-        // Sync with server response
+        //sync met server response
         const data = await response.json();
         if (data.favorited) {
             icon.classList.remove("bi-heart");
@@ -161,7 +160,7 @@ window.toggleGridFavorite = async function (event, postId) {
 
     } catch (err) {
         console.error("Error toggling favorite:", err);
-        // Revert
+        //revert
         if (isFilled) {
             icon.classList.add("bi-heart-fill");
             icon.classList.remove("bi-heart");

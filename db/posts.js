@@ -27,7 +27,7 @@ export function createPost({ userId, title, image_path, media_path, ingredients,
     INSERT INTO posts (userId, title, image_path, media_path, ingredients, steps, youtube_url, post_url)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  return stmt.run(userId, title, image_path, media_path || null, JSON.stringify(cleanIngredients), JSON.stringify(cleanSteps), youtube_url || null, post_url || null);
+  return stmt.run(userId, title, image_path, media_path ? JSON.stringify(media_path) : null, JSON.stringify(cleanIngredients), JSON.stringify(cleanSteps), youtube_url || null, post_url || null);
 }
 export function getAllPosts() {
   return db.prepare(`
@@ -64,7 +64,16 @@ export function getPostInfoByID(id) {
     ingredients: JSON.parse(post.ingredients),
     steps: JSON.parse(post.steps),
     username: user?.username || "Onbekend",
-    user_profile_picture: user?.profile_picture || "default.png"
+    user_profile_picture: user?.profile_picture || "default.png",
+    media_path: (() => {
+      try {
+        if (!post.media_path) return [];
+        const parsed = JSON.parse(post.media_path);
+        return Array.isArray(parsed) ? parsed : [post.media_path];
+      } catch (e) {
+        return post.media_path ? [post.media_path] : [];
+      }
+    })()
   };
 }
 
@@ -117,7 +126,7 @@ export function updatePostById(id, { title, ingredients, steps, youtube_url, pos
     youtube_url || null,
     post_url || null,
     image_path || null,
-    media_path || null,
+    media_path ? JSON.stringify(media_path) : null,
     id
   );
 }

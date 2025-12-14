@@ -99,7 +99,7 @@ router.get('/post/:id/edit', isAuthenticated, (req, res) => {
     res.render('upload', { post });
 });
 
-router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 1 }]), (req, res) => {
+router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 10 }]), (req, res) => {
     const post = getPostInfoByID(req.params.id);
     if (!post) return res.status(404).send("Post not found");
 
@@ -108,9 +108,50 @@ router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', m
     }
 
     const { title, ingredients, steps, youtube_url, site_url } = req.body;
-    // Use forward slashes for cross-platform compatibility
+    let { existing_media } = req.body;
+
+    // Normalize existing_media into an array
+    if (!existing_media) {
+        existing_media = [];
+    } else if (!Array.isArray(existing_media)) {
+        existing_media = [existing_media];
+    }
+
+    // Clean up paths (remove leading / if present in hidden input from frontend URL normalization)
+    // The frontend sends absolute paths like "/uploads/file.jpg". We store "uploads/file.jpg".
+    existing_media = existing_media.map(p => p.startsWith('/') ? p.substring(1) : p);
+
+
     const image_path = req.files['image'] ? "uploads/" + req.files['image'][0].filename : post.image_path;
-    const media_path = req.files['media'] ? "uploads/" + req.files['media'][0].filename : post.media_path;
+
+    let media_path = [];
+
+    // Add existing paths
+    media_path.push(...existing_media);
+
+    // Add new files
+    if (req.files['media']) {
+        const newPaths = req.files['media'].map(file => "uploads/" + file.filename);
+        media_path.push(...newPaths);
+    }
+
+    // Logic to delete REMOVED files from filesystem
+    // Old paths in post.media_path that are NOT in the new media_path should be deleted.
+    if (post.media_path && Array.isArray(post.media_path)) {
+        const oldPaths = post.media_path;
+        const newSet = new Set(media_path);
+
+        oldPaths.forEach(oldP => {
+            if (!newSet.has(oldP)) {
+                // Deleting file
+                const filePath = path.join(process.cwd(), oldP);
+                fs.unlink(filePath, (err) => {
+                    if (err) console.warn("Could not delete removed media file:", err);
+                    else console.log("Deleted removed media:", oldP);
+                });
+            }
+        });
+    }
 
     const videoId = extractYouTubeId(youtube_url);
 
@@ -141,10 +182,19 @@ router.post("/post/:id/delete", isAuthenticated, (req, res) => {
 
         // Delete image file
         if (post.image_path) {
-            // Resolve path safely
             const filePath = path.join(process.cwd(), post.image_path);
             fs.unlink(filePath, (err) => {
                 if (err) console.warn("Could not delete image file:", err);
+            });
+        }
+
+        // Delete media files
+        if (post.media_path && Array.isArray(post.media_path)) {
+            post.media_path.forEach(mPath => {
+                const filePath = path.join(process.cwd(), mPath);
+                fs.unlink(filePath, (err) => {
+                    if (err) console.warn("Could not delete media file:", err);
+                });
             });
         }
 
@@ -175,7 +225,7 @@ router.get("/uploadlink", (request, response) => {
     response.render("uploadlink");
 });
 
-router.post("/upload", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 1 }]), async (request, response) => {
+router.post("/upload", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 10 }]), async (request, response) => {
     console.log("Session user:", request.session.user);
 
     const userId = request.session.user?.id;
@@ -183,7 +233,7 @@ router.post("/upload", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'm
     const { title, ingredients, steps, youtube_url, post_url, image_url_external } = request.body;
 
     let image_path = "";
-    let media_path = "";
+    let media_path = [];
 
     try {
         if (request.files['image']) {
@@ -213,7 +263,7 @@ router.post("/upload", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'm
         }
 
         if (request.files['media']) {
-            media_path = "uploads/" + request.files['media'][0].filename;
+            media_path = request.files['media'].map(file => "uploads/" + file.filename);
         }
 
     } catch (error) {

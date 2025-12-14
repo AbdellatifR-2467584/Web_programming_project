@@ -36,7 +36,7 @@ export default function initComments(postId) {
                 </div>`;
             }).join("");
 
-            // attach delete listeners
+            //delete event listener
             document.querySelectorAll(".delete-comment").forEach(btn => {
                 btn.addEventListener("click", async () => {
                     const commentId = btn.dataset.id;
