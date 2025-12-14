@@ -566,19 +566,24 @@ body.dark-mode .page {
 
 .carousel-track {
     display: flex;
+    width: 100%;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    scroll-behavior: smooth;
 }
 
 .carousel-track::-webkit-scrollbar {
-    display: block;
+    display: none;
+    /* Hide scrollbar fully */
 }
 
 .carousel-slide {
     flex: 0 0 100%;
-    max-width: 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
     display: flex;
     justify-content: center;
     align-items: center;
