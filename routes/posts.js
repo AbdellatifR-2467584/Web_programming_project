@@ -65,7 +65,7 @@ router.get("/api/postsLike", (req, res) => {
 router.get("/post/:id", (req, res) => {
     try {
         const post = getPostInfoByID(req.params.id);
-        if (!post) return res.status(404).send("Post not found");
+        if (!post) return res.status(404).render("./404.ejs");
         const currentUser = req.session.user || null;
         let favorited = false;
         if (currentUser) {
@@ -81,7 +81,7 @@ router.get("/post/:id", (req, res) => {
 router.get('/post/:id/volgmee', async (req, res) => {
     try {
         const post = getPostInfoByID(req.params.id);
-        if (!post) return res.status(404).send("Post not found");
+        if (!post) return res.status(404).render("./404.ejs");
         res.render('followAlong', { post });
     } catch (err) {
         console.error("Error fetching post: ", err)
@@ -91,7 +91,7 @@ router.get('/post/:id/volgmee', async (req, res) => {
 
 router.get('/post/:id/edit', isAuthenticated, (req, res) => {
     const post = getPostInfoByID(req.params.id);
-    if (!post) return res.status(404).send("Post not found");
+    if (!post) return res.status(404).render("./404.ejs");
     if (req.session.user.id !== post.userId) {
         return res.status(403).send("Je hebt geen toegang tot deze post");
     }
@@ -101,7 +101,7 @@ router.get('/post/:id/edit', isAuthenticated, (req, res) => {
 
 router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'media', maxCount: 10 }]), (req, res) => {
     const post = getPostInfoByID(req.params.id);
-    if (!post) return res.status(404).send("Post not found");
+    if (!post) return res.status(404).render("./404.ejs");
 
     if (req.session.user.id !== post.userId) {
         return res.status(403).send("Je hebt geen toegang tot deze post");
@@ -117,8 +117,6 @@ router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', m
         existing_media = [existing_media];
     }
 
-    // Clean up paths (remove leading / if present in hidden input from frontend URL normalization)
-    // The frontend sends absolute paths like "/uploads/file.jpg". We store "uploads/file.jpg".
     existing_media = existing_media.map(p => p.startsWith('/') ? p.substring(1) : p);
 
 
@@ -126,17 +124,13 @@ router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', m
 
     let media_path = [];
 
-    // Add existing paths
     media_path.push(...existing_media);
 
-    // Add new files
     if (req.files['media']) {
         const newPaths = req.files['media'].map(file => "uploads/" + file.filename);
         media_path.push(...newPaths);
     }
 
-    // Logic to delete REMOVED files from filesystem
-    // Old paths in post.media_path that are NOT in the new media_path should be deleted.
     if (post.media_path && Array.isArray(post.media_path)) {
         const oldPaths = post.media_path;
         const newSet = new Set(media_path);
@@ -171,7 +165,7 @@ router.post('/post/:id/edit', isAuthenticated, upload.fields([{ name: 'image', m
 router.post("/post/:id/delete", isAuthenticated, (req, res) => {
     try {
         const post = getPostInfoByID(req.params.id);
-        if (!post) return res.status(404).send("Post not found");
+        if (!post) return res.status(404).render("./404.ejs");
 
         if (req.session.user.id !== post.userId && req.session.user.role !== 'mod') {
             return res.status(403).send("Je hebt geen toegang om dit te verwijderen");
