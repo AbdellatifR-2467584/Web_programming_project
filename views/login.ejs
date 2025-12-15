@@ -35,9 +35,15 @@
             </p>
             <% } %>
 
-                <form method="POST" action="/login">
-                    <input type="text" name="username" placeholder="Username" required />
-                    <input type="password" name="password" placeholder="Wachtwoord" required />
+                <form method="POST" action="/login" class="loginform">
+                    <label>
+                        <span>Email of Telefoonnummer</span>
+                        <input type="text" name="contact" placeholder="Email of Telefoonnummer" required />
+                    </label>
+                    <label>
+                        <span>Wachtwoord</span>
+                        <input type="password" name="password" placeholder="Kies een wachtwoord" required />
+                    </label>
                     <button type="submit">Login</button>
                 </form>
 

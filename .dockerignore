@@ -3,3 +3,5 @@
 .git
 
 # database temp files
+*-shm
+*-wal

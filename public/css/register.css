@@ -363,3 +363,9 @@ body.dark-mode input {
 .registerform {
     text-align: left;
 }
+
+label span {
+    color: #a4a4a4;
+    margin-left: 5px;
+    font-size: 0.9rem;
+}
