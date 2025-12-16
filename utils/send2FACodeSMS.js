@@ -1,17 +1,17 @@
-
 import twilio from "twilio";
 
-const client = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
-);
+let client = null;
+if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+    client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+}
 
 export default async function send2FACodeSMS(phoneNumber, code) {
+    if (!client || !process.env.TWILIO_FROM_NUMBER) {
+        console.log("Twilio not configured. 2FA Code log:", code);
+        return false;
+    }
+
     try {
-        /*console.log("Twilio SID:", process.env.TWILIO_ACCOUNT_SID);
-        console.log("Twilio Auth Token length:", process.env.TWILIO_AUTH_TOKEN.length);
-        console.log("From number:", process.env.TWILIO_FROM_NUMBER);
-        console.log("To number:", phoneNumber);*/
         await client.messages.create({
             body: `Je 2FA code is: ${code}`,
             from: process.env.TWILIO_FROM_NUMBER,
@@ -19,8 +19,9 @@ export default async function send2FACodeSMS(phoneNumber, code) {
         });
 
         console.log(`2FA SMS sent to ${phoneNumber}`);
+        return true;
     } catch (err) {
         console.error("Twilio SMS error:", err);
-        throw new Error("Kon SMS niet versturen");
+        return false;
     }
 }
