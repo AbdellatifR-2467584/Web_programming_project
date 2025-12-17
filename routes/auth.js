@@ -5,11 +5,9 @@ import send2FACodeSMS from "../utils/send2FACodeSMS.js";
 import sgMail from '@sendgrid/mail';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
-
 const router = express.Router();
 
-// --- REGISTER ---
+//registers
 router.get("/register", (req, res) => {
     res.render("register", { error: null });
 });
@@ -30,8 +28,8 @@ router.post("/register", async (req, res) => {
         if (contact.includes('@')) {
             email = contact;
         } else {
-            // Validate Phone Number
-            // Remove dashes/spaces
+            //valideer gsm nummer
+            //verwijder dashes en spaces
             const cleanContact = contact.replace(/[\s-]/g, '');
             if (!cleanContact.startsWith('+32')) {
                 return res.render("register", { error: "Telefoonnummer moet beginnen met +32." });
@@ -53,7 +51,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// --- LOGIN ---
+//login
 router.get("/login", (req, res) => {
     res.render("login", { error: null });
 });
@@ -89,28 +87,36 @@ router.post("/login", async (req, res) => {
                     }
                     return res.render("login", { error: "Geen telefoonnummer ingesteld voor 2FA." });
                 }
-                //await send2FACodeSMS(user.phone_number, code);
+                /*const smsSent = await send2FACodeSMS(user.phone_number, code);
+                if (!smsSent) {
+                    console.log("SMS failed or not configured. Use console code.");
+                }*/
+
             } else if (method === 'email') {
                 if (!user.email) {
                     return res.render("login", { error: "Geen email ingesteld voor 2FA." });
                 }
 
-                const msg = {
-                    to: user.email,
-                    from: 'ryadabdellatif@gmail.com',
-                    subject: 'Jouw 2FA Verificatiecode',
-                    text: `Je verificatiecode is: ${code}`,
-                    html: `<strong>Je verificatiecode is: ${code}</strong>`,
-                };
+                if (!process.env.SENDGRID_API_KEY) {
+                    console.log("SENDGRID_API_KEY missing. 2FA Code in console:", code);
+                } else {
+                    const msg = {
+                        to: user.email,
+                        from: 'ryadabdellatif@gmail.com',
+                        subject: 'Jouw 2FA Verificatiecode',
+                        text: `Je verificatiecode is: ${code}`,
+                        html: `<strong>Je verificatiecode is: ${code}</strong>`,
+                    };
 
-                try {
-                    await sgMail.send(msg);
-                } catch (error) {
-                    console.error("SendGrid Error:", error);
-                    if (error.response) {
-                        console.error(error.response.body);
+                    try {
+                        await sgMail.send(msg);
+                    } catch (error) {
+                        console.error("SendGrid Error:", error);
+                        if (error.response) {
+                            console.error(error.response.body);
+                        }
+                        return res.render("login", { error: "Kon email niet verzenden." });
                     }
-                    return res.render("login", { error: "Kon email niet verzenden." });
                 }
             }
 
@@ -155,7 +161,7 @@ router.post("/login/verify", async (req, res) => {
     }
 });
 
-// --- LOGOUT ---
+//log uit
 router.get("/logout", (req, res) => {
     req.session.destroy(() => {
         res.redirect("/");

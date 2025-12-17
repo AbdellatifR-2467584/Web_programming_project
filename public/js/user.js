@@ -66,32 +66,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Close modals when clicking X
+    //modals dicht wnnr je op "x" drukt
     closeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const modal = btn.closest('.modal');
             modal.style.display = 'none';
 
-            // Reset form inside modal
+            //reset form binnen modal
             const form = modal.querySelector('form');
             if (form) form.reset();
 
-            // Clear error messages
+            //clear de error messages
             const errorDiv = modal.querySelector('div[id$="Error"]');
             if (errorDiv) errorDiv.textContent = '';
         });
     });
 
-    // Close modals if clicking outside modal content
+    //alle modals closen als je buiten modal clickt
     window.addEventListener('click', (event) => {
         if (event.target.classList.contains('modal')) {
             event.target.style.display = 'none';
 
-            // Reset form inside modal
+            //reset form binnen modal
             const form = event.target.querySelector('form');
             if (form) form.reset();
 
-            // Clear error messages
+            //clear de error messages
             const errorDiv = event.target.querySelector('div[id$="Error"]');
             if (errorDiv) errorDiv.textContent = '';
         }
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    // ---- Username change ----
+    //username veranderen
     const usernameForm = document.getElementById("changeUsernameForm");
     const usernameErrorDiv = document.getElementById("usernameError");
 
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ---- Password change ----
+    //wachtwoord veranderen
     const passwordForm = document.getElementById("changePasswordForm");
     const passwordErrorDiv = document.getElementById("passwordError");
 
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    // ---- Email change ----
+    //email veranderen
     const emailForm = document.getElementById("changeEmailForm");
     const emailErrorDiv = document.getElementById("emailError");
 
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---- Phone change ----
+    //gsm veranderen
     const phoneForm = document.getElementById("changePhoneForm");
     const phoneErrorDiv = document.getElementById("phoneError");
 
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ---- 2FA change ----
+    //2fa veranderen
     const twoFaForm = document.getElementById("change2faForm");
     const twoFaErrorDiv = document.getElementById("2faError");
 
@@ -271,18 +271,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    // ---- Profile Picture Upload & Preview ----
+    //pfp upload + preview
     const pfpImg = document.getElementById("profilepicture");
     const pfpInput = document.getElementById("pfpInput");
 
-    // Modal elements
+    //modal elements
     const pfpModal = document.getElementById("changeProfilePictureModal");
     const pfpPreview = document.getElementById("pfpPreview");
     const savePfpBtn = document.getElementById("savePfpBtn");
     const cancelPfpBtn = document.getElementById("cancelPfpBtn");
     const pfpErrorDiv = document.getElementById("pfpError");
 
-    // Helper to close modal
+    //helper om modals the closen
     function closePfpModal() {
         if (pfpModal) {
             pfpModal.style.display = "none";
@@ -294,12 +294,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (pfpImg && pfpInput && pfpModal) {
-        // Trigger file input
+        //trigger file input
         pfpImg.addEventListener("click", () => {
             pfpInput.click();
         });
 
-        // Handle file selection -> Show Preview Modal
+        //handle file selectie -> laat preview Modal zien
         pfpInput.addEventListener("change", () => {
             const file = pfpInput.files[0];
             if (file) {
@@ -313,12 +313,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Handle Cancel
+        //handle cancel
         if (cancelPfpBtn) {
             cancelPfpBtn.addEventListener("click", closePfpModal);
         }
 
-        // Handle Save
+        //handle save
         if (savePfpBtn) {
             savePfpBtn.addEventListener("click", async () => {
                 const file = pfpInput.files[0];
@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const formData = new FormData();
                 formData.append("profilePicture", file);
 
-                // Disable button to prevent double submit
+                //disable knop om dubbele submit tegen te komen
                 savePfpBtn.disabled = true;
                 savePfpBtn.textContent = "Bezig...";
 
@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const data = await response.json();
 
                     if (data.success) {
-                        // Update main pfp
+                        //update main pfp
                         pfpImg.src = `/resources/profilepictures/${data.filename}?t=${new Date().getTime()}`;
                         closePfpModal();
                     } else {

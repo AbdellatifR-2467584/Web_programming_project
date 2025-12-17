@@ -74,11 +74,12 @@
                                         ) { %>
                                         <div class="video-section">
                                             <h3 class="media-title">Video</h3>
+
                                             <div class="youtube-wrapper" data-url="<%= post.youtube_url %>">
-                                                <iframe width="100%" height="315" src="<%= post.youtube_url %>"
-                                                    frameborder="0"
+                                                <iframe src="<%= post.youtube_url %>"
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowfullscreen></iframe>
+                                                    allowfullscreen>
+                                                </iframe>
                                             </div>
                                         </div>
                                         <% } %>
@@ -115,7 +116,7 @@
                                         <img src="/resources/profilepictures/<%= post.user_profile_picture || 'default.png' %>"
                                             alt="User Avatar" class="user-avatar-small">
                                         <span class="username">
-                                            <a href="http://localhost:8080/user/<%= post.username %>">
+                                            <a href="../user/<%= post.username %>">
                                                 <%= post.username || 'Onbekend' %>
                                             </a>
                                         </span>
@@ -181,11 +182,11 @@
                             </div>
                         </div>
                     </div>
-                </div id="grid">
-
-                <%- include('partials/gridSearch') %>
-    </div>
-    </main>
+                </div>
+                <div id="grid">
+                    <%- include('partials/gridSearch') %>
+                </div>
+        </main>
     </div>
 
     <script type="module">

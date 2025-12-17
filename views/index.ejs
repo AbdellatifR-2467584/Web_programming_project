@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="nl"> 
+<html lang="nl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReciPin</title>
-    <meta name="description" content="Verzamel en deel je favoriete recepten op ReciPin."> 
+    <meta name="description" content="Verzamel en deel je favoriete recepten op ReciPin.">
     <link rel="icon" type="image/png" href="/resources/logo/Logo_cirkel.png">
 
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -17,16 +17,16 @@
 
 <body>
     <div class="layout">
-        <nav class="sidebar-container"> 
+        <nav class="sidebar-container">
             <%- include('partials/sidebar') %>
         </nav>
 
         <main class="mainarea">
             <%- include('partials/searchbar') %>
-            
-            <section class="results-grid">
-                <%- include('partials/grid') %>
-            </section>
+
+                <div class="results-grid">
+                    <%- include('partials/grid') %>
+                </div>
         </main>
     </div>
 </body>

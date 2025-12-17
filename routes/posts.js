@@ -20,7 +20,7 @@ router.get("/api/posts", (req, res) => {
     try {
         const posts = getAllPosts();
 
-        // Enrich with favorite status if logged in
+        //favorite status wnnr ingelogd
         if (req.session.user) {
             const userId = req.session.user.id;
             const favorites = getFavoritesByUser(userId).map(p => p.id); // Get IDs
@@ -43,7 +43,7 @@ router.get("/api/postsLike", (req, res) => {
         const like = req.query.q || "";
         const posts = getAllPostsLike(like);
 
-        // Enrich with favorite status
+        //favorite status wnnr ingelogd
         if (req.session.user) {
             const userId = req.session.user.id;
             const favorites = getFavoritesByUser(userId).map(p => p.id);

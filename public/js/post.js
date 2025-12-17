@@ -43,6 +43,7 @@ async function clipboard_copy() {
         stappenTekst;
 
     try {
+        //clipboard api
         await navigator.clipboard.writeText(volledigeTekst);
 
         const knop = document.getElementById('clipboard');
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const postId = favoriteBtn.dataset.postId;
             const icon = favoriteBtn.querySelector("i");
 
-            // Optimistic UI update
+            //UI update voor favorite button
             const isFilled = icon.classList.contains("bi-heart-fill");
             if (isFilled) {
                 icon.classList.remove("bi-heart-fill");
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (response.status === 401) {
                     alert("Je moet ingelogd zijn om favorieten op te slaan.");
-                    // Revert UI
+                    //reset favorite img als niet ingelogd
                     if (isFilled) {
                         icon.classList.add("bi-heart-fill");
                         icon.classList.remove("bi-heart");
