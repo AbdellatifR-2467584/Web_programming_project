@@ -338,21 +338,17 @@ router.post("/api/fetchrecipe", async (req, res) => {
         if (typeof completion.choices[0].message.content === 'string') {
             try {
                 recept = JSON.parse(completion.choices[0].message.content);
-                console.log("recept is geen JSON----------------");
             } catch {
                 // fallback, gewoon tekst teruggeven
                 recept = { title: "", ingredients: [], steps: [] };
-                console.log("recept is geen JSON----------------");
             }
         } else {
             recept = completion.choices[0].message.content;
-            console.log("recept is al JSON----------------");
         }
         console.log(recept)
         return res.status(200).json({ recept });
     } catch (error) {
         console.error("Fout bij ophalen recept: ", error);
-        return res.status(500).json({ error: "Fout bij ophalen recept ooooooooooo" });
     }
 });
 
