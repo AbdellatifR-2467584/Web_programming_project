@@ -87,10 +87,10 @@ router.post("/login", async (req, res) => {
                     }
                     return res.render("login", { error: "Geen telefoonnummer ingesteld voor 2FA." });
                 }
-                /*const smsSent = await send2FACodeSMS(user.phone_number, code);
+                const smsSent = await send2FACodeSMS(user.phone_number, code);
                 if (!smsSent) {
                     console.log("SMS failed or not configured. Use console code.");
-                }*/
+                }
 
             } else if (method === 'email') {
                 if (!user.email) {
