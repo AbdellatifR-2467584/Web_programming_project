@@ -56,6 +56,8 @@ Hieronder vind je een overzicht van de belangrijkste pagina's en functionaliteit
 ### Testgebruikers
 *   **Gebruiker:** `brent`
 *   **Wachtwoord:** `brent`
+*   **Gebruiker:** `mod`
+*   **Wachtwoord:** `mod`
 
 ### Applicatie Overzicht
 
