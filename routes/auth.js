@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.render("login", { error: "Verkeerd wachtwoord" });
 
-        if (user.role === 'mod' || user.two_factor_enabled) {
+        if (user.two_factor_enabled) {
 
             // Generate Code
             const code = Math.floor(100000 + Math.random() * 900000);
