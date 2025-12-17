@@ -7,14 +7,15 @@ export default function initComments(postId) {
     const commentInput = document.getElementById("comment-input");
     const commentSubmit = document.getElementById("comment-submit");
 
+    //laad comments
     async function loadComments() {
         if (!commentList) return;
         try {
             const res = await fetch(`/api/post/${postId}/comments`);
             const comments = await res.json();
-
+            //elke c is comment van html
             commentList.innerHTML = comments.map(c => {
-                const deleteBtn = (currentUser && (currentUser.id === c.userId || currentUser.role === 'mod'))
+                const deleteBtn = (currentUser && (currentUser.id === c.userId || currentUser.role === 'mod')) //delete knop enkel voor mod en eigenaar
                     ? `<span class="delete-comment" data-id="${c.id}" title="Delete">
                 <i class="bi bi-trash3-fill"></i>
            </span>`
@@ -53,7 +54,7 @@ export default function initComments(postId) {
             console.error("Failed to load comments:", err);
         }
     }
-
+    //comment submit 
     if (commentSubmit && commentInput) {
         commentSubmit.addEventListener("click", async () => {
             const content = commentInput.value.trim();

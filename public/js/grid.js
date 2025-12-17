@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 });
             }
         });
-
+        //resize wanneer alle imgs geladen worden
         if (loaded === images.length) {
             checkMobileLayout(grid);
             resizeMasonry(grid);
@@ -93,6 +93,7 @@ window.addEventListener('resize', () => {
         });
     }, 100);
 });
+
 
 function checkMobileLayout(grid) {
     if (window.innerWidth <= 768) {

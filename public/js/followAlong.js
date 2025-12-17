@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `<input type="checkbox" id="ingredient-${i}"> <label for="ingredient-${i}">${ingredient}</label>`;
         ingredientList.appendChild(li);
     });
-
+    //alles selecteren
     selectAllBtn.addEventListener('click', () => {
         const checkboxes = ingredientList.querySelectorAll('input[type="checkbox"]');
         const allChecked = Array.from(checkboxes).every(cb => cb.checked);
@@ -27,11 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
         checkboxes.forEach(cb => cb.checked = !allChecked);
         selectAllBtn.textContent = allChecked ? 'Alles selecteren' : 'Alles deselecteren';
     });
-
+    //start knop
     startCookingBtn.addEventListener('click', () => {
         const checkboxes = ingredientList.querySelectorAll('input[type="checkbox"]');
         const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-
+        //check dat alle knoppen gechecked zijn
         if (!allChecked) {
             alert('Vink alle ingrediënten aan om verder te gaan!');
             return;
@@ -116,14 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
+        //terug naar vorige
         prevBtn.addEventListener('click', () => {
             if (currentStep > 0) {
                 currentStep--;
                 updateUI();
             }
         });
-
+        //opnieuw stap uitspreken
         replayBtn.addEventListener('click', () => {
             speak(steps[currentStep]);
         });

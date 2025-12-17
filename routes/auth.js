@@ -9,7 +9,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const router = express.Router();
 
-// --- REGISTER ---
+//registers
 router.get("/register", (req, res) => {
     res.render("register", { error: null });
 });
@@ -30,8 +30,8 @@ router.post("/register", async (req, res) => {
         if (contact.includes('@')) {
             email = contact;
         } else {
-            // Validate Phone Number
-            // Remove dashes/spaces
+            //valideer gsm nummer
+            //verwijder dashes en spaces
             const cleanContact = contact.replace(/[\s-]/g, '');
             if (!cleanContact.startsWith('+32')) {
                 return res.render("register", { error: "Telefoonnummer moet beginnen met +32." });
@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// --- LOGIN ---
+//login
 router.get("/login", (req, res) => {
     res.render("login", { error: null });
 });
@@ -155,7 +155,7 @@ router.post("/login/verify", async (req, res) => {
     }
 });
 
-// --- LOGOUT ---
+//log uit
 router.get("/logout", (req, res) => {
     req.session.destroy(() => {
         res.redirect("/");

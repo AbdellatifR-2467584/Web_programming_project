@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector(".searchinput");
 
     if (searchForm && searchInput) {
-        // Haal query op uit de URL, zodat input behouden blijft
+        //haal query op uit de URL, zodat input behouden blijft
         const urlParams = new URLSearchParams(window.location.search);
         const queryParam = urlParams.get("q");
         if (queryParam) {
@@ -14,11 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
         searchForm.addEventListener("submit", (event) => {
             event.preventDefault();
             const query = searchInput.value.trim();
-            // Redirect altijd naar de homepagina met query als parameter
+            //redirect altijd naar de homepagina met query als parameter
             window.location.href = `/?q=${encodeURIComponent(query)}`;
         });
 
-        // Optioneel: live search op homepage grid
+        //live search op de homepage ==> enter is niet nodig dan
         if (window.location.pathname !== "/") return;
         searchForm.addEventListener("input", async (event) => {
             event.preventDefault();
@@ -36,10 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="card" onclick="location.href='/post/${post.id}'">
                     <img src="/${post.image_path}" alt="Recipe">
                 </div>
-            `).join("");
+            `).join(""); //map met posts van grid
 
             if (typeof resizeMasonry === 'function') {
-                resizeMasonry(grid);
+                resizeMasonry(grid); //resize op basis van de geupdatete grid
             }
         });
     }

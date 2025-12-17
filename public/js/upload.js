@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const ingredientContainer = document.getElementById('ingredienten-lijst');
   const stepsContainer = document.getElementById('stappen-lijst');
 
-  //Main Image Elements
+  //main img elementen
   const imageInput = document.getElementById('image');
   const previewContainer = document.getElementById('image-preview');
   const previewImg = document.getElementById('preview-img');
@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const statusLabel = document.getElementById('file-status');
   const uploadLabel = document.getElementById('upload-label');
 
-  //Walkthrough Media Elements
+  //walkthrough media elementen
   const mediaInput = document.getElementById('media');
   const mediaPreviewContainer = document.getElementById('media-preview');
   const mediaContent = document.getElementById('media-content');
@@ -87,7 +87,7 @@ window.addEventListener('DOMContentLoaded', () => {
       form.appendChild(input);
     });
   }
-
+  //previews
   function renderMediaPreviews() {
     mediaContent.innerHTML = "";
     mediaContent.style.display = "flex";
@@ -215,13 +215,13 @@ window.addEventListener('DOMContentLoaded', () => {
       mediaInput.click();
     });
 
-    mediaContent.appendChild(addMoreBtn);
+    mediaContent.appendChild(addMoreBtn); //nieuwe button
 
     mediaPreviewContainer.style.display = 'block';
     mediaLabel.style.display = "none";
   }
 
-  function resetMedia() {
+  function resetMedia() { //resetmedia van preview
     mediaLabel.style.display = "flex";
     mediaInput.value = "";
     accumulatedMediaFiles = [];
@@ -248,21 +248,19 @@ window.addEventListener('DOMContentLoaded', () => {
   async function downloadImageToInput(imageUrl) {
     if (!imageUrl) return;
 
-    // 1. Laat het plaatje zien in de browser (dit mag wel met CORS!)
+    //laat img zien in browser
     previewImg.src = imageUrl;
     previewContainer.style.display = 'block';
 
-    // 2. Stop de URL in het verborgen veld
+    //stop url in verborgen veld
     const hiddenInput = document.getElementById('image_url_external');
     if (hiddenInput) {
       hiddenInput.value = imageUrl;
     }
 
-    // 3. Update de labels
+    //update labels
     statusLabel.textContent = "Afbeelding gevonden via AI";
 
-    // We hebben geen fysiek bestand in de <input type="file">, 
-    // dus we laten die met rust. De server moet straks checken op de URL.
 
     uploadLabel.style.display = 'none';
     submitBtn.style.backgroundColor = '#e60023';
@@ -272,13 +270,13 @@ window.addEventListener('DOMContentLoaded', () => {
   function renderIngredients(ingredients = []) {
     ingredientContainer.innerHTML = '';
 
-    // Top empty row with + button (always stays at top)
+    // bovenste rij van ingredienten heeft altijd een + knop
     const topRow = document.createElement('div');
     topRow.className = 'standaard-row';
     topRow.innerHTML = `<input type="text" name="ingredients[]" placeholder="Ingrediënt"><button type="button" class="add">+</button>`;
     ingredientContainer.appendChild(topRow);
 
-    // Existing ingredients below with - buttons
+    // bestaande ingredienten eronder krijgen een - knop
     ingredients.forEach(ing => {
       const row = document.createElement('div');
       row.className = 'standaard-row';
@@ -286,7 +284,7 @@ window.addEventListener('DOMContentLoaded', () => {
       ingredientContainer.appendChild(row);
     });
 
-    // Focus on the top input
+    // focus op de top van de input
     topRow.querySelector('input').focus();
   }
 
@@ -298,13 +296,13 @@ window.addEventListener('DOMContentLoaded', () => {
       const value = input.value.trim();
       if (!value) return;
 
-      // Create a new ingredient row below top row
+      //nieuwe ingredient rij onder top rij
       const row = document.createElement('div');
       row.className = 'standaard-row';
       row.innerHTML = `<input type="text" name="ingredients[]" value="${value}" placeholder="Ingrediënt"><button type="button" class="remove">-</button>`;
       ingredientContainer.appendChild(row);
 
-      // Clear top input and keep focus
+      //clear bovenste rij en focus opnieuw daarop
       input.value = '';
       input.focus();
     } else if (e.target.classList.contains('remove')) {
@@ -312,7 +310,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Press Enter on top input to add ingredient
+  //enter op topinput werkt ook om ingredient toe te voegen
   ingredientContainer.addEventListener('keypress', e => {
     if (e.key === 'Enter' && e.target.matches('input[name="ingredients[]"]') && e.target.value.trim() !== "") {
       e.preventDefault();
@@ -333,7 +331,7 @@ window.addEventListener('DOMContentLoaded', () => {
       stepsContainer.appendChild(row);
     });
     if (!steps.length) {
-      // Ensure at least one row with +
+      // minstens 1 rij met + knop
       const row = document.createElement('div');
       row.className = 'stappen-row';
       row.innerHTML = `<input type="text" name="steps[]" placeholder="Type hier je stap"><button type="button" class="add">+</button>`;
@@ -346,7 +344,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const row = document.createElement('div');
       row.className = 'stappen-row';
       row.innerHTML = `<input type="text" name="steps[]" placeholder="Type hier je stap"><button type="button" class="add">+</button>`;
-      // Convert previous + to -
+      // verander + naar - na click van + knop
       const prevAdd = stepsContainer.querySelectorAll('.add');
       if (prevAdd.length > 0) prevAdd[prevAdd.length - 1].outerHTML = '<button type="button" class="remove">-</button>';
       stepsContainer.appendChild(row);
@@ -355,7 +353,7 @@ window.addEventListener('DOMContentLoaded', () => {
       e.target.parentElement.remove();
     }
   });
-
+  //enter werkt ook
   stepsContainer.addEventListener('keypress', e => {
     if (e.key === 'Enter' && e.target.matches('input[name="steps[]"]') && e.target.value.trim() !== "") {
       e.preventDefault();
@@ -367,7 +365,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function showExistingImage(imagePath) {
     if (!imagePath) return;
 
-    // Create normalized path relative to the site root
+    // normalized path
     const normalized = new URL(imagePath, window.location.origin).pathname;
 
     console.log(normalized);
@@ -383,7 +381,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function showExistingMedia(mediaPaths) {
     if (!mediaPaths) return;
 
-    // Handle legacy single string vs new array
+    // legacy string vs nieuwe array voor walkthrough
     const paths = Array.isArray(mediaPaths) ? mediaPaths : [mediaPaths];
     if (paths.length === 0) return;
 
@@ -393,7 +391,7 @@ window.addEventListener('DOMContentLoaded', () => {
     mediaStatusLabel.textContent = `${paths.length} bestand(en) geselecteerd`;
   }
 
-  //date opvullen voor de edit
+  //data opvullen voor de edit
   if (postData) {
     form.action = `/post/${postData.id}/edit`;
     submitBtn.innerHTML = `<i class="bi bi-save"></i><br>`;
