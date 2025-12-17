@@ -110,8 +110,6 @@ De applicatie maakt gebruik van diverse externe services en bibliotheken:
 *   **OpenAI API:** Wordt gebruikt om recepten te extraheren en structureren van externe websites (via de `/api/fetchrecipe` endpoint).
 *   **SendGrid:** Verzorgt het versturen van e-mails, bijvoorbeeld voor 2FA verificatiecodes.
 *   **Twilio:** Wordt gebruikt voor het versturen van SMS-berichten bij 2FA (indien ingesteld).
-*   **Google Fonts:** Voor de typografie van de website.
-*   **Bootstrap Icons:** Voor alle iconen in de interface via CDN.
 *   **html2pdf.js:** Een externe library die intern `html2canvas` gebruikt om recepten op te slaan als PDF.
 
 ## Browser API's
@@ -126,3 +124,6 @@ We hebben gebruik gemaakt van de volgende browser API's om de gebruikerservaring
 
 3.  **Browser Storage (LocalStorage)**
     *   Wordt gebruikt om de voorkeur voor 'Dark Mode' op te slaan, zodat deze bewaard blijft bij het herladen van de pagina of navigeren (`post.js`).
+
+4.  **Web Speech API**
+    *   Wordt gebruikt om recepten voor te lezen (`post.js`).
