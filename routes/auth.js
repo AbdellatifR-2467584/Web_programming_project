@@ -5,8 +5,6 @@ import send2FACodeSMS from "../utils/send2FACodeSMS.js";
 import sgMail from '@sendgrid/mail';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
-
 const router = express.Router();
 
 //registers
@@ -89,28 +87,36 @@ router.post("/login", async (req, res) => {
                     }
                     return res.render("login", { error: "Geen telefoonnummer ingesteld voor 2FA." });
                 }
-                //await send2FACodeSMS(user.phone_number, code);
+                /*const smsSent = await send2FACodeSMS(user.phone_number, code);
+                if (!smsSent) {
+                    console.log("SMS failed or not configured. Use console code.");
+                }*/
+
             } else if (method === 'email') {
                 if (!user.email) {
                     return res.render("login", { error: "Geen email ingesteld voor 2FA." });
                 }
 
-                const msg = {
-                    to: user.email,
-                    from: 'ryadabdellatif@gmail.com',
-                    subject: 'Jouw 2FA Verificatiecode',
-                    text: `Je verificatiecode is: ${code}`,
-                    html: `<strong>Je verificatiecode is: ${code}</strong>`,
-                };
+                if (!process.env.SENDGRID_API_KEY) {
+                    console.log("SENDGRID_API_KEY missing. 2FA Code in console:", code);
+                } else {
+                    const msg = {
+                        to: user.email,
+                        from: 'ryadabdellatif@gmail.com',
+                        subject: 'Jouw 2FA Verificatiecode',
+                        text: `Je verificatiecode is: ${code}`,
+                        html: `<strong>Je verificatiecode is: ${code}</strong>`,
+                    };
 
-                try {
-                    await sgMail.send(msg);
-                } catch (error) {
-                    console.error("SendGrid Error:", error);
-                    if (error.response) {
-                        console.error(error.response.body);
+                    try {
+                        await sgMail.send(msg);
+                    } catch (error) {
+                        console.error("SendGrid Error:", error);
+                        if (error.response) {
+                            console.error(error.response.body);
+                        }
+                        return res.render("login", { error: "Kon email niet verzenden." });
                     }
-                    return res.render("login", { error: "Kon email niet verzenden." });
                 }
             }
 

@@ -43,6 +43,7 @@ async function clipboard_copy() {
         stappenTekst;
 
     try {
+        //clipboard api
         await navigator.clipboard.writeText(volledigeTekst);
 
         const knop = document.getElementById('clipboard');
