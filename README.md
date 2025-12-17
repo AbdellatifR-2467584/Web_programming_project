@@ -111,6 +111,8 @@ De applicatie maakt gebruik van diverse externe services en bibliotheken:
 *   **SendGrid:** Verzorgt het versturen van e-mails, bijvoorbeeld voor 2FA verificatiecodes.
 *   **Twilio:** Wordt gebruikt voor het versturen van SMS-berichten bij 2FA (indien ingesteld).
 *   **html2pdf.js:** Een externe library die intern `html2canvas` gebruikt om recepten op te slaan als PDF.
+*   **Multer:** Een externe library die gebruikt wordt om bestanden te uploaden.
+*   **bcrypt:** Een externe library die gebruikt wordt om wachtwoorden te hashen.
 
 ## Browser API's
 We hebben gebruik gemaakt van de volgende browser API's om de gebruikerservaring te verbeteren:
@@ -127,3 +129,7 @@ We hebben gebruik gemaakt van de volgende browser API's om de gebruikerservaring
 
 4.  **Web Speech API**
     *   Wordt gebruikt om recepten voor te lezen (`post.js`).
+
+
+## A statement on AI usage.
+We hebben LLM's gebruikt om ons te helpen met dit project.
